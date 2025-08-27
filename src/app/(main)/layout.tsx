@@ -8,6 +8,7 @@ import {
   Instagram,
   Youtube,
   Menu,
+  Languages,
 } from 'lucide-react';
 import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
@@ -17,6 +18,12 @@ import {
   SheetContent,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Footer } from '@/components/footer';
 
 export default function MainLayout({
@@ -53,12 +60,36 @@ export default function MainLayout({
       { href: '/contact', label: text.contact }
     ];
 
+  const LanguageSelector = () => (
+    <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="text-xs font-medium uppercase transition-opacity hover:opacity-80 hover:bg-primary/20 h-auto p-1">
+                <Languages className="mr-1.5 h-4 w-4" />
+                {language === 'bg' ? (
+                    <span className="mr-1">🇧🇬</span>
+                ) : (
+                    <span className="mr-1">🇬🇧</span>
+                )}
+                <span className="hidden sm:inline">{language === 'bg' ? 'Български' : 'English'}</span>
+            </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-40" align="end">
+            <DropdownMenuItem onClick={() => language === 'en' && toggleLanguage()}>
+                <span className="mr-2">🇧🇬</span> Български
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => language === 'bg' && toggleLanguage()}>
+                <span className="mr-2">🇬🇧</span> English
+            </DropdownMenuItem>
+        </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-50 bg-white shadow-md">
         <div className="bg-primary text-primary-foreground">
           <div className="container mx-auto flex h-10 items-center justify-between px-4">
-            <div className='flex items-center gap-4'>
+            <div className="flex-1 flex justify-start items-center gap-4">
                 <div className="flex items-center gap-2">
                 {socialLinks.map((social, index) => (
                     <a
@@ -79,12 +110,12 @@ export default function MainLayout({
                     </Link>
                 </div>
             </div>
-            <button
-              onClick={toggleLanguage}
-              className="text-xs font-medium uppercase transition-opacity hover:opacity-80"
-            >
-              {language === 'bg' ? 'English' : 'Български'}
-            </button>
+            <div className="flex-1 flex justify-center text-xs font-bold uppercase tracking-wider">
+                {text.language === 'bg' ? 'Конни надбягвания в България' : 'Horse Racing in Bulgaria'}
+            </div>
+            <div className="flex-1 flex justify-end">
+                <LanguageSelector />
+            </div>
           </div>
         </div>
 
@@ -129,7 +160,7 @@ export default function MainLayout({
                   {allNavItems.map((item) => (
                      <Link key={item.href} href={item.href} passHref>
                         <Button 
-                            variant={item.exact ? pathname === item.href : pathname.startsWith(item.href) ? 'default' : 'ghost'} 
+                            variant={item.exact ? pathname === item.href ? 'default' : 'ghost' : pathname.startsWith(item.href) ? 'default' : 'ghost'} 
                             className="justify-start"
                         >
                             {item.label}
