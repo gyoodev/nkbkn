@@ -64,7 +64,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
           <SidebarMenu>
             {menuItems.map((item) => (
               <SidebarMenuItem key={item.href}>
-                <Link href={getLocalePath(item.href)} legacyBehavior passHref>
+                <Link href={getLocalePath(item.href)}>
                   <SidebarMenuButton
                     isActive={pathname === getLocalePath(item.href)}
                     tooltip={{ children: item.label }}
