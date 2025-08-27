@@ -9,7 +9,7 @@ import {
   Youtube,
   Menu,
   Languages,
-  Newspaper,
+  Calendar,
 } from 'lucide-react';
 import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
@@ -61,7 +61,7 @@ export default function MainLayout({
       ...leftNavItems, 
       ...rightNavItems,
       { href: '/contact', label: text.contact },
-      { href: '/race-preview', label: text.racePreview },
+      { href: '/calendar', label: text.calendar },
     ];
 
   const LanguageSelector = () => (
@@ -147,8 +147,9 @@ export default function MainLayout({
 
           <div className="flex items-center gap-4">
             <Button asChild>
-                <Link href="/race-preview">
-                  {text.racePreview}
+                <Link href="/calendar">
+                  <Calendar className="mr-2 h-4 w-4" />
+                  {text.calendar}
                 </Link>
             </Button>
             <div className="md:hidden">

@@ -82,6 +82,9 @@ const translations = {
     galleryPageDescription: 'Подбрана колекция от снимки и видеа от минали състезания.',
     racePreviewPageTitle: 'Генератор на превюта за състезания',
     racePreviewPageDescription: 'Използвайте нашия AI инструмент за генериране на прегледи за предстоящи събития.',
+    calendarPageTitle: 'Календар и превю на състезания',
+    calendarPageDescription: 'Вижте предстоящите състезания и генерирайте превюта.',
+    racePreviewHelperText: 'Тук ще бъде показан календарът със състезания. Междувременно, можете да използвате формата по-долу, за да генерирате превю за конкретно състезание.',
     contactPageTitle: 'Информация за контакт',
     contactPageDescription: 'Изпратете ни запитване или ни последвайте в социалните мрежи.',
     // Forms & Buttons
@@ -209,6 +212,9 @@ const translations = {
     galleryPageDescription: 'A curated collection of photos and videos from past races.',
     racePreviewPageTitle: 'Race Preview Generator',
     racePreviewPageDescription: 'Use our AI tool to generate previews for upcoming events.',
+    calendarPageTitle: 'Calendar & Race Preview',
+    calendarPageDescription: 'See upcoming races and generate previews.',
+    racePreviewHelperText: 'The race calendar will be displayed here. In the meantime, you can use the form below to generate a preview for a specific race.',
     contactPageTitle: 'Contact Information',
     contactPageDescription: 'Send us an inquiry or follow us on social media.',
     // Forms & Buttons
