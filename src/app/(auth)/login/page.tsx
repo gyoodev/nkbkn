@@ -7,7 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
+import { useActionState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 import Link from 'next/link';
@@ -24,7 +25,7 @@ function SubmitButton() {
 
 export default function LoginPage() {
   const { text } = useLanguage();
-  const [state, dispatch] = useFormState(login, undefined);
+  const [state, dispatch] = useActionState(login, undefined);
 
   return (
     <Card className="mx-auto max-w-sm">
