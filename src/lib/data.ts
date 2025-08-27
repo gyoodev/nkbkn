@@ -1,3 +1,4 @@
+
 import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document } from '@/lib/types';
 import { createClient } from '@supabase/supabase-js';
 
@@ -99,52 +100,30 @@ export const galleryImages: { id: number; src: string; alt: string, hint: string
   hint: 'horse race',
 }));
 
-// Add a new Date() to get the current month and year for realistic-looking dates
-const today = new Date();
-const currentYear = today.getFullYear();
-const currentMonth = today.getMonth();
+export async function getRaceEvents(): Promise<RaceEvent[]> {
+    const { data: events, error: eventsError } = await supabase
+        .from('race_events')
+        .select(`
+            *,
+            races (*)
+        `)
+        .order('date', { ascending: true });
 
-export const raceEvents: RaceEvent[] = [
-    {
-        id: 1,
-        date: new Date(currentYear, currentMonth, 5).toISOString().split('T')[0],
-        track: 'Хиподрум Банкя',
-        races: [
-            { time: '14:00', name: 'Откриваща гонка', participants: 8 },
-            { time: '14:45', name: 'Купа "Надежда"', participants: 10 },
-            { time: '15:30', name: 'Спринт "София"', participants: 7 },
-        ],
-    },
-    {
-        id: 2,
-        date: new Date(currentYear, currentMonth, 12).toISOString().split('T')[0],
-        track: 'Хиподрум Шумен',
-        races: [
-            { time: '13:30', name: 'Надбягване за 2-годишни', participants: 9 },
-            { time: '14:15', name: 'Купа "Мадарски конник"', participants: 11 },
-            { time: '15:00', name: 'Дълга дистанция', participants: 6 },
-        ],
-    },
-    {
-        id: 3,
-        date: new Date(currentYear, currentMonth, 19).toISOString().split('T')[0],
-        track: 'Хиподрум Банкя',
-        races: [
-            { time: '14:00', name: 'Квалификация за Дерби', participants: 12 },
-            { time: '14:45', name: 'Състезание за кобили', participants: 8 },
-            { time: '15:30', name: 'Гран При на Банкя', participants: 10 },
-        ],
-    },
-     {
-        id: 4,
-        date: new Date(currentYear, currentMonth, 26).toISOString().split('T')[0],
-        track: 'Хиподрум Пловдив',
-        races: [
-            { time: '13:00', name: 'Купа "Филипополис"', participants: 9 },
-            { time: '13:45', name: 'Мемориал "Васил Левски"', participants: 10 },
-        ],
-    },
-];
+    if (eventsError) {
+        console.error('Error fetching race events:', eventsError);
+        return [];
+    }
+    
+    // Sort races by time for each event
+    for (const event of events) {
+        if (event.races) {
+            event.races.sort((a, b) => a.time.localeCompare(b.time));
+        }
+    }
+
+    return events as RaceEvent[];
+}
+
 
 export async function getNewsPosts(): Promise<NewsPost[]> {
     const { data, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });

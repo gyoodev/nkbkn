@@ -1,28 +1,86 @@
+
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { raceEvents } from '@/lib/data';
+import { getRaceEvents } from '@/lib/data';
 import type { RaceEvent } from '@/lib/types';
 import { format } from 'date-fns';
 import { bg, enUS } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
 import { Clock, Users, Trophy } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+
+function CalendarPageSkeleton() {
+    return (
+        <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="md:col-span-1">
+                <Card>
+                    <CardContent className="p-2">
+                        <Skeleton className="w-full h-[298px] rounded-md" />
+                    </CardContent>
+                </Card>
+            </div>
+            <div className="md:col-span-2">
+                <Card className="min-h-[400px]">
+                    <CardHeader>
+                        <Skeleton className="h-7 w-48" />
+                        <Skeleton className="h-5 w-64" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="flex flex-col items-center justify-center text-center h-64">
+                            <Skeleton className="h-5 w-72" />
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    )
+}
 
 export default function CalendarPage() {
   const { text, language } = useLanguage();
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [allEvents, setAllEvents] = useState<RaceEvent[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const locale = language === 'bg' ? bg : enUS;
 
-  const selectedEvent: RaceEvent | undefined = raceEvents.find(
+  useEffect(() => {
+    async function fetchEvents() {
+        setLoading(true);
+        const events = await getRaceEvents();
+        setAllEvents(events);
+        setLoading(false);
+    }
+    fetchEvents();
+  }, []);
+
+  const selectedEvent: RaceEvent | undefined = allEvents.find(
     (event) => format(new Date(event.date), 'yyyy-MM-dd') === (date ? format(date, 'yyyy-MM-dd') : '')
   );
 
-  const eventDays = raceEvents.map(event => new Date(event.date));
+  const eventDays = allEvents.map(event => {
+      // Supabase returns date as YYYY-MM-DD string, but we need to account for timezone.
+      // Creating a new Date from this string will use the local timezone.
+      const [year, month, day] = event.date.split('-').map(Number);
+      return new Date(year, month - 1, day);
+  });
+
+  if (loading) {
+      return (
+         <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+            <PageHeader
+                title={text.calendar}
+                description={text.calendarPageDescription}
+            />
+            <CalendarPageSkeleton />
+        </div>
+      )
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">

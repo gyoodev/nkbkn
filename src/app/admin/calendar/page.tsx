@@ -1,28 +1,90 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { raceEvents } from '@/lib/data';
+import { getRaceEvents } from '@/lib/data';
 import type { RaceEvent } from '@/lib/types';
 import { format } from 'date-fns';
 import { bg, enUS } from 'date-fns/locale';
 import { useLanguage } from '@/hooks/use-language';
 import { PlusCircle, Edit, Trash2 } from 'lucide-react';
+import { deleteRaceEvent } from './actions';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
+
+function DeleteButton({ id, onDeleted }: { id: number, onDeleted: () => void }) {
+  const handleDelete = async () => {
+    await deleteRaceEvent(id);
+    onDeleted();
+  };
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+          <Button variant="destructive" size="icon">
+            <Trash2 className="h-4 w-4" />
+            <span className="sr-only">Изтрий</span>
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Наистина ли искате да изтриете това събитие?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Това действие не може да бъде отменено. Това ще изтрие за постоянно събитието и всички свързани с него състезания.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Отказ</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete}>Изтрий</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
+
 
 export default function AdminCalendarPage() {
-  const { language, text } = useLanguage();
+  const { language } = useLanguage();
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const [allEvents, setAllEvents] = useState<RaceEvent[]>([]);
   const locale = language === 'bg' ? bg : enUS;
 
-  const selectedEvents: RaceEvent[] = raceEvents.filter(
-    (event) => format(new Date(event.date), 'yyyy-MM-dd') === (date ? format(date, 'yyyy-MM-dd') : '')
+  const fetchEvents = async () => {
+    const events = await getRaceEvents();
+    setAllEvents(events);
+  };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const selectedEvents: RaceEvent[] = allEvents.filter(
+    (event) => {
+        // Adjust for timezone when comparing dates
+        const eventDate = new Date(event.date);
+        const localEventDate = new Date(eventDate.getUTCFullYear(), eventDate.getUTCMonth(), eventDate.getUTCDate());
+        return format(localEventDate, 'yyyy-MM-dd') === (date ? format(date, 'yyyy-MM-dd') : '')
+    }
   );
 
-  const eventDays = raceEvents.map(event => new Date(event.date));
+  const eventDays = allEvents.map(event => {
+    const eventDate = new Date(event.date);
+    return new Date(eventDate.getUTCFullYear(), eventDate.getUTCMonth(), eventDate.getUTCDate());
+  });
 
   return (
     <div>
@@ -35,7 +97,7 @@ export default function AdminCalendarPage() {
           <Card>
              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Календар</CardTitle>
-                 <Button size="sm">
+                 <Button size="sm" disabled>
                     <PlusCircle className="mr-2 h-4 w-4" />
                     Добави събитие
                 </Button>
@@ -74,14 +136,11 @@ export default function AdminCalendarPage() {
                           <CardDescription>{event.races.length} състезания</CardDescription>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="outline" size="icon">
+                          <Button variant="outline" size="icon" disabled>
                             <Edit className="h-4 w-4" />
                             <span className="sr-only">Редактирай</span>
                           </Button>
-                          <Button variant="destructive" size="icon">
-                            <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">Изтрий</span>
-                          </Button>
+                          <DeleteButton id={event.id} onDeleted={fetchEvents} />
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -103,7 +162,7 @@ export default function AdminCalendarPage() {
                     <p className="text-sm text-muted-foreground">
                       Изберете друга дата или добавете ново събитие.
                     </p>
-                    <Button className="mt-4">
+                    <Button className="mt-4" disabled>
                         <PlusCircle className="mr-2 h-4 w-4" />
                         Добави събитие
                     </Button>

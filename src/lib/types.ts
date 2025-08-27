@@ -1,3 +1,4 @@
+
 export interface Jockey {
   id: number;
   name: string;
@@ -52,15 +53,19 @@ export interface NewsPost {
     comments_count: number;
 }
 
+export interface Race {
+  id: number;
+  event_id: number;
+  time: string;
+  name: string;
+  participants: number;
+}
+
 export interface RaceEvent {
   id: number;
   date: string;
   track: string;
-  races: {
-    time: string;
-    name: string;
-    participants: number;
-  }[];
+  races: Race[];
 }
 
 
