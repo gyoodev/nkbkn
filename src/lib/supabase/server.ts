@@ -5,6 +5,13 @@ import { NextRequest, NextResponse } from 'next/server';
 export function createServerClient(request?: NextRequest) {
   const cookieStore = cookies()
 
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Supabase URL and anonymous key are required. Please set them in your .env file.');
+  }
+
   const response = request ? NextResponse.next({
       request: {
         headers: request.headers,
@@ -13,8 +20,8 @@ export function createServerClient(request?: NextRequest) {
 
 
   const supabase = createSupabaseServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    supabaseUrl,
+    supabaseAnonKey,
     {
       cookies: {
         get(name: string) {
