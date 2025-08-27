@@ -1,3 +1,4 @@
+
 'use client';
 
 import { notFound } from 'next/navigation';
@@ -40,6 +41,14 @@ export default function NewsPostPage({ params: { id } }: { params: { id: string 
 
   useEffect(() => {
     const foundPost = newsPosts.find((p) => p.id.toString() === id);
+    
+    // We need to check on the client-side if the post was found
+    // If not, and we are on the browser, call notFound()
+    if (typeof window !== 'undefined' && !foundPost) {
+        notFound();
+        return;
+    }
+
     setPost(foundPost);
 
     if (foundPost) {
@@ -58,14 +67,13 @@ export default function NewsPostPage({ params: { id } }: { params: { id: string 
             });
         });
         setFormattedCommentDates(newFormattedDates);
-    } else if (typeof window !== 'undefined') { // only call notFound on client
-        notFound();
     }
-  }, [id, language, comments]);
+  }, [id, language]); // removed comments from dependency array
 
 
   if (!post) {
-    // Render a loading state or nothing while the post is being found on the client
+    // This will be shown on the server render and initial client render
+    // before the useEffect runs and calls notFound().
     return null; 
   }
 
@@ -109,7 +117,7 @@ export default function NewsPostPage({ params: { id } }: { params: { id: string 
 
         <div className="prose prose-lg dark:prose-invert max-w-none">
           <p className="lead text-xl text-muted-foreground">{post.excerpt}</p>
-          <p>{post.content}</p>
+          <p>{post.content.replace(post.excerpt, '')}</p>
         </div>
         
         <Separator className="my-8" />
