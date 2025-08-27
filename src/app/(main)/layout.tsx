@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -11,7 +10,10 @@ import {
   Menu,
   Languages,
   Calendar,
-  LogIn
+  LogIn,
+  User,
+  LayoutGrid,
+  LogOut,
 } from 'lucide-react';
 import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
@@ -27,9 +29,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Footer } from '@/components/footer';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
+import { createBrowserClient } from '@/lib/supabase/client';
 
 export default function MainLayout({
   children,
@@ -38,6 +45,40 @@ export default function MainLayout({
 }) {
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const supabase = createBrowserClient();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (data.user) {
+        setUser(data.user);
+        // Fetch profile to check role
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', data.user.id)
+          .single();
+        if (profile) {
+          setIsAdmin(profile.role === 'admin');
+        }
+      }
+    };
+    fetchUser();
+
+     const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+        fetchUser();
+      }
+    );
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabase]);
+
 
   const socialLinks = [
     { icon: <Twitter className="h-4 w-4" />, href: '#' },
@@ -90,6 +131,13 @@ export default function MainLayout({
     </DropdownMenu>
   );
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setIsAdmin(false);
+    window.location.href = '/';
+  };
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-50 bg-white shadow-md">
@@ -122,12 +170,40 @@ export default function MainLayout({
             </div>
             <div className="flex-1 flex justify-end items-center gap-4">
                 <LanguageSelector />
-                 <Button asChild variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
-                    <Link href="/login">
-                        <LogIn className="mr-1.5 h-4 w-4" />
-                        {text.login}
-                    </Link>
-                </Button>
+                 {user ? (
+                   <DropdownMenu>
+                     <DropdownMenuTrigger asChild>
+                       <Button variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
+                         <User className="mr-1.5 h-4 w-4" />
+                         {text.profile}
+                       </Button>
+                     </DropdownMenuTrigger>
+                     <DropdownMenuContent align="end">
+                       <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                       <DropdownMenuSeparator />
+                       <DropdownMenuItem asChild>
+                         <Link href="/profile"><User className="mr-2 h-4 w-4" />{text.profile}</Link>
+                       </DropdownMenuItem>
+                       {isAdmin && (
+                         <DropdownMenuItem asChild>
+                           <Link href="/admin"><LayoutGrid className="mr-2 h-4 w-4" />{text.adminPanel}</Link>
+                         </DropdownMenuItem>
+                       )}
+                       <DropdownMenuSeparator />
+                       <DropdownMenuItem onClick={handleLogout}>
+                         <LogOut className="mr-2 h-4 w-4" />
+                         {text.logout}
+                       </DropdownMenuItem>
+                     </DropdownMenuContent>
+                   </DropdownMenu>
+                 ) : (
+                   <Button asChild variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
+                     <Link href="/login">
+                         <LogIn className="mr-1.5 h-4 w-4" />
+                         {text.login}
+                     </Link>
+                   </Button>
+                 )}
             </div>
           </div>
         </div>

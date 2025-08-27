@@ -5,6 +5,30 @@ import { createServerClient } from '@/lib/supabase/server'
 export async function middleware(request: NextRequest) {
   const { supabase, response } = createServerClient(request)
 
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (user && request.nextUrl.pathname.startsWith('/auth')) {
+    return NextResponse.redirect(new URL('/', request.url))
+  }
+
+  if (!user && request.nextUrl.pathname.startsWith('/admin')) {
+     return NextResponse.redirect(new URL('/login', request.url))
+  }
+  
+  if (!user && request.nextUrl.pathname.startsWith('/profile')) {
+     return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  if (user) {
+    const { data: profile, error } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'admin' && request.nextUrl.pathname.startsWith('/admin')) {
+        return NextResponse.redirect(new URL('/', request.url));
+    }
+  }
+
+
   // Refresh session if expired - required for Server Components
   // https://supabase.com/docs/guides/auth/server-side/nextjs
   await supabase.auth.getSession()

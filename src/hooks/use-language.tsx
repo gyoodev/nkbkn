@@ -73,6 +73,7 @@ const translations = {
     signUpPrompt: 'Въведете вашата информация, за да създадете акаунт.',
     signingUp: 'Регистриране...',
     alreadyHaveAccount: 'Вече имате акаунт?',
+    adminPanel: 'Админ панел',
 
 
     // Pages
@@ -100,6 +101,16 @@ const translations = {
     racePreviewHelperText: 'Тук ще бъде показан календарът със състезания. Междувременно, можете да използвате формата по-долу, за да генерирате превю за конкретно състезание.',
     contactPageTitle: 'Информация за контакт',
     contactPageDescription: 'Изпратете ни запитване или ни последвайте в социалните мрежи.',
+    profilePageTitle: 'Вашият профил',
+    profilePageDescription: 'Преглеждайте и актуализирайте информацията за вашия профил.',
+    updateProfile: 'Актуализирай профила',
+    updatingProfile: 'Актуализиране...',
+    profileUpdated: 'Профилът е актуализиран успешно!',
+    username: 'Потребителско име',
+    fullName: 'Пълно име',
+    website: 'Уебсайт',
+    yourRole: 'Вашата роля',
+
     // Forms & Buttons
     submit: 'Изпрати',
     name: 'Име',
@@ -216,7 +227,7 @@ const translations = {
     signUpPrompt: 'Enter your information to create an account.',
     signingUp: 'Signing up...',
     alreadyHaveAccount: 'Already have an account?',
-
+    adminPanel: 'Admin Panel',
 
     // Pages
     homeTitle: 'Welcome to NCBHR',
@@ -243,6 +254,16 @@ const translations = {
     racePreviewHelperText: 'The race calendar will be displayed here. In the meantime, you can use the form below to generate a preview for a specific race.',
     contactPageTitle: 'Contact Information',
     contactPageDescription: 'Send us an inquiry or follow us on social media.',
+    profilePageTitle: 'Your Profile',
+    profilePageDescription: 'View and update your profile information.',
+    updateProfile: 'Update Profile',
+    updatingProfile: 'Updating...',
+    profileUpdated: 'Profile updated successfully!',
+    username: 'Username',
+    fullName: 'Full Name',
+    website: 'Website',
+    yourRole: 'Your Role',
+
     // Forms & Buttons
     submit: 'Submit',
     name: 'Name',
