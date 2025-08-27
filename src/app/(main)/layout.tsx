@@ -15,7 +15,7 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import {
-  Horse,
+  Shield,
   Users,
   User,
   MapPin,
@@ -37,7 +37,7 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
     { href: '/', label: text.home, icon: Home },
     { href: '/jockeys', label: text.jockeys, icon: User },
     { href: '/trainers', label: text.trainers, icon: Users },
-    { href: '/horses', label: text.horses, icon: Horse },
+    { href: '/horses', label: text.horses, icon: Shield },
     { href: '/tracks', label: text.tracks, icon: MapPin },
     { href: '/gallery', label: text.gallery, icon: ImageIcon },
     { href: '/race-preview', label: text.racePreview, icon: Wand2 },
