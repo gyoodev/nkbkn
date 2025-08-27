@@ -1,6 +1,9 @@
 import type { Jockey, Trainer, Horse, Track, NewsPost } from '@/lib/types';
-import { supabase } from '@/lib/supabase/client';
+import clientPromise from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
+// The data for jockeys, trainers, horses, and tracks is still static.
+// It can be migrated to MongoDB following the pattern for news posts.
 export const jockeys: Jockey[] = [
   { id: 1, name: 'Георги Атанасов', stats: { wins: 120, mounts: 850, winRate: '14.1%' }, imageUrl: 'https://picsum.photos/400/400?random=1' },
   { id: 2, name: 'Николай Гроздев', stats: { wins: 95, mounts: 720, winRate: '13.2%' }, imageUrl: 'https://picsum.photos/400/400?random=2' },
@@ -40,20 +43,53 @@ export const galleryImages: { id: number; src: string; alt: string, hint: string
   hint: 'horse race',
 }));
 
+async function getDb() {
+    const client = await clientPromise;
+    return client.db("nkbc"); // Specify your database name here
+}
+
 export async function getNewsPosts(): Promise<NewsPost[]> {
-    const { data, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
-    if (error) {
+    try {
+        const db = await getDb();
+        const posts = await db
+            .collection('news_posts')
+            .find({})
+            .sort({ date: -1 })
+            .toArray();
+
+        // Convert MongoDB _id to string id and map to NewsPost type
+        return posts.map(post => ({
+            ...post,
+            id: post._id.toString(),
+            href: `/news/${post._id.toString()}`,
+        })) as unknown as NewsPost[];
+    } catch (error) {
         console.error('Error fetching news posts:', error);
         return [];
     }
-    return data || [];
 }
 
 export async function getNewsPost(id: string): Promise<NewsPost | null> {
-    const { data, error } = await supabase.from('news_posts').select('*').eq('id', id).single();
-    if (error) {
+    try {
+        if (!ObjectId.isValid(id)) {
+            return null;
+        }
+        const db = await getDb();
+        const post = await db.collection('news_posts').findOne({ _id: new ObjectId(id) });
+        
+        if (!post) {
+            return null;
+        }
+
+        // Convert MongoDB _id to string id
+        return {
+            ...post,
+            id: post._id.toString(),
+            href: `/news/${post._id.toString()}`,
+        } as unknown as NewsPost;
+
+    } catch (error) {
         console.error(`Error fetching news post with id ${id}:`, error);
         return null;
     }
-    return data;
 }
