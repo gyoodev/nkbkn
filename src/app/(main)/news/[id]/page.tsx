@@ -1,5 +1,3 @@
-'use client';
-
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { getNewsPost } from '@/lib/data';
@@ -12,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Heart, MessageCircle, Eye, Calendar } from 'lucide-react';
 import type { NewsPost } from '@/lib/types';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 // Moved comments data outside the component to prevent re-creation on each render
 const comments = [
@@ -32,37 +30,28 @@ const comments = [
     },
 ];
 
-export default function NewsPostPage({ params }: { params: { id: string } }) {
+export default async function NewsPostPage({ params }: { params: { id: string } }) {
   const { language, text } = useLanguage();
-  const [post, setPost] = useState<NewsPost | null>(null);
+  const post = await getNewsPost(params.id);
 
-  useEffect(() => {
-    getNewsPost(params.id).then(setPost);
-  }, [params.id]);
-
-
-  const formattedDate = useMemo(() => {
-    if (!post) return '';
-    return new Date(post.date).toLocaleDateString(language, {
+  const formattedDate = (date: string) => {
+    return new Date(date).toLocaleDateString(language, {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
     });
-  }, [post, language]);
+  };
   
-  const formattedCommentDates = useMemo(() => {
-    return comments.reduce((acc, comment) => {
-        acc[comment.id] = new Date(comment.date).toLocaleDateString(language, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        });
-        return acc;
-    }, {} as {[key: number]: string});
-  }, [language]);
+  const formattedCommentDates = (date: string) => {
+    return new Date(date).toLocaleDateString(language, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+  };
 
   if (!post) {
-    return <div>Loading post...</div>;
+    notFound();
   }
 
   return (
@@ -76,7 +65,7 @@ export default function NewsPostPage({ params }: { params: { id: string } }) {
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
              <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
-              <time dateTime={post.date}>{formattedDate}</time>
+              <time dateTime={post.date}>{formattedDate(post.date)}</time>
             </div>
             <div className="flex items-center gap-1.5">
                 <Eye className="h-4 w-4" />
@@ -139,7 +128,7 @@ export default function NewsPostPage({ params }: { params: { id: string } }) {
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                         <p className="font-semibold">{comment.author}</p>
-                        <p className="text-xs text-muted-foreground">{formattedCommentDates[comment.id]}</p>
+                        <p className="text-xs text-muted-foreground">{formattedCommentDates(comment.date)}</p>
                     </div>
                     <p className="text-sm text-muted-foreground">{comment.text}</p>
                   </div>

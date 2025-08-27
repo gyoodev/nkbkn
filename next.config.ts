@@ -30,6 +30,14 @@ const nextConfig: NextConfig = {
       }
     ],
   },
+  webpack: (config) => {
+    config.externals = [...config.externals, {
+      'mongodb-client-encryption': 'mongodb-client-encryption',
+      'kerberos': 'kerberos',
+      'aws4': 'aws4'
+    }];
+    return config;
+  },
 };
 
 export default nextConfig;

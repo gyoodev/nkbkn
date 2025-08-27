@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -8,20 +6,11 @@ import { ArrowRight, Calendar, Newspaper } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getNewsPosts } from '@/lib/data';
-import { useEffect, useState } from 'react';
 import type { NewsPost } from '@/lib/types';
 
-export default function HomePage() {
+export default async function HomePage() {
   const { text, language } = useLanguage();
-  const [posts, setPosts] = useState<NewsPost[]>([]);
-
-  useEffect(() => {
-    async function loadData() {
-        const newsPosts = await getNewsPosts();
-        setPosts(newsPosts);
-    }
-    loadData();
-  }, []);
+  const posts: NewsPost[] = await getNewsPosts();
   
   const mainPost = posts[0];
   const otherPosts = posts.slice(1);

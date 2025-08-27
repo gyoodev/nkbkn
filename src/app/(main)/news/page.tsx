@@ -8,11 +8,19 @@ import { Badge } from '@/components/ui/badge';
 import { getNewsPosts } from '@/lib/data';
 import { PageHeader } from '@/components/page-header';
 import type { NewsPost } from '@/lib/types';
-import { ClientDate } from './components/client-date';
 
 
 export default async function NewsPage() {
   const newsPosts = await getNewsPosts();
+  const { language } = useLanguage();
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString(language, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -36,7 +44,7 @@ export default async function NewsPage() {
                             {post.title}
                         </Link>
                     </CardTitle>
-                    <CardDescription><ClientDate dateString={post.date} /></CardDescription>
+                    <CardDescription>{formatDate(post.date)}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 p-0 pt-4">
                     <p className="text-base text-gray-600 dark:text-gray-300">

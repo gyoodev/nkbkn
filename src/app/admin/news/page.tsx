@@ -7,21 +7,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { newsPosts } from '@/lib/data';
 import { MoreHorizontal } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { useEffect, useState } from 'react';
 import { useLanguage } from '@/hooks/use-language';
 
 export default function AdminNewsPage() {
     const { language } = useLanguage();
-    const [isClient, setIsClient] = useState(false);
-
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
 
     const formatDate = (dateString: string) => {
-        if (!isClient) {
-            return new Date(dateString).toLocaleDateString('en-CA');
-        }
         return new Date(dateString).toLocaleDateString(language, {
             year: 'numeric',
             month: 'long',
