@@ -4,7 +4,7 @@
 import { createServerClient } from '@/lib/supabase/server';
 
 export async function signup(prevState: { error?: string, message?: string } | undefined, formData: FormData) {
-  const { supabase } = createServerClient();
+  const supabase = createServerClient();
   const email = formData.get('email') as string;
   const password = formData.get('password') as string;
 

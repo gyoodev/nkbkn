@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/page-header';
 import { ProfileForm } from './components/profile-form';
 
 export default async function ProfilePage() {
-  const { supabase } = createServerClient();
+  const supabase = createServerClient();
 
   const {
     data: { user },
