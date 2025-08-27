@@ -8,11 +8,29 @@ import { ArrowRight, Calendar, Newspaper } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { newsPosts } from '@/lib/data';
+import { useEffect, useState } from 'react';
 
 export default function HomePage() {
-  const { text } = useLanguage();
+  const { text, language } = useLanguage();
   const mainPost = newsPosts[0];
   const otherPosts = newsPosts.slice(1);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    if (!isClient) {
+      // Return a placeholder or a consistent format on the server
+      return new Date(dateString).toLocaleDateString('en-CA'); // YYYY-MM-DD
+    }
+    return new Date(dateString).toLocaleDateString(language, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+  };
 
   return (
     <div className="flex flex-col">
@@ -80,7 +98,7 @@ export default function HomePage() {
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <p className="mb-2 text-sm text-muted-foreground">{new Date(mainPost.date).toLocaleDateString()}</p>
+                            <p className="mb-2 text-sm text-muted-foreground">{formatDate(mainPost.date)}</p>
                             <p className="text-base text-gray-600 dark:text-gray-300">
                                 {mainPost.excerpt}
                             </p>
@@ -106,7 +124,7 @@ export default function HomePage() {
                                     <div className="col-span-2 p-4">
                                         <Badge variant="secondary" className="mb-2">{post.category}</Badge>
                                         <h3 className="font-semibold text-primary group-hover:underline">{post.title}</h3>
-                                        <p className="mt-1 text-xs text-muted-foreground">{new Date(post.date).toLocaleDateString()}</p>
+                                        <p className="mt-1 text-xs text-muted-foreground">{formatDate(post.date)}</p>
                                     </div>
                                 </div>
                             </Link>
