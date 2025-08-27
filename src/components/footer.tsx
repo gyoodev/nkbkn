@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { HorseLogo } from '@/components/icons/horse-logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Twitter, Facebook, Instagram, Youtube } from 'lucide-react';
+import { Twitter, Facebook, Instagram, Youtube, Code } from 'lucide-react';
 
 export function Footer() {
   const socialLinks = [
@@ -80,6 +80,12 @@ export function Footer() {
         </div>
         <div className="mt-12 border-t border-gray-200 dark:border-gray-800 pt-8 text-center text-sm">
           <p>&copy; {new Date().getFullYear()} НКБКН. Всички права запазени.</p>
+            <p className="mt-2">
+                <a href="https://gkdev.org" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-primary transition-colors">
+                    <Code className="h-4 w-4" />
+                    Разработено от GKDEV
+                </a>
+            </p>
         </div>
       </div>
     </footer>
