@@ -129,6 +129,15 @@ const translations = {
 
     // Tracks Page
     interactiveMapComingSoon: 'Интерактивна карта - скоро',
+    
+    // News Post Page
+    views: 'Прочитания',
+    likes: 'Харесвания',
+    comments: 'Коментари',
+    like: 'Харесай',
+    shareYourThoughts: 'Споделете мнението си',
+    writeCommentPlaceholder: 'Напишете коментар...',
+    postComment: 'Публикувай коментар',
   },
   en: {
     // General
@@ -247,6 +256,15 @@ const translations = {
 
     // Tracks Page
     interactiveMapComingSoon: 'Interactive Map - Coming Soon',
+
+    // News Post Page
+    views: 'Views',
+    likes: 'Likes',
+    comments: 'Comments',
+    like: 'Like',
+    shareYourThoughts: 'Share your thoughts',
+    writeCommentPlaceholder: 'Write a comment...',
+    postComment: 'Post Comment',
   },
 };
 

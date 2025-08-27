@@ -9,6 +9,7 @@ import {
   Youtube,
   Menu,
   Languages,
+  Newspaper,
 } from 'lucide-react';
 import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
@@ -52,14 +53,15 @@ export default function MainLayout({
   const rightNavItems = [
     { href: '/tracks', label: text.tracks },
     { href: '/gallery', label: text.gallery },
-    { href: '/race-preview', label: text.racePreview },
+    { href: '/news', label: text.news },
   ];
   
   const allNavItems = [
       { href: '/', label: text.home, exact: true },
       ...leftNavItems, 
       ...rightNavItems,
-      { href: '/contact', label: text.contact }
+      { href: '/contact', label: text.contact },
+      { href: '/race-preview', label: text.racePreview },
     ];
 
   const LanguageSelector = () => (
@@ -143,31 +145,38 @@ export default function MainLayout({
             ))}
           </div>
 
-          <div className="md:hidden">
-             <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" size="icon">
-                  <Menu />
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                <SheetHeader>
-                  <SheetTitle className="sr-only">Menu</SheetTitle>
-                </SheetHeader>
-                <div className="mt-8 flex flex-col gap-4">
-                  {allNavItems.map((item) => (
-                     <Link key={item.href} href={item.href} passHref>
-                        <Button 
-                            variant={item.exact ? pathname === item.href ? 'default' : 'ghost' : pathname.startsWith(item.href) ? 'default' : 'ghost'} 
-                            className="justify-start"
-                        >
-                            {item.label}
-                        </Button>
-                    </Link>
-                  ))}
-                </div>
-              </SheetContent>
-            </Sheet>
+          <div className="flex items-center gap-4">
+            <Button asChild>
+                <Link href="/race-preview">
+                  {text.racePreview}
+                </Link>
+            </Button>
+            <div className="md:hidden">
+                <Sheet>
+                <SheetTrigger asChild>
+                    <Button variant="outline" size="icon">
+                    <Menu />
+                    </Button>
+                </SheetTrigger>
+                <SheetContent>
+                    <SheetHeader>
+                    <SheetTitle className="sr-only">Menu</SheetTitle>
+                    </SheetHeader>
+                    <div className="mt-8 flex flex-col gap-4">
+                    {allNavItems.map((item) => (
+                        <Link key={item.href} href={item.href} passHref>
+                            <Button 
+                                variant={item.exact ? pathname === item.href ? 'default' : 'ghost' : pathname.startsWith(item.href) ? 'default' : 'ghost'} 
+                                className="justify-start"
+                            >
+                                {item.label}
+                            </Button>
+                        </Link>
+                    ))}
+                    </div>
+                </SheetContent>
+                </Sheet>
+            </div>
           </div>
         </nav>
       </header>

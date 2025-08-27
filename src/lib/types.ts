@@ -44,6 +44,10 @@ export interface NewsPost {
     date: string;
     category: string;
     excerpt: string;
+    content: string;
     imageUrl: string;
     href: string;
+    views: number;
+    likes: number;
+    commentsCount: number;
 }
