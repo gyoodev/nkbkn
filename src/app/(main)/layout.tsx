@@ -16,6 +16,7 @@ import {
   LayoutGrid,
   LogOut,
   Info,
+  FileText,
 } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
 import { Button } from '@/components/ui/button';
@@ -53,14 +54,14 @@ export default function MainLayout({
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (data.user) {
-        setUser(data.user);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
         // Fetch profile to check role
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('role')
-          .eq('id', data.user.id)
+          .eq('id', user.id)
           .single();
         if (profile) {
           setIsAdmin(profile.role === 'admin');
@@ -72,7 +73,11 @@ export default function MainLayout({
      const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user ?? null);
-        fetchUser();
+        if (session?.user) {
+            fetchUser();
+        } else {
+            setIsAdmin(false);
+        }
       }
     );
 
@@ -100,12 +105,14 @@ export default function MainLayout({
     { href: '/tracks', label: text.tracks },
     { href: '/gallery', label: text.gallery },
     { href: '/news', label: text.news },
+    { href: '/regulations', label: text.regulations, icon: <FileText /> },
   ];
   
   const allNavItems = [
       { href: '/', label: text.home, exact: true },
       ...leftNavItems, 
       ...rightNavItems,
+      { href: '/forms', label: text.forms, icon: <FileText /> },
       { href: '/contact', label: text.contact },
       { href: '/calendar', label: text.calendar },
     ];

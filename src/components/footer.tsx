@@ -31,7 +31,7 @@ export function Footer() {
     ],
     [text.resources]: [
         { label: text.regulations, href: '/regulations' },
-        { label: text.forms, href: '/regulations' }, // Forms are on the regulations page
+        { label: text.forms, href: '/forms' },
         { label: text.contact, href: '/contact' },
     ],
   };

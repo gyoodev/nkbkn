@@ -9,26 +9,25 @@ import { Badge } from '@/components/ui/badge';
 import { Download } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
 
-export default function RegulationsPage() {
+export default function FormsPage() {
     const { text } = useLanguage();
 
   const documents = [
-    { id: 1, name: 'Правилник за конни надбягвания 2024', type: 'Правилник', date: '2024-01-15', href: '#' },
-    { id: 4, name: 'Етичен кодекс на НКБКН', type: 'Правилник', date: '2023-09-01', href: '#' },
-    { id: 5, name: 'Антидопингови правила', type: 'Правилник', date: '2024-02-01', href: '#' },
+    { id: 2, name: 'Формуляр за регистрация на кон', type: 'Формуляр', date: '2023-11-20', href: '#' },
+    { id: 3, name: 'Формуляр за заявка за участие', type: 'Формуляр', date: '2023-11-20', href: '#' },
   ];
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <PageHeader
-        title={text.regulations}
-        description="Всички официални правилници и разпоредби на комисията."
+        title={text.forms}
+        description="Всички официални формуляри, необходими за регистрация и участие."
       />
       <Card className="mt-8">
         <CardHeader>
-          <CardTitle>Официални правилници</CardTitle>
+          <CardTitle>Формуляри</CardTitle>
           <CardDescription>
-            Тук можете да намерите и изтеглите всички актуални правилници и разпоредби.
+            Тук можете да намерите и изтеглите всички актуални формуляри.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -46,7 +45,7 @@ export default function RegulationsPage() {
                 <TableRow key={doc.id}>
                   <TableCell className="font-medium">{doc.name}</TableCell>
                   <TableCell>
-                    <Badge variant="default">{doc.type}</Badge>
+                    <Badge variant="secondary">{doc.type}</Badge>
                   </TableCell>
                   <TableCell>{doc.date}</TableCell>
                   <TableCell className="text-right">
