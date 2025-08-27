@@ -66,7 +66,7 @@ export default function MainLayout({
             <Button variant="ghost" className="text-xs font-medium uppercase transition-opacity hover:opacity-80 hover:bg-primary/20 h-auto p-1">
                 <Languages className="mr-1.5 h-4 w-4" />
                 {language === 'bg' ? (
-                    <span className="mr-1">🇧🇬</span>
+                    <span className="mr-1">BG</span>
                 ) : (
                     <span className="mr-1 font-bold">EN</span>
                 )}
@@ -75,7 +75,7 @@ export default function MainLayout({
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-40" align="end">
             <DropdownMenuItem onClick={() => language === 'en' && toggleLanguage()}>
-                <span className="mr-2">🇧🇬</span> Български
+                <span className="mr-2">BG</span> Български
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => language === 'bg' && toggleLanguage()}>
                 <span className="mr-2 font-bold">EN</span> English
@@ -103,15 +103,16 @@ export default function MainLayout({
                     </a>
                 ))}
                 </div>
-                <div className="hidden h-6 w-px bg-primary-foreground/50 md:block" />
-                <div className="hidden items-center gap-4 text-xs font-medium uppercase md:flex">
-                    <Link href="/contact" className="transition-opacity hover:opacity-80">
-                    {text.contactUs}
-                    </Link>
-                </div>
             </div>
-            <div className="flex-1 flex justify-center text-xs font-bold uppercase tracking-wider">
-                {text.language === 'bg' ? 'Конни надбягвания в България' : 'Horse Racing in Bulgaria'}
+             <div className="flex-1 flex justify-center items-center">
+                 <div className="flex flex-col items-center">
+                    <span className="text-sm font-bold uppercase tracking-wider text-white">
+                        {text.appName}
+                    </span>
+                    <span className="hidden text-[10px] font-medium text-white/80 sm:block">
+                        {text.appNameFull}
+                    </span>
+                </div>
             </div>
             <div className="flex-1 flex justify-end">
                 <LanguageSelector />
@@ -123,14 +124,6 @@ export default function MainLayout({
            <div className="flex flex-1 items-center justify-start">
              <Link href="/" className="flex items-center gap-3">
                <HorseLogo className="h-12 w-auto text-primary" />
-               <div className="flex flex-col">
-                <span className="text-lg font-bold uppercase tracking-wider text-primary">
-                  {text.appName}
-                </span>
-                <span className="hidden text-xs font-medium text-gray-600 sm:block">
-                  {text.appNameFull}
-                </span>
-               </div>
             </Link>
            </div>
 
