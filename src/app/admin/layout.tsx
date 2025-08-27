@@ -9,7 +9,8 @@ import {
   Menu,
   PanelLeft,
   Settings,
-  Shield,
+  Newspaper,
+  Users,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -21,6 +22,7 @@ import {
 } from '@/components/ui/tooltip';
 import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
+import { Separator } from '@/components/ui/separator';
 
 export default function AdminLayout({
   children,
@@ -30,12 +32,85 @@ export default function AdminLayout({
   const pathname = usePathname();
   const { text } = useLanguage();
 
-  const navItems = [
+  const mainNavItems = [
     { href: '/admin', label: 'Табло', icon: <Home className="h-5 w-5" /> },
     { href: '/admin/calendar', label: 'Календар', icon: <Calendar className="h-5 w-5" /> },
+    { href: '/admin/news', label: 'Новини', icon: <Newspaper className="h-5 w-5" /> },
     { href: '/admin/documents', label: 'Документи', icon: <FileText className="h-5 w-5" /> },
-    { href: '/admin/content', label: 'Съдържание', icon: <Settings className="h-5 w-5" /> },
   ];
+
+  const managementNavItems = [
+     { href: '/admin/jockeys', label: 'Жокеи', icon: <Users className="h-5 w-5" /> },
+     { href: '/admin/trainers', label: 'Треньори', icon: <Users className="h-5 w-5" /> },
+     { href: '/admin/horses', label: 'Коне', icon: <HorseLogo className="h-5 w-5" /> },
+  ];
+  
+  const settingsNavItems = [
+      { href: '/admin/content', label: 'Съдържание', icon: <Settings className="h-5 w-5" /> },
+  ]
+
+  const allNavItems = [...mainNavItems, ...managementNavItems, ...settingsNavItems];
+
+  const NavContent = () => (
+     <TooltipProvider>
+        {mainNavItems.map((item) => (
+          <Tooltip key={item.href}>
+            <TooltipTrigger asChild>
+              <Link
+                href={item.href}
+                className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 ${
+                  pathname === item.href
+                    ? 'bg-accent text-accent-foreground'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {item.icon}
+                <span className="sr-only">{item.label}</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">{item.label}</TooltipContent>
+          </Tooltip>
+        ))}
+        <Separator className="my-2" />
+        {managementNavItems.map((item) => (
+            <Tooltip key={item.href}>
+                <TooltipTrigger asChild>
+                <Link
+                    href={item.href}
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 ${
+                    pathname === item.href
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                >
+                    {item.icon}
+                    <span className="sr-only">{item.label}</span>
+                </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">{item.label}</TooltipContent>
+            </Tooltip>
+        ))}
+        <Separator className="my-2" />
+        {settingsNavItems.map((item) => (
+            <Tooltip key={item.href}>
+                <TooltipTrigger asChild>
+                <Link
+                    href={item.href}
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 ${
+                    pathname === item.href
+                        ? 'bg-accent text-accent-foreground'
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                >
+                    {item.icon}
+                    <span className="sr-only">{item.label}</span>
+                </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">{item.label}</TooltipContent>
+            </Tooltip>
+        ))}
+     </TooltipProvider>
+  );
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -48,26 +123,7 @@ export default function AdminLayout({
             <HorseLogo className="h-5 w-5 transition-all group-hover:scale-110" />
             <span className="sr-only">{text.appName}</span>
           </Link>
-          <TooltipProvider>
-            {navItems.map((item) => (
-              <Tooltip key={item.href}>
-                <TooltipTrigger asChild>
-                  <Link
-                    href={item.href}
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 ${
-                      pathname === item.href
-                        ? 'bg-accent text-accent-foreground'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {item.icon}
-                    <span className="sr-only">{item.label}</span>
-                  </Link>
-                </TooltipTrigger>
-                <TooltipContent side="right">{item.label}</TooltipContent>
-              </Tooltip>
-            ))}
-          </TooltipProvider>
+          <NavContent />
         </nav>
       </aside>
       <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
@@ -88,7 +144,7 @@ export default function AdminLayout({
                   <HorseLogo className="h-5 w-5 transition-all group-hover:scale-110" />
                   <span className="sr-only">{text.appName}</span>
                 </Link>
-                {navItems.map((item) => (
+                {allNavItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
