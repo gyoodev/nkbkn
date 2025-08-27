@@ -1,4 +1,4 @@
-import type { Jockey, Trainer, Horse, Track } from '@/lib/types';
+import type { Jockey, Trainer, Horse, Track, NewsPost } from '@/lib/types';
 
 export const jockeys: Jockey[] = [
   { id: 1, name: 'Георги Атанасов', stats: { wins: 120, mounts: 850, winRate: '14.1%' }, imageUrl: 'https://picsum.photos/400/400?random=1' },
@@ -34,7 +34,46 @@ export const tracks: Track[] = [
 
 export const galleryImages: { id: number; src: string; alt: string, hint: string }[] = Array.from({ length: 12 }, (_, i) => ({
   id: i + 1,
-  src: `https://picsum.photos/600/400?random=${11 + i}`,
+  src: `https://picsum.photos/600/400?random=${20 + i}`,
   alt: `Race image ${i + 1}`,
   hint: 'horse race',
 }));
+
+export const newsPosts: NewsPost[] = [
+    {
+        id: 1,
+        title: 'Голямото дерби наближава: Очаквания и фаворити',
+        date: '2024-08-15',
+        category: 'Предстоящи',
+        excerpt: 'С наближаването на най-очакваното събитие в календара, напрежението расте. Кои са конете, които ще се борят за слава?',
+        imageUrl: 'https://picsum.photos/800/600?random=news1',
+        href: '#',
+    },
+    {
+        id: 2,
+        title: 'Изненадваща победа на "Буря" в купа "Надежда"',
+        date: '2024-08-10',
+        category: 'Резултати',
+        excerpt: 'Никой не очакваше, но "Буря" с жокей Георги Атанасов прекоси финалната линия първи, оставяйки фаворитите зад себе си.',
+        imageUrl: 'https://picsum.photos/800/600?random=news2',
+        href: '#',
+    },
+    {
+        id: 3,
+        title: 'Нови таланти на хоризонта: Младите жокеи на България',
+        date: '2024-08-05',
+        category: 'Анализи',
+        excerpt: 'Разглеждаме в дълбочина следващото поколение жокеи, които вече правят заявка за бъдещи успехи по пистите.',
+        imageUrl: 'https://picsum.photos/800/600?random=news3',
+        href: '#',
+    },
+     {
+        id: 4,
+        title: 'Хиподрум "Банкя" с нови подобрения за сезона',
+        date: '2024-07-28',
+        category: 'Новини',
+        excerpt: 'Мащабен ремонт на пистата и трибуните посреща феновете за новия сезон. Очакват се рекордни посещения.',
+        imageUrl: 'https://picsum.photos/800/600?random=news4',
+        href: '#',
+    },
+];

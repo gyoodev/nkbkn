@@ -33,7 +33,17 @@ export interface Horse {
 
 export interface Track {
   id: number;
-  name: string;
+  name:string;
   location: string;
   description: string;
+}
+
+export interface NewsPost {
+    id: number;
+    title: string;
+    date: string;
+    category: string;
+    excerpt: string;
+    imageUrl: string;
+    href: string;
 }
