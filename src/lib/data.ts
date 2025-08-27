@@ -46,7 +46,7 @@ export const newsPosts: NewsPost[] = [
         date: '2024-08-15',
         category: 'Предстоящи',
         excerpt: 'С наближаването на най-очакваното събитие в календара, напрежението расте. Кои са конете, които ще се борят за слава?',
-        imageUrl: 'https://picsum.photos/800/600?random=news1',
+        imageUrl: 'https://images.unsplash.com/photo-1730982538397-ee793b11fe44?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxob3JzZSUyMHJhY2UlMjBmaW5pc2h8ZW58MHx8fHwxNzU2Mjg2MjE4fDA&ixlib=rb-4.1.0&q=80&w=1080',
         href: '#',
     },
     {
@@ -55,7 +55,7 @@ export const newsPosts: NewsPost[] = [
         date: '2024-08-10',
         category: 'Резултати',
         excerpt: 'Никой не очакваше, но "Буря" с жокей Георги Атанасов прекоси финалната линия първи, оставяйки фаворитите зад себе си.',
-        imageUrl: 'https://picsum.photos/800/600?random=news2',
+        imageUrl: 'https://images.unsplash.com/photo-1580974582235-4996ef109bbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqb2NrZXklMjBob3JzZXxlbnwwfHx8fDE3NTYyODYyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080',
         href: '#',
     },
     {
@@ -64,7 +64,7 @@ export const newsPosts: NewsPost[] = [
         date: '2024-08-05',
         category: 'Анализи',
         excerpt: 'Разглеждаме в дълбочина следващото поколение жокеи, които вече правят заявка за бъдещи успехи по пистите.',
-        imageUrl: 'https://picsum.photos/800/600?random=news3',
+        imageUrl: 'https://images.unsplash.com/photo-1580974582235-4996ef109bbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqb2NrZXklMjBob3JzZXxlbnwwfHx8fDE3NTYyODYyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080',
         href: '#',
     },
      {
@@ -73,7 +73,7 @@ export const newsPosts: NewsPost[] = [
         date: '2024-07-28',
         category: 'Новини',
         excerpt: 'Мащабен ремонт на пистата и трибуните посреща феновете за новия сезон. Очакват се рекордни посещения.',
-        imageUrl: 'https://picsum.photos/800/600?random=news4',
+        imageUrl: 'https://images.unsplash.com/photo-1754595768207-27ef4b4d379d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxqb2NrZXklMjBob3JzZXxlbnwwfHx8fDE3NTYyODYyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080',
         href: '#',
     },
 ];

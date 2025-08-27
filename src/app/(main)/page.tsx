@@ -19,7 +19,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative h-[60vh] w-full text-white sm:h-[70vh] lg:h-[80vh]">
         <Image
-          src="https://picsum.photos/1920/1080?random=hero-main"
+          src="https://images.unsplash.com/photo-1702465420575-35b00795024f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxob3JzZSUyMHJhY2luZyUyMGFjdGlvbnxlbnwwfHx8fDE3NTYyODYyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080"
           alt="Close-up of a horse racing"
           fill
           className="object-cover"
