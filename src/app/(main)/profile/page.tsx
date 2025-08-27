@@ -21,11 +21,10 @@ export default async function ProfilePage() {
     .eq('id', user.id)
     .single();
 
-  if (error || !profile) {
-    // This could happen if the profile wasn't created for some reason.
-    // You might want to handle this case more gracefully.
+  if (error && error.code !== 'PGRST116') {
+    // PGRST116 means no rows found, which is a valid case for new users.
+    // We only want to log other, unexpected errors.
     console.error('Error fetching profile:', error);
-    // Maybe redirect to an error page or show a message.
   }
   
   return (

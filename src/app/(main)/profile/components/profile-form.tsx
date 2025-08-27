@@ -89,7 +89,7 @@ export function ProfileForm({ user, profile }: ProfileFormProps) {
             <Label>{text.yourRole}</Label>
             <div>
               <Badge variant={profile?.role === 'admin' ? 'default' : 'secondary'}>
-                {profile?.role}
+                {profile?.role || 'user'}
               </Badge>
             </div>
           </div>
