@@ -14,6 +14,7 @@ import {
   User,
   LayoutGrid,
   LogOut,
+  Info,
 } from 'lucide-react';
 import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
@@ -88,6 +89,7 @@ export default function MainLayout({
   ];
 
   const leftNavItems = [
+    { href: '/about', label: text.aboutCommissionShort, icon: <Info /> },
     { href: '/jockeys', label: text.jockeys },
     { href: '/trainers', label: text.trainers },
     { href: '/horses', label: text.horses },

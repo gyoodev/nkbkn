@@ -56,6 +56,7 @@ const translations = {
 
     // Sidebar & Auth
     home: 'Начало',
+    aboutCommissionShort: 'НКБКН',
     jockeys: 'Жокеи',
     trainers: 'Треньори',
     horses: 'Коне',
@@ -80,6 +81,8 @@ const translations = {
     homeTitle: 'Добре дошли в НКБКН',
     homeSubtitle: 'Официалният дом на българските конни надбягвания.',
     homeDescription: 'Разгледайте профили на жокеи, треньори и коне. Намерете информация за писти, разгледайте галерии от състезания и генерирайте прегледи на предстоящи събития.',
+    aboutPageTitle: 'За комисията',
+    aboutPageDescription: 'Мисия, цели и структура на Националната комисия за български конни надбягвания.',
     exploreJockeys: 'Разгледайте жокеите',
     exploreTrainers: 'Разгледайте треньорите',
     viewGallery: 'Вижте галерията',
@@ -210,6 +213,7 @@ const translations = {
 
     // Sidebar & Auth
     home: 'Home',
+    aboutCommissionShort: 'NCBHR',
     jockeys: 'Jockeys',
     trainers: 'Trainers',
     horses: 'Horses',
@@ -233,6 +237,8 @@ const translations = {
     homeTitle: 'Welcome to NCBHR',
     homeSubtitle: 'The official home of Bulgarian horse racing.',
     homeDescription: 'Explore profiles of jockeys, trainers, and horses. Find information on tracks, view race galleries, and generate previews for upcoming events.',
+    aboutPageTitle: 'About the Commission',
+    aboutPageDescription: 'Mission, goals, and structure of the National Commission for Bulgarian Horse Racing.',
     exploreJockeys: 'Explore Jockeys',
     exploreTrainers: 'Explore Trainers',
     viewGallery: 'View Gallery',
