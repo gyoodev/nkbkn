@@ -1,4 +1,6 @@
 
+'use client';
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,18 +20,18 @@ export function Footer() {
 
   const footerLinks = {
     [text.aboutUs]: [
-      { label: text.history, href: '#' },
-      { label: text.mission, href: '#' },
-      { label: text.team, href: '#' },
+      { label: text.history, href: '/about' },
+      { label: text.mission, href: '/about' },
+      { label: text.team, href: '/about' },
     ],
     [text.races]: [
-      { label: text.calendar, href: '#' },
-      { label: text.results, href: '#' },
-      { label: text.news, href: '/#news' },
+      { label: text.calendar, href: '/calendar' },
+      { label: text.results, href: '/results' },
+      { label: text.news, href: '/news' },
     ],
     [text.resources]: [
-        { label: text.regulations, href: '#' },
-        { label: text.forms, href: '#' },
+        { label: text.regulations, href: '/regulations' },
+        { label: text.forms, href: '/regulations' }, // Forms are on the regulations page
         { label: text.contact, href: '/contact' },
     ],
   };
