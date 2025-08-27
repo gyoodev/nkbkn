@@ -13,32 +13,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Heart, MessageCircle, Eye, Calendar } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import type { NewsPost } from '@/lib/types';
 
 export default function NewsPostPage({ params }: { params: { id: string } }) {
+  const { id } = params;
   const { text, language } = useLanguage();
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const [post, setPost] = useState<NewsPost | undefined>(undefined);
+  const [formattedDate, setFormattedDate] = useState('');
+  const [formattedCommentDates, setFormattedCommentDates] = useState<{[key: number]: string}>({});
   
-  const post = newsPosts.find((p) => p.id.toString() === params.id);
-
-  if (!post) {
-    notFound();
-  }
-
-  const formatDate = (dateString: string) => {
-     if (!isClient) {
-      return new Date(dateString).toLocaleDateString('en-CA'); 
-    }
-    return new Date(dateString).toLocaleDateString(language, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
-  };
-
   const comments = [
     {
       id: 1,
@@ -56,6 +39,37 @@ export default function NewsPostPage({ params }: { params: { id: string } }) {
     },
   ];
 
+  useEffect(() => {
+    const foundPost = newsPosts.find((p) => p.id.toString() === id);
+    setPost(foundPost);
+
+    if (foundPost) {
+        setFormattedDate(new Date(foundPost.date).toLocaleDateString(language, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        }));
+
+        const newFormattedDates: {[key: number]: string} = {};
+        comments.forEach(comment => {
+            newFormattedDates[comment.id] = new Date(comment.date).toLocaleDateString(language, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            });
+        });
+        setFormattedCommentDates(newFormattedDates);
+    } else if (typeof window !== 'undefined') { // only call notFound on client
+        notFound();
+    }
+  }, [id, language]);
+
+
+  if (!post) {
+    // Render a loading state or nothing while the post is being found on the client
+    return null; 
+  }
+
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <article>
@@ -67,7 +81,7 @@ export default function NewsPostPage({ params }: { params: { id: string } }) {
           <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
              <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
-              <time dateTime={post.date}>{formatDate(post.date)}</time>
+              <time dateTime={post.date}>{formattedDate}</time>
             </div>
             <div className="flex items-center gap-1.5">
                 <Eye className="h-4 w-4" />
@@ -130,7 +144,7 @@ export default function NewsPostPage({ params }: { params: { id: string } }) {
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                         <p className="font-semibold">{comment.author}</p>
-                        <p className="text-xs text-muted-foreground">{formatDate(comment.date)}</p>
+                        <p className="text-xs text-muted-foreground">{formattedCommentDates[comment.id]}</p>
                     </div>
                     <p className="text-sm text-muted-foreground">{comment.text}</p>
                   </div>
