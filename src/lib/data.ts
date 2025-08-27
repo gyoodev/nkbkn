@@ -1,9 +1,10 @@
 import type { Jockey, Trainer, Horse, Track, NewsPost } from '@/lib/types';
-import clientPromise from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
+import { createClient } from '@supabase/supabase-js'
 
-// The data for jockeys, trainers, horses, and tracks is still static.
-// It can be migrated to MongoDB following the pattern for news posts.
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
 export const jockeys: Jockey[] = [
   { id: 1, name: 'Георги Атанасов', stats: { wins: 120, mounts: 850, winRate: '14.1%' }, imageUrl: 'https://picsum.photos/400/400?random=1' },
   { id: 2, name: 'Николай Гроздев', stats: { wins: 95, mounts: 720, winRate: '13.2%' }, imageUrl: 'https://picsum.photos/400/400?random=2' },
@@ -43,7 +44,6 @@ export const galleryImages: { id: number; src: string; alt: string, hint: string
   hint: 'horse race',
 }));
 
-// This is the static fallback data for news posts.
 export const newsPosts: NewsPost[] = [
     { id: 1, title: 'Голямото дерби наближава: Очаквания и фаворити', date: '2024-08-15', category: 'Предстоящи', excerpt: 'С наближаването на най-очакваното събитие в календара, напрежението расте. Кои са конете, които ще се борят за слава?', content: 'С наближаването на най-очакваното събитие в календара, напрежението расте. Кои са конете, които ще се борят за слава? Всички погледи са насочени към "Вятър", миналогодишния шампион, но "Мълния" показва изключителна форма в последните си тренировки. Треньорите са на нокти, а жокеите подготвят своите стратегии. Очаква се епична битка на хиподрума в Банкя.', image_url: 'https://images.unsplash.com/photo-1730982538397-ee793b11fe44?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxob3JzZSUyMHJhY2UlMjBmaW5pc2h8ZW58MHx8fHwxNzU2Mjg2MjE4fDA&ixlib=rb-4.1.0&q=80&w=1080', href: '/news/1', views: 1250, likes: 24, comments_count: 7 },
     { id: 2, title: 'Изненадваща победа на "Буря" в купа "Надежда"', date: '2024-08-10', category: 'Резултати', excerpt: 'Никой не очакваше, но "Буря" с жокей Георги Атанасов прекоси финалната линия първи, оставяйки фаворитите зад себе си.', content: 'В един драматичен обрат, "Буря", считан за аутсайдер, триумфира в купа "Надежда". Жокей Георги Атанасов направи перфектното яздене, извеждайки коня си до победата в последните метри. "Знаех, че имаме сили, просто чакахме нашия момент," сподели развълнуваният Атанасов след финала.', image_url: 'https://images.unsplash.com/photo-1580974582235-4996ef109bbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqb2NrZXklMjBob3JzZXxlbnwwfHx8fDE3NTYyODYyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080', href: '/news/2', views: 980, likes: 18, comments_count: 4 },
@@ -51,75 +51,31 @@ export const newsPosts: NewsPost[] = [
     { id: 4, title: 'Хиподрум "Банкя" с нови подобрения за сезона', date: '2024-07-28', category: 'Новини', excerpt: 'Ръководството на хиподрума инвестира в нова дренажна система и подобрени трибуни за зрителите.', content: 'За да посрещне новия състезателен сезон, хиподрум "Банкя" претърпя значителни подобрения. Новата дренажна система на пистата ще осигури оптимални условия за бягане дори при неблагоприятни метеорологични условия. Трибуните също са обновени, за да предложат повече комфорт на верните фенове на конните надбягвания.', image_url: 'https://images.unsplash.com/photo-1599493344583-14987041c2a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxob3JzZSUyMHJhY2UlMjB0cmFja3xlbnwwfHx8fDE3NTYyODYyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080', href: '/news/4', views: 620, likes: 12, comments_count: 3 },
 ];
 
-async function getDb() {
-    if (!process.env.MONGODB_URI) {
-        return null;
-    }
-    try {
-        const client = await clientPromise;
-        return client.db("nkbc"); // Specify your database name here
-    } catch (e) {
-        // This can happen if the URI is present but incorrect.
-        console.error("Error connecting to MongoDB:", e);
-        return null;
-    }
-}
-
 export async function getNewsPosts(): Promise<NewsPost[]> {
-    const db = await getDb();
-    if (!db) {
-        // Fallback to static data if DB is not available
+    const { data, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
+    if (error) {
+        console.error('Error fetching news posts:', error);
+        // Fallback to static data if DB fetch fails
         return newsPosts;
     }
-
-    try {
-        const posts = await db
-            .collection('news_posts')
-            .find({})
-            .sort({ date: -1 })
-            .toArray();
-
-        // Convert MongoDB _id to string id and map to NewsPost type
-        return posts.map(post => ({
-            ...post,
-            id: post._id.toString(),
-            href: `/news/${post._id.toString()}`,
-        })) as unknown as NewsPost[];
-    } catch (error) {
-        console.error('Error fetching news posts from DB:', error);
-        // Fallback to static data in case of an error during fetch
-        return newsPosts;
-    }
+    return (data || []).map(post => ({
+        ...post,
+        href: `/news/${post.id}`,
+    }));
 }
 
 export async function getNewsPost(id: string): Promise<NewsPost | null> {
-    const db = await getDb();
-    if (!db) {
-         // Fallback to static data if DB is not available
+    const { data, error } = await supabase.from('news_posts').select('*').eq('id', id).single();
+    
+    if (error || !data) {
+        console.error(`Error fetching news post with id ${id}:`, error);
+        // Fallback to static data if DB fetch fails
         const post = newsPosts.find(p => p.id.toString() === id);
         return post || null;
     }
-    
-    try {
-        if (!ObjectId.isValid(id)) {
-            return null;
-        }
-       
-        const post = await db.collection('news_posts').findOne({ _id: new ObjectId(id) });
-        
-        if (!post) {
-            return null;
-        }
 
-        // Convert MongoDB _id to string id
-        return {
-            ...post,
-            id: post._id.toString(),
-            href: `/news/${post._id.toString()}`,
-        } as unknown as NewsPost;
-
-    } catch (error) {
-        console.error(`Error fetching news post with id ${id}:`, error);
-        return null;
-    }
+    return {
+      ...data,
+      href: `/news/${data.id}`,
+    };
 }
