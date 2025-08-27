@@ -15,8 +15,7 @@ import { Heart, MessageCircle, Eye, Calendar } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { NewsPost } from '@/lib/types';
 
-export default function NewsPostPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+export default function NewsPostPage({ params: { id } }: { params: { id: string } }) {
   const { text, language } = useLanguage();
   const [post, setPost] = useState<NewsPost | undefined>(undefined);
   const [formattedDate, setFormattedDate] = useState('');
@@ -62,7 +61,7 @@ export default function NewsPostPage({ params }: { params: { id: string } }) {
     } else if (typeof window !== 'undefined') { // only call notFound on client
         notFound();
     }
-  }, [id, language]);
+  }, [id, language, comments]);
 
 
   if (!post) {
