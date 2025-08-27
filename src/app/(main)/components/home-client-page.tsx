@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -37,6 +38,7 @@ export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
           fill
           className="object-cover"
           priority
+          sizes="100vw"
           data-ai-hint="horse racing action"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
@@ -84,7 +86,7 @@ export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
                     <Card className="h-full overflow-hidden shadow-lg transition-shadow hover:shadow-2xl">
                     <Link href={mainPost.href} className="block h-full">
                         <div className="relative h-64 sm:h-80 md:h-96">
-                            <Image src={mainPost.image_url} alt={mainPost.title} fill className="object-cover" data-ai-hint="horse race finish" />
+                            <Image src={mainPost.image_url} alt={mainPost.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 66vw" data-ai-hint="horse race finish" />
                             <Badge className="absolute top-4 left-4">{mainPost.category}</Badge>
                         </div>
                         <CardHeader>
@@ -114,7 +116,7 @@ export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
                             <Link href={post.href} className="group block">
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="relative col-span-1 h-full min-h-24">
-                                        <Image src={post.image_url} alt={post.title} fill className="object-cover rounded-l-lg" data-ai-hint="jockey horse" />
+                                        <Image src={post.image_url} alt={post.title} fill className="object-cover rounded-l-lg" sizes="(max-width: 1024px) 33vw, 10vw" data-ai-hint="jockey horse" />
                                     </div>
                                     <div className="col-span-2 p-4">
                                         <Badge variant="secondary" className="mb-2">{post.category}</Badge>

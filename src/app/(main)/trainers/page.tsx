@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -25,6 +26,7 @@ export default function TrainersPage() {
                 alt={trainer.name}
                 fill
                 className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 1280px) 33vw, 25vw"
                 data-ai-hint="portrait person"
               />
             </div>

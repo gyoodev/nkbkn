@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -32,7 +33,7 @@ export function NewsClientPage({ newsPosts }: { newsPosts: NewsPost[] }) {
           <Card key={post.id} className="flex flex-col overflow-hidden shadow-lg transition-shadow hover:shadow-2xl">
             <Link href={post.href} className="block">
                 <div className="relative h-56 w-full">
-                    <Image src={post.image_url} alt={post.title} fill className="object-cover" />
+                    <Image src={post.image_url} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"/>
                     <Badge className="absolute top-4 left-4">{post.category}</Badge>
                 </div>
             </Link>

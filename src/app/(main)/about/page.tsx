@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useLanguage } from '@/hooks/use-language';
@@ -56,6 +57,7 @@ export default function AboutPage() {
                 alt="Horse stable"
                 fill
                 className="object-cover rounded-lg"
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 data-ai-hint="horse stable"
             />
         </div>

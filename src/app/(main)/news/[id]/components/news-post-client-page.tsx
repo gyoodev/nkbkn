@@ -1,3 +1,4 @@
+
 'use client';
 
 import Image from 'next/image';
@@ -83,6 +84,7 @@ export function NewsPostClientPage({ post }: { post: NewsPost }) {
             fill
             className="rounded-lg object-cover"
             priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 1000px"
           />
         </div>
 
