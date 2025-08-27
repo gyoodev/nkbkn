@@ -43,8 +43,7 @@ export const galleryImages: { id: number; src: string; alt: string, hint: string
   hint: 'horse race',
 }));
 
-// This is a placeholder for when news posts are migrated to MongoDB.
-// In a real application, this would fetch data from the database.
+// This is the static fallback data for news posts.
 export const newsPosts: NewsPost[] = [
     { id: 1, title: 'Голямото дерби наближава: Очаквания и фаворити', date: '2024-08-15', category: 'Предстоящи', excerpt: 'С наближаването на най-очакваното събитие в календара, напрежението расте. Кои са конете, които ще се борят за слава?', content: 'С наближаването на най-очакваното събитие в календара, напрежението расте. Кои са конете, които ще се борят за слава? Всички погледи са насочени към "Вятър", миналогодишния шампион, но "Мълния" показва изключителна форма в последните си тренировки. Треньорите са на нокти, а жокеите подготвят своите стратегии. Очаква се епична битка на хиподрума в Банкя.', image_url: 'https://images.unsplash.com/photo-1730982538397-ee793b11fe44?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxob3JzZSUyMHJhY2UlMjBmaW5pc2h8ZW58MHx8fHwxNzU2Mjg2MjE4fDA&ixlib=rb-4.1.0&q=80&w=1080', href: '/news/1', views: 1250, likes: 24, comments_count: 7 },
     { id: 2, title: 'Изненадваща победа на "Буря" в купа "Надежда"', date: '2024-08-10', category: 'Резултати', excerpt: 'Никой не очакваше, но "Буря" с жокей Георги Атанасов прекоси финалната линия първи, оставяйки фаворитите зад себе си.', content: 'В един драматичен обрат, "Буря", считан за аутсайдер, триумфира в купа "Надежда". Жокей Георги Атанасов направи перфектното яздене, извеждайки коня си до победата в последните метри. "Знаех, че имаме сили, просто чакахме нашия момент," сподели развълнуваният Атанасов след финала.', image_url: 'https://images.unsplash.com/photo-1580974582235-4996ef109bbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqb2NrZXklMjBob3JzZXxlbnwwfHx8fDE3NTYyODYyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080', href: '/news/2', views: 980, likes: 18, comments_count: 4 },
@@ -56,16 +55,24 @@ async function getDb() {
     if (!process.env.MONGODB_URI) {
         return null;
     }
-    const client = await clientPromise;
-    return client.db("nkbc"); // Specify your database name here
+    try {
+        const client = await clientPromise;
+        return client.db("nkbc"); // Specify your database name here
+    } catch (e) {
+        // This can happen if the URI is present but incorrect.
+        console.error("Error connecting to MongoDB:", e);
+        return null;
+    }
 }
 
 export async function getNewsPosts(): Promise<NewsPost[]> {
+    const db = await getDb();
+    if (!db) {
+        // Fallback to static data if DB is not available
+        return newsPosts;
+    }
+
     try {
-        const db = await getDb();
-        if (!db) {
-            return [];
-        }
         const posts = await db
             .collection('news_posts')
             .find({})
@@ -79,20 +86,25 @@ export async function getNewsPosts(): Promise<NewsPost[]> {
             href: `/news/${post._id.toString()}`,
         })) as unknown as NewsPost[];
     } catch (error) {
-        console.error('Error fetching news posts:', error);
-        return [];
+        console.error('Error fetching news posts from DB:', error);
+        // Fallback to static data in case of an error during fetch
+        return newsPosts;
     }
 }
 
 export async function getNewsPost(id: string): Promise<NewsPost | null> {
+    const db = await getDb();
+    if (!db) {
+         // Fallback to static data if DB is not available
+        const post = newsPosts.find(p => p.id.toString() === id);
+        return post || null;
+    }
+    
     try {
         if (!ObjectId.isValid(id)) {
             return null;
         }
-        const db = await getDb();
-        if (!db) {
-            return null;
-        }
+       
         const post = await db.collection('news_posts').findOne({ _id: new ObjectId(id) });
         
         if (!post) {
