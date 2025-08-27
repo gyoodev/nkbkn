@@ -68,7 +68,7 @@ export default function NewsPostPage({ params: { id } }: { params: { id: string 
         });
         setFormattedCommentDates(newFormattedDates);
     }
-  }, [id, language]); // removed comments from dependency array
+  }, [id, language, comments]);
 
 
   if (!post) {
