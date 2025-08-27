@@ -84,7 +84,7 @@ export function ProfileForm({ user, profile }: ProfileFormProps) {
                             <h2 className="text-2xl font-semibold">{profile?.full_name || profile?.username || 'Потребител'}</h2>
                             <p className="text-muted-foreground">{user.email}</p>
                             <Badge variant={profile?.role === 'admin' ? 'default' : 'secondary'} className="mt-2">
-                                {profile?.role || 'user'}
+                                {profile?.role === 'admin' ? 'Администратор' : 'Потребител'}
                             </Badge>
                         </div>
                    </div>
