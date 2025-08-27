@@ -1,19 +1,40 @@
-'use client';
-
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { MoreHorizontal } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { getDocuments } from '@/lib/data';
+import Link from 'next/link';
+import { deleteDocument } from './actions';
 
-export default function AdminDocumentsPage() {
-  const documents = [
-    { id: 1, name: 'Правилник за конни надбягвания 2024', type: 'Правилник', date: '2024-01-15' },
-    { id: 2, name: 'Формуляр за регистрация на кон', type: 'Формуляр', date: '2023-11-20' },
-    { id: 3, name: 'Формуляр за заявка за участие', type: 'Формуляр', date: '2023-11-20' },
-  ];
+function DeleteButton({ id }: { id: number }) {
+  const deleteWithId = deleteDocument.bind(null, id);
+  return (
+      <form action={deleteWithId}>
+          <button className='w-full text-left'>
+              <DropdownMenuItem onSelect={e => e.preventDefault()}>
+                  Изтрий
+              </DropdownMenuItem>
+          </button>
+      </form>
+  );
+}
+
+
+export default async function AdminDocumentsPage() {
+  const documents = await getDocuments();
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('bg-BG', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+  };
 
   return (
     <div>
@@ -27,11 +48,16 @@ export default function AdminDocumentsPage() {
           <CardDescription>
             Списък с всички качени правилници и формуляри.
           </CardDescription>
+           <div className="flex justify-end">
+             <Button asChild>
+                <Link href="/admin/documents/new">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Качи нов документ
+                </Link>
+            </Button>
+           </div>
         </CardHeader>
         <CardContent>
-           <div className="flex justify-end mb-4">
-             <Button>Качи нов документ</Button>
-           </div>
           <Table>
             <TableHeader>
               <TableRow>
@@ -50,7 +76,7 @@ export default function AdminDocumentsPage() {
                   <TableCell>
                     <Badge variant={doc.type === 'Правилник' ? 'default' : 'secondary'}>{doc.type}</Badge>
                   </TableCell>
-                  <TableCell>{doc.date}</TableCell>
+                  <TableCell>{formatDate(doc.created_at)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -65,8 +91,11 @@ export default function AdminDocumentsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Действия</DropdownMenuLabel>
-                        <DropdownMenuItem>Редактирай</DropdownMenuItem>
-                        <DropdownMenuItem>Изтрий</DropdownMenuItem>
+                         <DropdownMenuItem asChild>
+                           <a href={doc.href} target="_blank" download>Изтегли</a>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DeleteButton id={doc.id} />
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>

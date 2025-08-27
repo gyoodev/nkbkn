@@ -62,3 +62,13 @@ export interface RaceEvent {
     participants: number;
   }[];
 }
+
+
+export interface Document {
+  id: number;
+  name: string;
+  type: 'Правилник' | 'Формуляр';
+  created_at: string;
+  path: string;
+  href: string;
+}

@@ -1,27 +1,28 @@
-
-'use client';
-
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Download } from 'lucide-react';
-import { useLanguage } from '@/hooks/use-language';
+import { getDocuments } from '@/lib/data';
 
-export default function RegulationsPage() {
-    const { text } = useLanguage();
+export default async function RegulationsPage() {
 
-  const documents = [
-    { id: 1, name: 'Правилник за конни надбягвания 2024', type: 'Правилник', date: '2024-01-15', href: '#' },
-    { id: 4, name: 'Етичен кодекс на НКБКН', type: 'Правилник', date: '2023-09-01', href: '#' },
-    { id: 5, name: 'Антидопингови правила', type: 'Правилник', date: '2024-02-01', href: '#' },
-  ];
+  const allDocuments = await getDocuments();
+  const documents = allDocuments.filter(doc => doc.type === 'Правилник');
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('bg-BG', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <PageHeader
-        title={text.regulations}
+        title="Правилници"
         description="Всички официални правилници и разпоредби на комисията."
       />
       <Card className="mt-8">
@@ -48,14 +49,14 @@ export default function RegulationsPage() {
                   <TableCell>
                     <Badge variant="default">{doc.type}</Badge>
                   </TableCell>
-                  <TableCell>{doc.date}</TableCell>
+                  <TableCell>{formatDate(doc.created_at)}</TableCell>
                   <TableCell className="text-right">
                     <Button
                         variant="ghost"
                         size="icon"
                         asChild
                     >
-                        <a href={doc.href} download>
+                        <a href={doc.href} download target="_blank">
                             <Download className="h-4 w-4" />
                             <span className="sr-only">Изтегли</span>
                         </a>

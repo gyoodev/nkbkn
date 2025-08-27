@@ -1,26 +1,28 @@
-
-'use client';
-
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Download } from 'lucide-react';
-import { useLanguage } from '@/hooks/use-language';
+import { getDocuments } from '@/lib/data';
 
-export default function FormsPage() {
-    const { text } = useLanguage();
+export default async function FormsPage() {
 
-  const documents = [
-    { id: 2, name: 'Формуляр за регистрация на кон', type: 'Формуляр', date: '2023-11-20', href: '#' },
-    { id: 3, name: 'Формуляр за заявка за участие', type: 'Формуляр', date: '2023-11-20', href: '#' },
-  ];
+  const allDocuments = await getDocuments();
+  const documents = allDocuments.filter(doc => doc.type === 'Формуляр');
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('bg-BG', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <PageHeader
-        title={text.forms}
+        title="Формуляри"
         description="Всички официални формуляри, необходими за регистрация и участие."
       />
       <Card className="mt-8">
@@ -47,14 +49,14 @@ export default function FormsPage() {
                   <TableCell>
                     <Badge variant="secondary">{doc.type}</Badge>
                   </TableCell>
-                  <TableCell>{doc.date}</TableCell>
+                  <TableCell>{formatDate(doc.created_at)}</TableCell>
                   <TableCell className="text-right">
                     <Button
                         variant="ghost"
                         size="icon"
                         asChild
                     >
-                        <a href={doc.href} download>
+                        <a href={doc.href} download target="_blank">
                             <Download className="h-4 w-4" />
                             <span className="sr-only">Изтегли</span>
                         </a>

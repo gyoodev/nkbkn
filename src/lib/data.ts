@@ -1,4 +1,4 @@
-import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent } from '@/lib/types';
+import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document } from '@/lib/types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -172,4 +172,25 @@ export async function getNewsPost(id: string): Promise<NewsPost | null> {
       ...data,
       href: `/news/${data.id}`,
     };
+}
+
+
+export async function getDocuments(): Promise<Document[]> {
+    const { data, error } = await supabase
+        .from('documents')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+    if (error) {
+        console.error('Error fetching documents:', error);
+        return [];
+    }
+
+    return data.map(doc => {
+        const { data: { publicUrl } } = supabase.storage.from('documents').getPublicUrl(doc.path);
+        return {
+            ...doc,
+            href: publicUrl,
+        }
+    });
 }
