@@ -60,7 +60,7 @@ export default function HomePage() {
                   {text.raceCalendar}
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-primary">
+              <Button asChild size="lg" variant="outline" className="border-2 border-white text-white bg-transparent hover:bg-white hover:text-primary">
                 <Link href="#news">
                   <Newspaper className="mr-2" />
                   {text.latestNews}
