@@ -1,4 +1,3 @@
-
 'use client';
 
 import { notFound } from 'next/navigation';
@@ -35,12 +34,12 @@ const comments = [
 ];
 
 export default function NewsPostPage({ params }: { params: { id: string } }) {
-  const { id } = params;
-  const { text, language } = useLanguage();
+  const { language } = useLanguage();
+  const { text } = useLanguage();
 
   const post: NewsPost | undefined = useMemo(() => {
-    return newsPosts.find((p) => p.id.toString() === id);
-  }, [id]);
+    return newsPosts.find((p) => p.id.toString() === params.id);
+  }, [params.id]);
 
   if (!post) {
     notFound();
