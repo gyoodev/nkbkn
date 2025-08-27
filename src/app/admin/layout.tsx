@@ -25,6 +25,7 @@ import {
 import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
 import { Separator } from '@/components/ui/separator';
+import { HorseIcon } from '@/components/icons/horse-icon';
 
 export default function AdminLayout({
   children,
@@ -45,7 +46,7 @@ export default function AdminLayout({
   const managementNavItems = [
      { href: '/admin/jockeys', label: 'Жокеи', icon: <Users className="h-5 w-5" /> },
      { href: '/admin/trainers', label: 'Треньори', icon: <Users className="h-5 w-5" /> },
-     { href: '/admin/horses', label: 'Коне', icon: <Users className="h-5 w-5" /> },
+     { href: '/admin/horses', label: 'Коне', icon: <HorseIcon className="h-5 w-5" /> },
   ];
   
   const settingsNavItems = [

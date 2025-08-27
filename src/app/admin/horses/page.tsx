@@ -1,3 +1,4 @@
+
 'use client';
 
 import { PageHeader } from '@/components/page-header';
@@ -7,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { horses } from '@/lib/data';
 import { MoreHorizontal } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { HorseIcon } from '@/components/icons/horse-icon';
 
 export default function AdminHorsesPage() {
   return (
@@ -17,7 +19,10 @@ export default function AdminHorsesPage() {
       />
       <Card className="mt-8">
         <CardHeader>
-          <CardTitle>Коне</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <HorseIcon className="h-6 w-6" />
+            Коне
+          </CardTitle>
           <CardDescription>
             Списък с всички регистрирани коне.
           </CardDescription>

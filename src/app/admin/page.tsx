@@ -6,8 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { horses, jockeys, trainers, raceEvents } from '@/lib/data';
-import { Activity, Users, Horse, Calendar as CalendarIcon, PlusCircle, ArrowUpRight } from 'lucide-react';
+import { Activity, Users, Calendar as CalendarIcon, PlusCircle, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import { HorseIcon } from '@/components/icons/horse-icon';
 
 const resultsData = [
     { 
@@ -33,7 +34,7 @@ const resultsData = [
 export default function AdminDashboardPage() {
 
     const stats = [
-        { title: 'Общо коне', value: horses.length, icon: <Horse className="h-4 w-4 text-muted-foreground" /> },
+        { title: 'Общо коне', value: horses.length, icon: <HorseIcon className="h-4 w-4 text-muted-foreground" /> },
         { title: 'Общо жокеи', value: jockeys.length, icon: <Users className="h-4 w-4 text-muted-foreground" /> },
         { title: 'Общо треньори', value: trainers.length, icon: <Users className="h-4 w-4 text-muted-foreground" /> },
         { title: 'Предстоящи събития', value: raceEvents.length, icon: <CalendarIcon className="h-4 w-4 text-muted-foreground" /> },
