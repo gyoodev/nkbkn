@@ -30,7 +30,7 @@ export default function HomePage() {
         <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center">
           <div className="max-w-4xl space-y-6">
             <h1 className="font-headline text-4xl font-extrabold uppercase leading-tight tracking-wide text-shadow-lg sm:text-5xl md:text-7xl">
-              {text.language === 'bg' ? 'Скорост, страст и традиция' : 'Speed, Passion, and Tradition'}
+              {text.heroTitle}
             </h1>
             <p className="text-lg text-gray-200 sm:text-xl md:text-2xl">
               {text.homeSubtitle}
@@ -39,13 +39,13 @@ export default function HomePage() {
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
                 <Link href="#">
                   <Calendar className="mr-2" />
-                  {text.language === 'bg' ? 'Календар на състезанията' : 'Race Calendar'}
+                  {text.raceCalendar}
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white hover:text-primary">
                 <Link href="#news">
                   <Newspaper className="mr-2" />
-                  {text.language === 'bg' ? 'Последни новини' : 'Latest News'}
+                  {text.latestNews}
                 </Link>
               </Button>
             </div>
@@ -58,10 +58,10 @@ export default function HomePage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="mb-12 text-center">
                 <h2 className="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-                {text.language === 'bg' ? 'Последни новини от пистата' : 'Latest From The Track'}
+                {text.latestFromTheTrack}
                 </h2>
                 <p className="mt-4 text-lg text-muted-foreground">
-                {text.language === 'bg' ? 'Бъдете в крак с всички събития от света на конните надбягвания.' : 'Stay up to date with all events from the world of horse racing.'}
+                {text.latestFromTheTrackDescription}
                 </p>
             </div>
 
@@ -87,7 +87,7 @@ export default function HomePage() {
                         </CardContent>
                         <CardFooter>
                              <span className="flex items-center font-semibold text-primary">
-                                {text.language === 'bg' ? 'Прочети повече' : 'Read More'} <ArrowRight className="ml-2 h-4 w-4" />
+                                {text.readMore} <ArrowRight className="ml-2 h-4 w-4" />
                             </span>
                         </CardFooter>
                     </Link>

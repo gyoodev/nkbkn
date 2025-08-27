@@ -17,6 +17,42 @@ const translations = {
     appName: 'НКБКН',
     appNameFull: 'Национална комисия за Български конни надбягвания',
     contactUs: 'Свържете се с нас',
+    language: 'Език',
+    bulgarian: 'Български',
+    english: 'English',
+    allRightsReserved: 'Всички права запазени',
+    developedBy: 'Разработено от GKDEV',
+
+    // Header & Nav
+    siteHeader: 'Конни надбягвания в България',
+
+    // Hero
+    heroTitle: 'Скорост, страст и традиция',
+    raceCalendar: 'Календар на състезанията',
+    latestNews: 'Последни новини',
+
+    // News Section
+    latestFromTheTrack: 'Последни новини от пистата',
+    latestFromTheTrackDescription: 'Бъдете в крак с всички събития от света на конните надбягвания.',
+    readMore: 'Прочети повече',
+
+    // Footer
+    aboutUs: 'За нас',
+    history: 'История',
+    mission: 'Мисия',
+    team: 'Екип',
+    races: 'Състезания',
+    calendar: 'Календар',
+    results: 'Резултати',
+    news: 'Новини',
+    resources: 'Ресурси',
+    regulations: 'Правилници',
+    forms: 'Формуляри',
+    newsletter: 'Бюлетин',
+    newsletterSubscribe: 'Абонирайте се за нашия бюлетин, за да получавате последните новини.',
+    yourEmail: 'Вашият имейл',
+    subscribe: 'Абонирай се',
+
     // Sidebar
     home: 'Начало',
     jockeys: 'Жокеи',
@@ -53,6 +89,12 @@ const translations = {
     name: 'Име',
     email: 'Имейл',
     message: 'Съобщение',
+    sendMessage: 'Изпратете ни съобщение',
+    findUs: 'Намерете ни',
+    followUs: 'Последвайте ни',
+    addressStreet: 'ул. "Състезателна" 1',
+    addressCity: '1000 София, България',
+
     // Horse Table
     horseName: 'Име на коня',
     sire: 'Баща',
@@ -71,12 +113,64 @@ const translations = {
     generate: 'Генерирай',
     generating: 'Генериране...',
     generatedPreview: 'Генерирано превю',
+    raceDetails: 'Данни за състезанието',
+    raceDetailsDescription: 'Попълнете формата, за да генерирате превю.',
+    generatedPreviewDescription: 'Генерираното от AI превю ще се появи тук.',
+    noPreviewGenerated: 'Все още няма генерирано превю.',
+
+    // Jockeys Page
+    wins: 'Победи',
+    mounts: 'Язди',
+    winRate: 'Процент победи',
+    
+    // Trainers Page
+    achievements: 'Постижения',
+    associatedHorses: 'Свързани коне',
+
+    // Tracks Page
+    interactiveMapComingSoon: 'Интерактивна карта - скоро',
   },
   en: {
     // General
     appName: 'NCBHR',
     appNameFull: 'National Commission for Bulgarian Horse Racing',
     contactUs: 'Contact Us',
+    language: 'Language',
+    bulgarian: 'Български',
+    english: 'English',
+    allRightsReserved: 'All rights reserved',
+    developedBy: 'Developed by GKDEV',
+
+    // Header & Nav
+    siteHeader: 'Horse Racing in Bulgaria',
+
+    // Hero
+    heroTitle: 'Speed, Passion, and Tradition',
+    raceCalendar: 'Race Calendar',
+    latestNews: 'Latest News',
+
+    // News Section
+    latestFromTheTrack: 'Latest From The Track',
+    latestFromTheTrackDescription: 'Stay up to date with all events from the world of horse racing.',
+    readMore: 'Read More',
+
+    // Footer
+    aboutUs: 'About Us',
+    history: 'History',
+    mission: 'Mission',
+    team: 'Team',
+    races: 'Races',
+    calendar: 'Calendar',
+    results: 'Results',
+    news: 'News',
+    resources: 'Resources',
+    regulations: 'Regulations',
+    forms: 'Forms',
+    newsletter: 'Newsletter',
+    newsletterSubscribe: 'Subscribe to our newsletter to get the latest news.',
+    yourEmail: 'Your Email',
+    subscribe: 'Subscribe',
+
     // Sidebar
     home: 'Home',
     jockeys: 'Jockeys',
@@ -113,6 +207,12 @@ const translations = {
     name: 'Name',
     email: 'Email',
     message: 'Message',
+    sendMessage: 'Send us a message',
+    findUs: 'Find Us',
+    followUs: 'Follow Us',
+    addressStreet: '1 "Sastezatelna" Str.',
+    addressCity: '1000 Sofia, Bulgaria',
+
     // Horse Table
     horseName: 'Horse Name',
     sire: 'Sire',
@@ -131,6 +231,22 @@ const translations = {
     generate: 'Generate',
     generating: 'Generating...',
     generatedPreview: 'Generated Preview',
+    raceDetails: 'Race Details',
+    raceDetailsDescription: 'Fill in the form to generate a preview.',
+    generatedPreviewDescription: 'The AI-generated preview will appear here.',
+    noPreviewGenerated: 'No preview generated yet.',
+
+    // Jockeys Page
+    wins: 'Wins',
+    mounts: 'Mounts',
+    winRate: 'Win Rate',
+
+    // Trainers Page
+    achievements: 'Achievements',
+    associatedHorses: 'Associated Horses',
+
+    // Tracks Page
+    interactiveMapComingSoon: 'Interactive Map - Coming Soon',
   },
 };
 

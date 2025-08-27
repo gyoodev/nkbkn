@@ -31,13 +31,13 @@ export default function TrainersPage() {
             <div className="flex flex-col p-6">
               <CardTitle className="font-headline text-xl text-primary">{trainer.name}</CardTitle>
               <CardDescription className="mt-2 text-sm">
-                <strong>Achievements:</strong>
+                <strong>{text.achievements}:</strong>
                 <div className="flex flex-wrap gap-1 mt-1">
                   {trainer.achievements.map((ach, index) => <Badge variant="secondary" key={index}>{ach}</Badge>)}
                 </div>
               </CardDescription>
               <CardDescription className="mt-4 text-sm">
-                <strong>Associated Horses:</strong>
+                <strong>{text.associatedHorses}:</strong>
                 <div className="flex flex-wrap gap-1 mt-1">
                     {trainer.associatedHorses.join(', ')}
                 </div>

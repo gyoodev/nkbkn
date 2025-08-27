@@ -30,7 +30,7 @@ export default function TracksPage() {
                     <div className="absolute inset-0 bg-primary/20" />
                     <div className="absolute inset-0 flex items-center justify-center">
                         <p className="rounded-md bg-background/80 px-4 py-2 text-lg font-semibold text-foreground backdrop-blur-sm">
-                          {text.language === 'bg' ? 'Интерактивна карта - скоро' : 'Interactive Map - Coming Soon'}
+                          {text.interactiveMapComingSoon}
                         </p>
                     </div>
                 </div>

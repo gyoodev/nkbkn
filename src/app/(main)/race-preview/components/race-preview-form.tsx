@@ -50,8 +50,8 @@ export function RacePreviewForm() {
             <Card>
                 <form action={dispatch}>
                     <CardHeader>
-                        <CardTitle>{text.language === 'bg' ? 'Данни за състезанието' : 'Race Details'}</CardTitle>
-                        <CardDescription>{text.language === 'bg' ? 'Попълнете формата, за да генерирате превю.' : 'Fill in the form to generate a preview.'}</CardDescription>
+                        <CardTitle>{text.raceDetails}</CardTitle>
+                        <CardDescription>{text.raceDetailsDescription}</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="grid sm:grid-cols-2 gap-4">
@@ -100,14 +100,14 @@ export function RacePreviewForm() {
             <Card className="flex flex-col">
                  <CardHeader>
                     <CardTitle>{text.generatedPreview}</CardTitle>
-                    <CardDescription>{text.language === 'bg' ? 'Генерираното от AI превю ще се появи тук.' : 'The AI-generated preview will appear here.'}</CardDescription>
+                    <CardDescription>{text.generatedPreviewDescription}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1">
                     <div className="h-full rounded-md border bg-muted p-4">
                         {state.data?.previewText ? (
                             <p className="whitespace-pre-wrap">{state.data.previewText}</p>
                         ) : (
-                            <p className="text-muted-foreground">{text.language === 'bg' ? 'Все още няма генерирано превю.' : 'No preview generated yet.'}</p>
+                            <p className="text-muted-foreground">{text.noPreviewGenerated}</p>
                         )}
                     </div>
                 </CardContent>

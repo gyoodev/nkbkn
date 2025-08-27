@@ -27,7 +27,7 @@ export default function ContactPage() {
       <div className="mt-8 grid grid-cols-1 gap-12 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>{text.language === 'bg' ? 'Изпратете ни съобщение' : 'Send us a message'}</CardTitle>
+            <CardTitle>{text.sendMessage}</CardTitle>
           </CardHeader>
           <CardContent>
             <form className="space-y-4">
@@ -52,19 +52,19 @@ export default function ContactPage() {
         <div className="space-y-8">
             <Card>
                 <CardHeader>
-                    <CardTitle>{text.language === 'bg' ? 'Намерете ни' : 'Find Us'}</CardTitle>
+                    <CardTitle>{text.findUs}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <p className="text-muted-foreground">
-                        Национална комисия за Български конни надбягвания<br/>
-                        ул. "Състезателна" 1<br/>
-                        1000 София, България
+                        {text.appNameFull}<br/>
+                        {text.addressStreet}<br/>
+                        {text.addressCity}
                     </p>
                 </CardContent>
             </Card>
              <Card>
                 <CardHeader>
-                    <CardTitle>{text.language === 'bg' ? 'Последвайте ни' : 'Follow Us'}</CardTitle>
+                    <CardTitle>{text.followUs}</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="flex space-x-4">

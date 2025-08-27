@@ -32,9 +32,9 @@ export default function JockeysPage() {
             <CardContent className="p-4">
               <CardTitle className="font-headline text-xl text-primary">{jockey.name}</CardTitle>
               <div className="mt-2 space-y-1 text-sm text-muted-foreground">
-                <p><strong>Wins:</strong> {jockey.stats.wins}</p>
-                <p><strong>Mounts:</strong> {jockey.stats.mounts}</p>
-                <p><strong>Win Rate:</strong> {jockey.stats.winRate}</p>
+                <p><strong>{text.wins}:</strong> {jockey.stats.wins}</p>
+                <p><strong>{text.mounts}:</strong> {jockey.stats.mounts}</p>
+                <p><strong>{text.winRate}:</strong> {jockey.stats.winRate}</p>
               </div>
             </CardContent>
           </Card>
