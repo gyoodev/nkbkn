@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -15,6 +16,7 @@ import {
   LayoutGrid,
   LogOut,
   Info,
+  Horse,
 } from 'lucide-react';
 import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
@@ -213,7 +215,7 @@ export default function MainLayout({
         <nav className="container mx-auto flex h-20 items-center justify-between px-4">
            <div className="flex flex-1 items-center justify-start">
              <Link href="/" className="flex items-center gap-3">
-               <HorseLogo className="h-12 w-auto text-primary" />
+               <Horse className="h-12 w-auto text-primary" />
             </Link>
            </div>
 

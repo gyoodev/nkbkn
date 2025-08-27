@@ -12,6 +12,7 @@ import {
   Settings,
   Newspaper,
   Users,
+  Horse,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -43,7 +44,7 @@ export default function AdminLayout({
   const managementNavItems = [
      { href: '/admin/jockeys', label: 'Жокеи', icon: <Users className="h-5 w-5" /> },
      { href: '/admin/trainers', label: 'Треньори', icon: <Users className="h-5 w-5" /> },
-     { href: '/admin/horses', label: 'Коне', icon: <HorseLogo className="h-5 w-5" /> },
+     { href: '/admin/horses', label: 'Коне', icon: <Horse className="h-5 w-5" /> },
   ];
   
   const settingsNavItems = [
@@ -121,7 +122,7 @@ export default function AdminLayout({
             href="/"
             className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
           >
-            <HorseLogo className="h-5 w-5 transition-all group-hover:scale-110" />
+            <Horse className="h-5 w-5 transition-all group-hover:scale-110" />
             <span className="sr-only">{text.appName}</span>
           </Link>
           <NavContent />
@@ -142,7 +143,7 @@ export default function AdminLayout({
                   href="/"
                   className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
                 >
-                  <HorseLogo className="h-5 w-5 transition-all group-hover:scale-110" />
+                  <Horse className="h-5 w-5 transition-all group-hover:scale-110" />
                   <span className="sr-only">{text.appName}</span>
                 </Link>
                 {allNavItems.map((item) => (
