@@ -68,7 +68,7 @@ export default function MainLayout({
                 {language === 'bg' ? (
                     <span className="mr-1">🇧🇬</span>
                 ) : (
-                    <span className="mr-1">🇬🇧</span>
+                    <span className="mr-1 font-bold">EN</span>
                 )}
                 <span className="hidden sm:inline">{language === 'bg' ? 'Български' : 'English'}</span>
             </Button>
@@ -78,7 +78,7 @@ export default function MainLayout({
                 <span className="mr-2">🇧🇬</span> Български
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => language === 'bg' && toggleLanguage()}>
-                <span className="mr-2">🇬🇧</span> English
+                <span className="mr-2 font-bold">EN</span> English
             </DropdownMenuItem>
         </DropdownMenuContent>
     </DropdownMenu>
