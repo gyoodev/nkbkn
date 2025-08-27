@@ -45,9 +45,9 @@ export interface NewsPost {
     category: string;
     excerpt: string;
     content: string;
-    imageUrl: string;
+    image_url: string;
     href: string;
     views: number;
     likes: number;
-    commentsCount: number;
+    comments_count: number;
 }

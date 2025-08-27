@@ -7,30 +7,36 @@ import { useLanguage } from '@/hooks/use-language';
 import { ArrowRight, Calendar, Newspaper } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { newsPosts } from '@/lib/data';
+import { getNewsPosts } from '@/lib/data';
 import { useEffect, useState } from 'react';
+import type { NewsPost } from '@/lib/types';
 
 export default function HomePage() {
   const { text, language } = useLanguage();
-  const mainPost = newsPosts[0];
-  const otherPosts = newsPosts.slice(1);
-  const [isClient, setIsClient] = useState(false);
+  const [posts, setPosts] = useState<NewsPost[]>([]);
 
   useEffect(() => {
-    setIsClient(true);
+    async function loadData() {
+        const newsPosts = await getNewsPosts();
+        setPosts(newsPosts);
+    }
+    loadData();
   }, []);
+  
+  const mainPost = posts[0];
+  const otherPosts = posts.slice(1);
 
   const formatDate = (dateString: string) => {
-    if (!isClient) {
-      // Return a placeholder or a consistent format on the server
-      return new Date(dateString).toLocaleDateString('en-CA'); // YYYY-MM-DD
-    }
     return new Date(dateString).toLocaleDateString(language, {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
     });
   };
+
+  if (!mainPost) {
+    return <div>Loading...</div>; // Or a proper loading skeleton
+  }
 
   return (
     <div className="flex flex-col">
@@ -89,7 +95,7 @@ export default function HomePage() {
                     <Card className="h-full overflow-hidden shadow-lg transition-shadow hover:shadow-2xl">
                     <Link href={mainPost.href} className="block h-full">
                         <div className="relative h-64 sm:h-80 md:h-96">
-                            <Image src={mainPost.imageUrl} alt={mainPost.title} fill className="object-cover" data-ai-hint="horse race finish" />
+                            <Image src={mainPost.image_url} alt={mainPost.title} fill className="object-cover" data-ai-hint="horse race finish" />
                             <Badge className="absolute top-4 left-4">{mainPost.category}</Badge>
                         </div>
                         <CardHeader>
@@ -119,7 +125,7 @@ export default function HomePage() {
                             <Link href={post.href} className="group block">
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="relative col-span-1 h-full min-h-24">
-                                        <Image src={post.imageUrl} alt={post.title} fill className="object-cover rounded-l-lg" data-ai-hint="jockey horse" />
+                                        <Image src={post.image_url} alt={post.title} fill className="object-cover rounded-l-lg" data-ai-hint="jockey horse" />
                                     </div>
                                     <div className="col-span-2 p-4">
                                         <Badge variant="secondary" className="mb-2">{post.category}</Badge>

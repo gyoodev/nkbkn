@@ -1,4 +1,5 @@
 import type { Jockey, Trainer, Horse, Track, NewsPost } from '@/lib/types';
+import { supabase } from '@/lib/supabase/client';
 
 export const jockeys: Jockey[] = [
   { id: 1, name: 'Георги Атанасов', stats: { wins: 120, mounts: 850, winRate: '14.1%' }, imageUrl: 'https://picsum.photos/400/400?random=1' },
@@ -39,57 +40,20 @@ export const galleryImages: { id: number; src: string; alt: string, hint: string
   hint: 'horse race',
 }));
 
-export const newsPosts: NewsPost[] = [
-    {
-        id: 1,
-        title: 'Голямото дерби наближава: Очаквания и фаворити',
-        date: '2024-08-15',
-        category: 'Предстоящи',
-        excerpt: 'С наближаването на най-очакваното събитие в календара, напрежението расте. Кои са конете, които ще се борят за слава?',
-        content: 'С наближаването на най-очакваното събитие в календара, напрежението расте. Кои са конете, които ще се борят за слава? Всички погледи са насочени към "Вятър", миналогодишния шампион, но "Мълния" показва изключителна форма в последните си тренировки. Треньорите са на нокти, а жокеите подготвят своите стратегии. Очаква се епична битка на хиподрума в Банкя.',
-        imageUrl: 'https://images.unsplash.com/photo-1730982538397-ee793b11fe44?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxob3JzZSUyMHJhY2UlMjBmaW5pc2h8ZW58MHx8fHwxNzU2Mjg2MjE4fDA&ixlib=rb-4.1.0&q=80&w=1080',
-        href: '/news/1',
-        views: 1250,
-        likes: 24,
-        commentsCount: 7,
-    },
-    {
-        id: 2,
-        title: 'Изненадваща победа на "Буря" в купа "Надежда"',
-        date: '2024-08-10',
-        category: 'Резултати',
-        excerpt: 'Никой не очакваше, но "Буря" с жокей Георги Атанасов прекоси финалната линия първи, оставяйки фаворитите зад себе си.',
-        content: 'В един драматичен обрат, "Буря", считан за аутсайдер, триумфира в купа "Надежда". Жокей Георги Атанасов направи перфектното яздене, извеждайки коня си до победата в последните метри. "Знаех, че имаме сили, просто чакахме нашия момент," сподели развълнуваният Атанасов след финала.',
-        imageUrl: 'https://images.unsplash.com/photo-1580974582235-4996ef109bbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqb2NrZXklMjBob3JzZXxlbnwwfHx8fDE3NTYyODYyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080',
-        href: '/news/2',
-        views: 980,
-        likes: 18,
-        commentsCount: 4,
-    },
-    {
-        id: 3,
-        title: 'Нови таланти на хоризонта: Младите жокеи на България',
-        date: '2024-08-05',
-        category: 'Анализи',
-        excerpt: 'Разглеждаме в дълбочина следващото поколение жокеи, които вече правят заявка за бъдещи успехи по пистите.',
-        content: 'Бъдещето на българските конни надбягвания изглежда светло. Млади таланти като 18-годишния Петър Петров и 20-годишната Елена Василева вече показват умения и хъс, които им предвещават бляскава кариера. Разговаряхме с техните треньори и ментори, за да разберем какво ги прави толкова специални.',
-        imageUrl: 'https://images.unsplash.com/photo-1580974582235-4996ef109bbe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxqb2NrZXklMjBob3JzZXxlbnwwfHx8fDE3NTYyODYyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080',
-        href: '/news/3',
-        views: 760,
-        likes: 12,
-        commentsCount: 9,
-    },
-     {
-        id: 4,
-        title: 'Хиподрум "Банкя" с нови подобрения за сезона',
-        date: '2024-07-28',
-        category: 'Новини',
-        excerpt: 'Мащабен ремонт на пистата и трибуните посреща феновете за новия сезон. Очакват се рекордни посещения.',
-        content: 'С инвестиция от над 1 милион лева, хиподрум "Банкя" е напълно преобразен. Новата дренажна система на пистата ще осигури перфектни условия за състезания дори и при лошо време, а обновените трибуни предлагат повече комфорт за зрителите. "Целта ни е да превърнем всяко състезание в истински празник," заяви управителят на комплекса.',
-        imageUrl: 'https://images.unsplash.com/photo-1754595768207-27ef4b4d379d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxqb2NrZXklMjBob3JzZXxlbnwwfHx8fDE3NTYyODYyMTh8MA&ixlib=rb-4.1.0&q=80&w=1080',
-        href: '/news/4',
-        views: 2100,
-        likes: 45,
-        commentsCount: 15,
-    },
-];
+export async function getNewsPosts(): Promise<NewsPost[]> {
+    const { data, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
+    if (error) {
+        console.error('Error fetching news posts:', error);
+        return [];
+    }
+    return data || [];
+}
+
+export async function getNewsPost(id: string): Promise<NewsPost | null> {
+    const { data, error } = await supabase.from('news_posts').select('*').eq('id', id).single();
+    if (error) {
+        console.error(`Error fetching news post with id ${id}:`, error);
+        return null;
+    }
+    return data;
+}

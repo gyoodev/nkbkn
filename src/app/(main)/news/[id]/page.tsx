@@ -2,9 +2,8 @@
 
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { newsPosts } from '@/lib/data';
+import { getNewsPost } from '@/lib/data';
 import { useLanguage } from '@/hooks/use-language';
-import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Heart, MessageCircle, Eye, Calendar } from 'lucide-react';
 import type { NewsPost } from '@/lib/types';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 // Moved comments data outside the component to prevent re-creation on each render
 const comments = [
@@ -34,32 +33,37 @@ const comments = [
 ];
 
 export default function NewsPostPage({ params }: { params: { id: string } }) {
-  const { language } = useLanguage();
-  const { text } = useLanguage();
-  const currentPostId = params.id;
+  const { language, text } = useLanguage();
+  const [post, setPost] = useState<NewsPost | null>(null);
 
-  const post: NewsPost | undefined = useMemo(() => {
-    return newsPosts.find((p) => p.id.toString() === currentPostId);
-  }, [currentPostId]);
+  useEffect(() => {
+    getNewsPost(params.id).then(setPost);
+  }, [params.id]);
+
+
+  const formattedDate = useMemo(() => {
+    if (!post) return '';
+    return new Date(post.date).toLocaleDateString(language, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  }, [post, language]);
+  
+  const formattedCommentDates = useMemo(() => {
+    return comments.reduce((acc, comment) => {
+        acc[comment.id] = new Date(comment.date).toLocaleDateString(language, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+        return acc;
+    }, {} as {[key: number]: string});
+  }, [language]);
 
   if (!post) {
-    notFound();
+    return <div>Loading post...</div>;
   }
-
-  const formattedDate = new Date(post.date).toLocaleDateString(language, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-  
-  const formattedCommentDates = comments.reduce((acc, comment) => {
-    acc[comment.id] = new Date(comment.date).toLocaleDateString(language, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
-    return acc;
-  }, {} as {[key: number]: string});
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -84,14 +88,14 @@ export default function NewsPostPage({ params }: { params: { id: string } }) {
             </div>
             <div className="flex items-center gap-1.5">
                 <MessageCircle className="h-4 w-4" />
-                <span>{post.commentsCount} {text.comments.toLowerCase()}</span>
+                <span>{post.comments_count} {text.comments.toLowerCase()}</span>
             </div>
           </div>
         </header>
 
         <div className="relative mb-8 aspect-video w-full">
           <Image
-            src={post.imageUrl}
+            src={post.image_url}
             alt={post.title}
             fill
             className="rounded-lg object-cover"
