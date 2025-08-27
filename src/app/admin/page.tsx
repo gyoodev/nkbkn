@@ -1,14 +1,16 @@
 
 'use client';
-
+import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { horses, jockeys, trainers, raceEvents } from '@/lib/data';
+import { trainers, raceEvents, horses, getJockeys } from '@/lib/data';
 import { Activity, Users, Calendar as CalendarIcon, PlusCircle, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { HorseIcon } from '@/components/icons/horse-icon';
+import type { Jockey } from '@/lib/types';
+
 
 const resultsData = [
     { 
@@ -32,10 +34,19 @@ const resultsData = [
 ];
 
 export default function AdminDashboardPage() {
+    const [jockeysCount, setJockeysCount] = useState(0);
+
+    useEffect(() => {
+        const fetchJockeysCount = async () => {
+            const jockeys = await getJockeys();
+            setJockeysCount(jockeys.length);
+        }
+        fetchJockeysCount();
+    },[])
 
     const stats = [
         { title: 'Общо коне', value: horses.length, icon: <HorseIcon className="h-4 w-4 text-muted-foreground" /> },
-        { title: 'Общо жокеи', value: jockeys.length, icon: <Users className="h-4 w-4 text-muted-foreground" /> },
+        { title: 'Общо жокеи', value: jockeysCount, icon: <Users className="h-4 w-4 text-muted-foreground" /> },
         { title: 'Общо треньори', value: trainers.length, icon: <Users className="h-4 w-4 text-muted-foreground" /> },
         { title: 'Предстоящи събития', value: raceEvents.length, icon: <CalendarIcon className="h-4 w-4 text-muted-foreground" /> },
     ]
@@ -93,7 +104,7 @@ export default function AdminDashboardPage() {
                 </CardHeader>
                 <CardContent className="grid gap-4">
                     <Button asChild>
-                        <Link href="/admin/news">
+                        <Link href="/admin/news/new">
                             <PlusCircle className="mr-2 h-4 w-4" />
                             Добави новина
                         </Link>

@@ -10,14 +10,40 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-export const jockeys: Jockey[] = [
-  { id: 1, name: 'Георги Атанасов', stats: { wins: 120, mounts: 850, winRate: '14.1%' }, imageUrl: 'https://picsum.photos/400/400?random=1' },
-  { id: 2, name: 'Николай Гроздев', stats: { wins: 95, mounts: 720, winRate: '13.2%' }, imageUrl: 'https://picsum.photos/400/400?random=2' },
-  { id: 3, name: 'Валентин Атанасов', stats: { wins: 88, mounts: 680, winRate: '12.9%' }, imageUrl: 'https://picsum.photos/400/400?random=3' },
-  { id: 4, name: 'Иван Иванов', stats: { wins: 76, mounts: 610, winRate: '12.5%' }, imageUrl: 'https://picsum.photos/400/400?random=4' },
-  { id: 5, name: 'Стефан Петров', stats: { wins: 65, mounts: 550, winRate: '11.8%' }, imageUrl: 'https://picsum.photos/400/400?random=5' },
-  { id: 6, name: 'Петър Димитров', stats: { wins: 59, mounts: 510, winRate: '11.6%' }, imageUrl: 'https://picsum.photos/400/400?random=6' },
-];
+export async function getJockeys(): Promise<Jockey[]> {
+    const { data, error } = await supabase.from('jockeys').select('*').order('name', { ascending: true });
+    if (error) {
+        console.error('Error fetching jockeys:', error);
+        return [];
+    }
+    return (data || []).map(jockey => ({
+        ...jockey,
+        stats: {
+            wins: jockey.wins,
+            mounts: jockey.mounts,
+            winRate: jockey.mounts > 0 ? `${((jockey.wins / jockey.mounts) * 100).toFixed(1)}%` : '0%'
+        }
+    }));
+}
+
+export async function getJockey(id: number): Promise<Jockey | null> {
+    const { data, error } = await supabase.from('jockeys').select('*').eq('id', id).single();
+    if (error || !data) {
+        if (error && error.code !== 'PGRST116') {
+            console.error(`Error fetching jockey with id ${id}:`, error);
+        }
+        return null;
+    }
+     return {
+        ...data,
+        stats: {
+            wins: data.wins,
+            mounts: data.mounts,
+            winRate: data.mounts > 0 ? `${((data.wins / data.mounts) * 100).toFixed(1)}%` : '0%'
+        }
+    };
+}
+
 
 export const trainers: Trainer[] = [
   { id: 1, name: 'Димитър Димитров', achievements: ['Шампион на България 2022', 'Купа на София 2021'], associatedHorses: ['Вятър', 'Буря'], imageUrl: 'https://picsum.photos/400/400?random=7' },
