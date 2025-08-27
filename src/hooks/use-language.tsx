@@ -99,8 +99,8 @@ const translations = {
     galleryPageDescription: 'Подбрана колекция от снимки и видеа от минали състезания.',
     racePreviewPageTitle: 'Генератор на превюта за състезания',
     racePreviewPageDescription: 'Използвайте нашия AI инструмент за генериране на прегледи за предстоящи събития.',
-    calendarPageTitle: 'Календар и превю на състезания',
-    calendarPageDescription: 'Вижте предстоящите състезания и генерирайте превюта.',
+    calendarPageTitle: 'Календар на състезанията',
+    calendarPageDescription: 'Вижте предстоящите състезания и информация за тях.',
     racePreviewHelperText: 'Тук ще бъде показан календарът със състезания. Междувременно, можете да използвате формата по-долу, за да генерирате превю за конкретно състезание.',
     contactPageTitle: 'Информация за контакт',
     contactPageDescription: 'Изпратете ни запитване или ни последвайте в социалните мрежи.',
@@ -169,6 +169,12 @@ const translations = {
     shareYourThoughts: 'Споделете мнението си',
     writeCommentPlaceholder: 'Напишете коментар...',
     postComment: 'Публикувай коментар',
+
+    // Calendar Page new
+    racesFor: 'Състезания за',
+    noRacesScheduled: 'Няма планирани състезания за тази дата.',
+    selectDateWithRaces: 'Изберете дата с маркирани събития, за да видите състезанията.',
+    participants: 'участници',
   },
   en: {
     // General
@@ -255,8 +261,8 @@ const translations = {
     galleryPageDescription: 'A curated collection of photos and videos from past races.',
     racePreviewPageTitle: 'Race Preview Generator',
     racePreviewPageDescription: 'Use our AI tool to generate previews for upcoming events.',
-    calendarPageTitle: 'Calendar & Race Preview',
-    calendarPageDescription: 'See upcoming races and generate previews.',
+    calendarPageTitle: 'Race Calendar',
+    calendarPageDescription: 'See upcoming races and information about them.',
     racePreviewHelperText: 'The race calendar will be displayed here. In the meantime, you can use the form below to generate a preview for a specific race.',
     contactPageTitle: 'Contact Information',
     contactPageDescription: 'Send us an inquiry or follow us on social media.',
@@ -325,6 +331,12 @@ const translations = {
     shareYourThoughts: 'Share your thoughts',
     writeCommentPlaceholder: 'Write a comment...',
     postComment: 'Post Comment',
+    
+    // Calendar Page new
+    racesFor: 'Races for',
+    noRacesScheduled: 'No races scheduled for this date.',
+    selectDateWithRaces: 'Select a date with marked events to see the races.',
+    participants: 'participants',
   },
 };
 

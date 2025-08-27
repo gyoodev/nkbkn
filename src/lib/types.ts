@@ -51,3 +51,14 @@ export interface NewsPost {
     likes: number;
     comments_count: number;
 }
+
+export interface RaceEvent {
+  id: number;
+  date: string;
+  track: string;
+  races: {
+    time: string;
+    name: string;
+    participants: number;
+  }[];
+}
