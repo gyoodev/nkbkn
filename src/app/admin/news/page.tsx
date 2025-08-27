@@ -1,28 +1,34 @@
-'use client';
 
+import { getNewsPosts } from '@/lib/data';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MoreHorizontal } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { useLanguage } from '@/hooks/use-language';
-import type { NewsPost } from '@/lib/types';
-
-// Placeholder data until backend is connected
-const newsPosts: NewsPost[] = [
-    { id: 1, title: 'Голямото дерби наближава: Очаквания и фаворити', date: '2024-08-15', category: 'Предстоящи', excerpt: '', content: '', image_url: '', href: '/news/1', views: 1250, likes: 24, comments_count: 7 },
-    { id: 2, title: 'Изненадваща победа на "Буря" в купа "Надежда"', date: '2024-08-10', category: 'Резултати', excerpt: '', content: '', image_url: '', href: '/news/2', views: 980, likes: 18, comments_count: 4 },
-    { id: 3, title: 'Нови таланти на хоризонта: Младите жокеи на България', date: '2024-08-05', category: 'Анализи', excerpt: '', content: '', image_url: '', href: '/news/3', views: 750, likes: 15, comments_count: 9 },
-    { id: 4, title: 'Хиподрум "Банкя" с нови подобрения за сезона', date: '2024-07-28', category: 'Новини', excerpt: '', content: '', image_url: '', href: '/news/4', views: 620, likes: 12, comments_count: 3 },
-];
+import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import Link from 'next/link';
+import { Badge } from '@/components/ui/badge';
+import { DeleteNewsPost } from './actions';
 
 
-export default function AdminNewsPage() {
-    const { language } = useLanguage();
+function DeleteButton({ id }: { id: number }) {
+    const deleteWithId = DeleteNewsPost.bind(null, id);
+    return (
+        <form action={deleteWithId}>
+            <button className='w-full text-left'>
+                <DropdownMenuItem onSelect={e => e.preventDefault()}>
+                    Изтрий
+                </DropdownMenuItem>
+            </button>
+        </form>
+    );
+}
+
+export default async function AdminNewsPage() {
+    const newsPosts = await getNewsPosts();
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString(language, {
+        return new Date(dateString).toLocaleDateString('bg-BG', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -42,7 +48,12 @@ export default function AdminNewsPage() {
             Списък с всички новинарски публикации.
           </CardDescription>
           <div className="flex justify-end">
-            <Button>Добави нова публикация</Button>
+             <Button asChild>
+                <Link href="/admin/news/new">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Добави нова публикация
+                </Link>
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -61,7 +72,9 @@ export default function AdminNewsPage() {
               {newsPosts.map((post) => (
                 <TableRow key={post.id}>
                   <TableCell className="font-medium">{post.title}</TableCell>
-                  <TableCell>{post.category}</TableCell>
+                  <TableCell>
+                      <Badge variant="secondary">{post.category}</Badge>
+                  </TableCell>
                   <TableCell>{formatDate(post.date)}</TableCell>
                   <TableCell>
                     <DropdownMenu>
@@ -77,8 +90,11 @@ export default function AdminNewsPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Действия</DropdownMenuLabel>
-                        <DropdownMenuItem>Редактирай</DropdownMenuItem>
-                        <DropdownMenuItem>Изтрий</DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                           <Link href={`/admin/news/${post.id}/edit`}>Редактирай</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DeleteButton id={post.id} />
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
