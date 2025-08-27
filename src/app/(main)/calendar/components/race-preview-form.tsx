@@ -1,6 +1,7 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
 import { generatePreviewAction } from '../actions';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -8,7 +9,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/use-language';
-import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
@@ -31,7 +31,7 @@ function SubmitButton() {
 
 export function RacePreviewForm() {
     const initialState = { message: null, data: null, error: false };
-    const [state, dispatch] = useFormState(generatePreviewAction, initialState);
+    const [state, dispatch] = useActionState(generatePreviewAction, initialState);
     const { text } = useLanguage();
     const { toast } = useToast();
 
