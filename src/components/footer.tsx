@@ -71,14 +71,6 @@ export function Footer() {
                 </ul>
               </div>
             ))}
-            <div>
-                 <h3 className="font-semibold uppercase tracking-wider text-gray-900 dark:text-white">{text.newsletter}</h3>
-                 <p className="mt-4 text-sm">{text.newsletterSubscribe}</p>
-                 <form className="mt-4 flex items-center gap-2">
-                    <Input type="email" placeholder={text.yourEmail} className="flex-1" />
-                    <Button type="submit" size="sm">{text.subscribe}</Button>
-                 </form>
-            </div>
           </div>
         </div>
         <div className="mt-12 border-t border-gray-200 dark:border-gray-800 pt-8 text-center text-sm">
