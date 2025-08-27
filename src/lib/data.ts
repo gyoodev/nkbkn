@@ -68,7 +68,10 @@ export async function getNewsPost(id: string): Promise<NewsPost | null> {
     const { data, error } = await supabase.from('news_posts').select('*').eq('id', id).single();
     
     if (error || !data) {
-        console.error(`Error fetching news post with id ${id}:`, error);
+        // Don't log error if it's just that the post doesn't exist
+        if (error && error.code !== 'PGRST116') {
+            console.error(`Error fetching news post with id ${id}:`, error);
+        }
         // Fallback to static data if DB fetch fails
         const post = newsPosts.find(p => p.id.toString() === id);
         return post || null;
