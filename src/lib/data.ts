@@ -1,5 +1,5 @@
 
-import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document } from '@/lib/types';
+import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result } from '@/lib/types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -172,4 +172,24 @@ export async function getDocuments(): Promise<Document[]> {
             href: publicUrl,
         }
     });
+}
+
+export async function getResults(): Promise<Result[]> {
+    const { data, error } = await supabase.from('results').select('*').order('date', { ascending: false });
+    if (error) {
+        console.error('Error fetching results:', error);
+        return [];
+    }
+    return data || [];
+}
+
+export async function getResult(id: number): Promise<Result | null> {
+    const { data, error } = await supabase.from('results').select('*').eq('id', id).single();
+    if (error || !data) {
+        if (error && error.code !== 'PGRST116') {
+            console.error(`Error fetching result with id ${id}:`, error);
+        }
+        return null;
+    }
+    return data;
 }

@@ -1,0 +1,81 @@
+
+'use server';
+
+import { z } from 'zod';
+import { createServerClient } from '@/lib/supabase/server';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
+
+const FormSchema = z.object({
+  id: z.coerce.number().optional(),
+  raceName: z.string().min(1, 'Името на състезанието е задължително'),
+  date: z.string().min(1, 'Датата е задължителна'),
+  track: z.string().min(1, 'Хиподрумът е задължителен'),
+  winner: z.string().min(1, 'Победителят е задължителен'),
+  jockey: z.string().min(1, 'Жокеят е задължителен'),
+  time: z.string().min(1, 'Времето е задължително'),
+});
+
+
+export async function upsertResult(prevState: any, formData: FormData) {
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+        return { message: 'Authentication required' };
+    }
+
+    const validatedFields = FormSchema.safeParse({
+        id: formData.get('id'),
+        raceName: formData.get('raceName'),
+        date: formData.get('date'),
+        track: formData.get('track'),
+        winner: formData.get('winner'),
+        jockey: formData.get('jockey'),
+        time: formData.get('time'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Моля, попълнете всички задължителни полета.',
+        };
+    }
+    
+    const { id, ...resultData } = validatedFields.data;
+    
+    const { error } = await supabase
+        .from('results')
+        .upsert({
+            id: id || undefined,
+            ...resultData
+        });
+
+
+    if (error) {
+        console.error('Supabase error:', error);
+        return { message: error.message };
+    }
+
+    revalidatePath('/admin/results');
+    revalidatePath('/results');
+    redirect('/admin/results');
+}
+
+
+export async function deleteResult(id: number) {
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+     if (!user) {
+        return { message: 'Authentication required' };
+    }
+
+    const { error } = await supabase.from('results').delete().eq('id', id);
+
+    if (error) {
+        return { message: error.message };
+    }
+
+    revalidatePath('/admin/results');
+    revalidatePath('/results');
+}

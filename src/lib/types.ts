@@ -77,3 +77,13 @@ export interface Document {
   path: string;
   href: string;
 }
+
+export interface Result {
+    id: number;
+    raceName: string;
+    date: string;
+    track: string;
+    winner: string;
+    jockey: string;
+    time: string;
+}
