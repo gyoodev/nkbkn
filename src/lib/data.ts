@@ -44,13 +44,37 @@ export async function getJockey(id: number): Promise<Jockey | null> {
     };
 }
 
+export async function getTrainers(): Promise<Trainer[]> {
+    const { data, error } = await supabase.from('trainers').select('*').order('name', { ascending: true });
+    if (error) {
+        console.error('Error fetching trainers:', error);
+        return [];
+    }
+    return (data || []).map(trainer => ({
+        ...trainer,
+        // Convert comma-separated strings to arrays
+        achievements: trainer.achievements ? trainer.achievements.split(',').map((s: string) => s.trim()) : [],
+        associatedHorses: trainer.associatedHorses ? trainer.associatedHorses.split(',').map((s: string) => s.trim()) : [],
+    }));
+}
 
-export const trainers: Trainer[] = [
-  { id: 1, name: 'Димитър Димитров', achievements: ['Шампион на България 2022', 'Купа на София 2021'], associatedHorses: ['Вятър', 'Буря'], imageUrl: 'https://picsum.photos/400/400?random=7' },
-  { id: 2, name: 'Христо Стоянов', achievements: ['Дерби на България 2023', 'Най-добър треньор 2023'], associatedHorses: ['Мълния', 'Торнадо'], imageUrl: 'https://picsum.photos/400/400?random=8' },
-  { id: 3, name: 'Мария Георгиева', achievements: ['Първа дама треньор шампион', 'Награда за иновации 2022'], associatedHorses: ['Звезда', 'Комета'], imageUrl: 'https://picsum.photos/400/400?random=9' },
-  { id: 4, name: 'Георги Павлов', achievements: ['Двукратен шампион на Пловдив', 'Рекордьор за най-много победи в сезон'], associatedHorses: ['Титан', 'Херкулес'], imageUrl: 'https://picsum.photos/400/400?random=10' },
-];
+
+export async function getTrainer(id: number): Promise<Trainer | null> {
+    const { data, error } = await supabase.from('trainers').select('*').eq('id', id).single();
+    if (error || !data) {
+        if (error && error.code !== 'PGRST116') {
+            console.error(`Error fetching trainer with id ${id}:`, error);
+        }
+        return null;
+    }
+     return {
+        ...data,
+        // Convert comma-separated strings to arrays
+        achievements: data.achievements ? data.achievements.split(',').map((s: string) => s.trim()) : [],
+        associatedHorses: data.associatedHorses ? data.associatedHorses.split(',').map((s: string) => s.trim()) : [],
+    };
+}
+
 
 export const horses: Horse[] = [
   { id: 1, name: 'Вятър', sire: 'Ураган', dam: 'Бриза', age: 4, owner: 'Конюшня "Надежда"', pastResults: [{ date: '2023-10-15', track: 'Хиподрум Банкя', position: 1 }] },
