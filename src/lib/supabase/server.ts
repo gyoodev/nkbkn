@@ -1,8 +1,7 @@
 import { createServerClient as createSupabaseServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
-import { NextRequest, NextResponse } from 'next/server';
 
-export function createServerClient(request?: NextRequest) {
+export function createServerClient() {
   const cookieStore = cookies()
 
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -12,14 +11,8 @@ export function createServerClient(request?: NextRequest) {
     throw new Error('Supabase URL and anonymous key are required. Please set them in your .env file.');
   }
 
-  const response = request ? NextResponse.next({
-      request: {
-        headers: request.headers,
-      },
-    }) : undefined;
 
-
-  const supabase = createSupabaseServerClient(
+  return createSupabaseServerClient(
     supabaseUrl,
     supabaseAnonKey,
     {
@@ -48,6 +41,4 @@ export function createServerClient(request?: NextRequest) {
       },
     }
   );
-
-  return { supabase, response: response || new NextResponse() };
 }

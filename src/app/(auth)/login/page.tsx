@@ -49,7 +49,13 @@ export default function LoginPage() {
         </div>
         <div className="space-y-2">
             <div className="flex items-center">
-            <Label htmlFor="password">{text.password}</Label>
+                <Label htmlFor="password">{text.password}</Label>
+                <Link
+                    href="/forgot-password"
+                    className="ml-auto inline-block text-sm underline"
+                >
+                    Забравена парола?
+                </Link>
             </div>
             <Input id="password" name="password" type="password" required />
         </div>
