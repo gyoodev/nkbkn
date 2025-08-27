@@ -104,15 +104,15 @@ export default function MainLayout({
 
           <div className="hidden items-center gap-2 text-sm font-medium uppercase text-gray-700 md:flex">
             {leftNavItems.map((item) => (
-              <Button key={item.href} asChild variant={pathname.startsWith(item.href) ? 'default' : 'ghost'}>
-                <Link href={item.href}>{item.label}</Link>
-              </Button>
+              <Link key={item.href} href={item.href} passHref>
+                <Button variant={pathname.startsWith(item.href) ? 'default' : 'ghost'}>{item.label}</Button>
+              </Link>
             ))}
             <div className="w-px self-stretch bg-border mx-2"/>
             {rightNavItems.map((item) => (
-               <Button key={item.href} asChild variant={pathname.startsWith(item.href) ? 'default' : 'ghost'}>
-                <Link href={item.href}>{item.label}</Link>
-              </Button>
+               <Link key={item.href} href={item.href} passHref>
+                <Button variant={pathname.startsWith(item.href) ? 'default' : 'ghost'}>{item.label}</Button>
+              </Link>
             ))}
           </div>
 
@@ -126,14 +126,14 @@ export default function MainLayout({
               <SheetContent>
                 <div className="mt-8 flex flex-col gap-4">
                   {allNavItems.map((item) => (
-                    <Button 
-                        key={item.href} 
-                        asChild 
-                        variant={item.exact ? pathname === item.href : pathname.startsWith(item.href) ? 'default' : 'ghost'} 
-                        className="justify-start"
-                    >
-                        <Link href={item.href}>{item.label}</Link>
-                    </Button>
+                     <Link key={item.href} href={item.href} passHref>
+                        <Button 
+                            variant={item.exact ? pathname === item.href : pathname.startsWith(item.href) ? 'default' : 'ghost'} 
+                            className="justify-start"
+                        >
+                            {item.label}
+                        </Button>
+                    </Link>
                   ))}
                 </div>
               </SheetContent>
