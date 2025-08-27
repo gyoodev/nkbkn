@@ -36,10 +36,11 @@ const comments = [
 export default function NewsPostPage({ params }: { params: { id: string } }) {
   const { language } = useLanguage();
   const { text } = useLanguage();
+  const currentPostId = params.id;
 
   const post: NewsPost | undefined = useMemo(() => {
-    return newsPosts.find((p) => p.id.toString() === params.id);
-  }, [params.id]);
+    return newsPosts.find((p) => p.id.toString() === currentPostId);
+  }, [currentPostId]);
 
   if (!post) {
     notFound();
