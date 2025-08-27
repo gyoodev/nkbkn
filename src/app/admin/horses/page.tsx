@@ -6,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { horses } from '@/lib/data';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { HorseIcon } from '@/components/icons/horse-icon';
+import Link from 'next/link';
 
 export default function AdminHorsesPage() {
   return (
@@ -27,7 +28,10 @@ export default function AdminHorsesPage() {
             Списък с всички регистрирани коне.
           </CardDescription>
           <div className="flex justify-end">
-            <Button>Добави нов кон</Button>
+            <Button disabled>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Добави нов кон
+            </Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -55,6 +59,7 @@ export default function AdminHorsesPage() {
                           aria-haspopup="true"
                           size="icon"
                           variant="ghost"
+                          disabled
                         >
                           <MoreHorizontal className="h-4 w-4" />
                           <span className="sr-only">Toggle menu</span>
@@ -62,8 +67,8 @@ export default function AdminHorsesPage() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Действия</DropdownMenuLabel>
-                        <DropdownMenuItem>Редактирай</DropdownMenuItem>
-                        <DropdownMenuItem>Изтрий</DropdownMenuItem>
+                        <DropdownMenuItem disabled>Редактирай</DropdownMenuItem>
+                        <DropdownMenuItem disabled>Изтрий</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
