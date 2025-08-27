@@ -17,7 +17,7 @@ import {
   LogOut,
   Info,
 } from 'lucide-react';
-import { HorseLogo } from '@/components/icons/horse-logo';
+import { HorseIcon } from '@/components/icons/horse-icon';
 import { useLanguage } from '@/hooks/use-language';
 import { Button } from '@/components/ui/button';
 import {
@@ -214,7 +214,7 @@ export default function MainLayout({
         <nav className="container mx-auto flex h-20 items-center justify-between px-4">
            <div className="flex flex-1 items-center justify-start">
              <Link href="/" className="flex items-center gap-3">
-               <HorseLogo className="h-12 w-auto text-primary" />
+               <HorseIcon className="h-12 w-auto text-primary" />
             </Link>
            </div>
 
