@@ -14,19 +14,19 @@ body {
     --card-foreground: 0 0% 17%; /* dark gray */
     --popover: 0 0% 100%; /* white */
     --popover-foreground: 0 0% 17%; /* dark gray */
-    --primary: 45 66% 52%; /* gold */
-    --primary-foreground: 0 0% 17%; /* dark gray */
-    --secondary: 147 100% 20%; /* dark green */
-    --secondary-foreground: 0 0% 100%; /* white */
+    --primary: 147 100% 20%; /* dark green */
+    --primary-foreground: 0 0% 100%; /* white */
+    --secondary: 0 0% 90%; /* light gray for secondary */
+    --secondary-foreground: 0 0% 17%; /* dark gray */
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
-    --accent: 45 66% 52%; /* gold */
-    --accent-foreground: 0 0% 17%; /* dark gray */
-    --destructive: 0 63% 51%; /* bright red */
+    --accent: 147 100% 20%; /* dark green */
+    --accent-foreground: 0 0% 100%; /* white */
+    --destructive: 0 82% 50%; /* bright red */
     --destructive-foreground: 0 0% 100%; /* white */
     --border: 0 0% 89.8%;
     --input: 0 0% 89.8%;
-    --ring: 45 66% 52%; /* gold */
+    --ring: 147 100% 20%; /* dark green */
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -49,19 +49,19 @@ body {
     --card-foreground: 0 0% 100%; /* white */
     --popover: 0 0% 17%; /* dark gray */
     --popover-foreground: 0 0% 100%; /* white */
-    --primary: 45 66% 52%; /* gold */
-    --primary-foreground: 0 0% 17%; /* dark gray */
-    --secondary: 147 100% 20%; /* dark green */
+    --primary: 147 100% 20%; /* dark green */
+    --primary-foreground: 0 0% 100%; /* white */
+    --secondary: 0 0% 25%; /* darker gray for secondary */
     --secondary-foreground: 0 0% 100%; /* white */
     --muted: 0 0% 14.9%;
     --muted-foreground: 0 0% 63.9%;
-    --accent: 45 66% 52%; /* gold */
-    --accent-foreground: 0 0% 17%; /* dark gray */
-    --destructive: 0 63% 51%; /* bright red */
+    --accent: 147 100% 20%; /* dark green */
+    --accent-foreground: 0 0% 100%; /* white */
+    --destructive: 0 82% 50%; /* bright red */
     --destructive-foreground: 0 0% 100%; /* white */
     --border: 0 0% 14.9%;
     --input: 0 0% 14.9%;
-    --ring: 45 66% 52%; /* gold */
+    --ring: 147 100% 20%; /* dark green */
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
