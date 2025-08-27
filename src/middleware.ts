@@ -1,9 +1,9 @@
 
-import { type NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
 
 export async function middleware(request: NextRequest) {
-  const { supabase, response } = createServerClient()
+  const { supabase, response } = createServerClient(request)
 
   // Refresh session if expired - required for Server Components
   // https://supabase.com/docs/guides/auth/server-side/nextjs
