@@ -17,7 +17,6 @@ import {
   LogOut,
   Info,
 } from 'lucide-react';
-import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
 import { Button } from '@/components/ui/button';
 import {
@@ -39,6 +38,7 @@ import { Footer } from '@/components/footer';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 import { createBrowserClient } from '@/lib/supabase/client';
+import Image from 'next/image';
 
 export default function MainLayout({
   children,
@@ -214,7 +214,7 @@ export default function MainLayout({
         <nav className="container mx-auto flex h-20 items-center justify-between px-4">
            <div className="flex flex-1 items-center justify-start">
              <Link href="/" className="flex items-center gap-3">
-               <HorseLogo className="h-12 w-auto text-primary" />
+               <Image src="/logo.png" alt="НКБКН Лого" width={48} height={48} className="h-12 w-auto" />
             </Link>
            </div>
 

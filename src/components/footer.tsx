@@ -1,10 +1,10 @@
 
 import Link from 'next/link';
-import { HorseLogo } from '@/components/icons/horse-logo';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Twitter, Facebook, Instagram, Youtube, Code } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
+import Image from 'next/image';
 
 export function Footer() {
   const { text } = useLanguage();
@@ -40,7 +40,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
           <div className="space-y-4 lg:col-span-1">
             <Link href="/" className="flex items-center gap-3">
-              <HorseLogo className="h-10 w-auto text-primary" />
+              <Image src="/logo.png" alt="НКБКН Лого" width={40} height={40} className="h-10 w-auto" />
               <span className="text-lg font-bold uppercase tracking-wider text-primary">
                 {text.appName}
               </span>
