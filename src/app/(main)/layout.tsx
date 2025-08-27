@@ -255,7 +255,7 @@ export default function MainLayout({
                 </SheetTrigger>
                 <SheetContent>
                     <SheetHeader>
-                    <SheetTitle className="sr-only">Menu</SheetTitle>
+                        <SheetTitle className="sr-only">Menu</SheetTitle>
                     </SheetHeader>
                     <div className="mt-8 flex flex-col gap-4">
                     {allNavItems.map((item) => (
