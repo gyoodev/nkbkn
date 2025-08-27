@@ -12,6 +12,10 @@ import type { NewsPost } from '@/lib/types';
 export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
   const { text, language } = useLanguage();
 
+  if (!posts || posts.length === 0) {
+    return <div>Loading...</div>; // Or a proper loading skeleton
+  }
+
   const mainPost = posts[0];
   const otherPosts = posts.slice(1);
 
@@ -22,10 +26,6 @@ export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
         day: 'numeric',
     });
   };
-
-  if (!mainPost) {
-    return <div>Loading...</div>; // Or a proper loading skeleton
-  }
   
   return (
     <div className="flex flex-col">
