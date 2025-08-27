@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -10,6 +11,7 @@ import {
   Menu,
   Languages,
   Calendar,
+  LogIn
 } from 'lucide-react';
 import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
@@ -118,8 +120,14 @@ export default function MainLayout({
                     </span>
                 </div>
             </div>
-            <div className="flex-1 flex justify-end">
+            <div className="flex-1 flex justify-end items-center gap-4">
                 <LanguageSelector />
+                 <Button asChild variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
+                    <Link href="/login">
+                        <LogIn className="mr-1.5 h-4 w-4" />
+                        {text.login}
+                    </Link>
+                </Button>
             </div>
           </div>
         </div>

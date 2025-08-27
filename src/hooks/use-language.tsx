@@ -1,3 +1,4 @@
+
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
@@ -53,7 +54,7 @@ const translations = {
     yourEmail: 'Вашият имейл',
     subscribe: 'Абонирай се',
 
-    // Sidebar
+    // Sidebar & Auth
     home: 'Начало',
     jockeys: 'Жокеи',
     trainers: 'Треньори',
@@ -62,6 +63,18 @@ const translations = {
     gallery: 'Галерия',
     racePreview: 'Превю на състезание',
     contact: 'Контакти',
+    login: 'Вход',
+    logout: 'Изход',
+    profile: 'Профил',
+    loginPrompt: 'Въведете вашия имейл по-долу, за да влезете в профила си.',
+    loggingIn: 'Влизане...',
+    noAccount: 'Нямате акаунт?',
+    signUp: 'Регистрация',
+    signUpPrompt: 'Въведете вашата информация, за да създадете акаунт.',
+    signingUp: 'Регистриране...',
+    alreadyHaveAccount: 'Вече имате акаунт?',
+
+
     // Pages
     homeTitle: 'Добре дошли в НКБКН',
     homeSubtitle: 'Официалният дом на българските конни надбягвания.',
@@ -91,6 +104,7 @@ const translations = {
     submit: 'Изпрати',
     name: 'Име',
     email: 'Имейл',
+    password: 'Парола',
     message: 'Съобщение',
     sendMessage: 'Изпратете ни съобщение',
     findUs: 'Намерете ни',
@@ -183,7 +197,7 @@ const translations = {
     yourEmail: 'Your Email',
     subscribe: 'Subscribe',
 
-    // Sidebar
+    // Sidebar & Auth
     home: 'Home',
     jockeys: 'Jockeys',
     trainers: 'Trainers',
@@ -192,6 +206,18 @@ const translations = {
     gallery: 'Gallery',
     racePreview: 'Race Preview',
     contact: 'Contact',
+    login: 'Login',
+    logout: 'Logout',
+    profile: 'Profile',
+    loginPrompt: 'Enter your email below to login to your account.',
+    loggingIn: 'Logging in...',
+    noAccount: "Don't have an account?",
+    signUp: 'Sign up',
+    signUpPrompt: 'Enter your information to create an account.',
+    signingUp: 'Signing up...',
+    alreadyHaveAccount: 'Already have an account?',
+
+
     // Pages
     homeTitle: 'Welcome to NCBHR',
     homeSubtitle: 'The official home of Bulgarian horse racing.',
@@ -221,6 +247,7 @@ const translations = {
     submit: 'Submit',
     name: 'Name',
     email: 'Email',
+    password: 'Password',
     message: 'Message',
     sendMessage: 'Send us a message',
     findUs: 'Find Us',
