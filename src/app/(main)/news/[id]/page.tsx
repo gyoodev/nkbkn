@@ -7,22 +7,17 @@ import { newsPosts } from '@/lib/data';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Heart, MessageCircle, Eye, Calendar } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import type { NewsPost } from '@/lib/types';
+import { useMemo } from 'react';
 
-export default function NewsPostPage({ params: { id } }: { params: { id: string } }) {
-  const { text, language } = useLanguage();
-  const [post, setPost] = useState<NewsPost | undefined>(undefined);
-  const [formattedDate, setFormattedDate] = useState('');
-  const [formattedCommentDates, setFormattedCommentDates] = useState<{[key: number]: string}>({});
-  
-  const comments = [
+// Moved comments data outside the component to prevent re-creation on each render
+const comments = [
     {
       id: 1,
       author: 'Иван Петров',
@@ -37,45 +32,34 @@ export default function NewsPostPage({ params: { id } }: { params: { id: string 
       text: 'Напълно съм съгласна. "Вятър" е фаворит, но не трябва да подценяваме и останалите.',
       date: '2024-08-16',
     },
-  ];
+];
 
-  useEffect(() => {
-    const foundPost = newsPosts.find((p) => p.id.toString() === id);
-    
-    // We need to check on the client-side if the post was found
-    // If not, and we are on the browser, call notFound()
-    if (typeof window !== 'undefined' && !foundPost) {
-        notFound();
-        return;
-    }
+export default function NewsPostPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  const { text, language } = useLanguage();
 
-    setPost(foundPost);
-
-    if (foundPost) {
-        setFormattedDate(new Date(foundPost.date).toLocaleDateString(language, {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-        }));
-
-        const newFormattedDates: {[key: number]: string} = {};
-        comments.forEach(comment => {
-            newFormattedDates[comment.id] = new Date(comment.date).toLocaleDateString(language, {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-            });
-        });
-        setFormattedCommentDates(newFormattedDates);
-    }
-  }, [id, language, comments]);
-
+  const post: NewsPost | undefined = useMemo(() => {
+    return newsPosts.find((p) => p.id.toString() === id);
+  }, [id]);
 
   if (!post) {
-    // This will be shown on the server render and initial client render
-    // before the useEffect runs and calls notFound().
-    return null; 
+    notFound();
   }
+
+  const formattedDate = new Date(post.date).toLocaleDateString(language, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+  
+  const formattedCommentDates = comments.reduce((acc, comment) => {
+    acc[comment.id] = new Date(comment.date).toLocaleDateString(language, {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+    return acc;
+  }, {} as {[key: number]: string});
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -85,7 +69,7 @@ export default function NewsPostPage({ params: { id } }: { params: { id: string 
           <h1 className="font-headline text-3xl font-bold tracking-tight text-primary md:text-5xl">
             {post.title}
           </h1>
-          <div className="mt-4 flex items-center space-x-4 text-sm text-muted-foreground">
+          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
              <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
               <time dateTime={post.date}>{formattedDate}</time>
@@ -105,7 +89,7 @@ export default function NewsPostPage({ params: { id } }: { params: { id: string 
           </div>
         </header>
 
-        <div className="relative mb-8 h-64 w-full sm:h-96">
+        <div className="relative mb-8 aspect-video w-full">
           <Image
             src={post.imageUrl}
             alt={post.title}
@@ -117,7 +101,7 @@ export default function NewsPostPage({ params: { id } }: { params: { id: string 
 
         <div className="prose prose-lg dark:prose-invert max-w-none">
           <p className="lead text-xl text-muted-foreground">{post.excerpt}</p>
-          <p>{post.content.replace(post.excerpt, '')}</p>
+          <p>{post.content.replace(post.excerpt, '').trim()}</p>
         </div>
         
         <Separator className="my-8" />
@@ -128,7 +112,6 @@ export default function NewsPostPage({ params: { id } }: { params: { id: string 
                 <Heart className="mr-2 h-4 w-4" /> {text.like}
             </Button>
         </div>
-
       </article>
 
       <section className="mt-8">
@@ -141,6 +124,7 @@ export default function NewsPostPage({ params: { id } }: { params: { id: string 
               <Textarea placeholder={text.writeCommentPlaceholder} className="mb-4" />
               <Button type="submit">{text.postComment}</Button>
             </form>
+            <Separator />
             <div className="space-y-4">
               {comments.map((comment) => (
                 <div key={comment.id} className="flex space-x-4">
