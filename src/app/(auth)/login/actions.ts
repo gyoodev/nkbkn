@@ -22,5 +22,5 @@ export async function login(prevState: { error: string } | undefined, formData: 
   }
 
   revalidatePath('/', 'layout');
-  redirect('/');
+  redirect('/profile');
 }
