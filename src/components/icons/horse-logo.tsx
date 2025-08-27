@@ -4,19 +4,11 @@ export function HorseLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      viewBox="0 0 256 256"
+      fill="currentColor"
       {...props}
     >
-      <path d="M5 16l1-9 4-1 4 1 1 9M9 20l2-8h2l2 8" />
-      <path d="M12 3v2M9 12h6" />
-      <path d="M5.5 12h13" />
-      <path d="M8 3s-1.5 2.5-3 3.5c-2 1.33-3 3.5-3 5.5" />
-      <path d="M16 3s1.5 2.5 3 3.5c2 1.33 3 3.5 3 5.5" />
+      <path d="M141.28,137.2,128,104l-13.28,33.2a12,12,0,0,0,1.8,11.84l4.24,5.4,4.24-5.4A12,12,0,0,0,141.28,137.2ZM216,64V208a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V64A16,16,0,0,1,56,48H200A16,16,0,0,1,216,64Zm-16,0H56V208H200Zm-60-24a12,12,0,0,0-12,12v8a12,12,0,0,0,24,0v-8A12,12,0,0,0,140,40Z"/>
     </svg>
   );
 }

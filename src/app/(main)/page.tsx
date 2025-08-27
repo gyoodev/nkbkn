@@ -3,90 +3,43 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ArrowRight, User, Users, Image as ImageIcon, Wand2 } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
+import { ArrowRight } from 'lucide-react';
+import { LanguageSwitcher } from '@/components/language-switcher';
 
 export default function HomePage() {
   const { text } = useLanguage();
 
-  const features = [
-    {
-      title: text.jockeys,
-      description: text.jockeysPageDescription,
-      href: '/jockeys',
-      icon: <User className="size-8 text-primary" />,
-      cta: text.exploreJockeys,
-    },
-    {
-      title: text.trainers,
-      description: text.trainersPageDescription,
-      href: '/trainers',
-      icon: <Users className="size-8 text-primary" />,
-      cta: text.exploreTrainers,
-    },
-    {
-      title: text.gallery,
-      description: text.galleryPageDescription,
-      href: '/gallery',
-      icon: <ImageIcon className="size-8 text-primary" />,
-      cta: text.viewGallery,
-    },
-    {
-      title: text.racePreview,
-      description: text.racePreviewPageDescription,
-      href: '/race-preview',
-      icon: <Wand2 className="size-8 text-primary" />,
-      cta: text.generatePreview,
-    },
-  ];
-
   return (
     <div className="flex flex-col">
-      <section className="relative h-[60vh] w-full">
+      <section className="relative h-[80vh] w-full text-white">
         <Image
-          src="https://picsum.photos/1920/1080?random=hero"
-          alt="Horse racing"
+          src="https://picsum.photos/1920/1080?random=hero-2"
+          alt="A sprawling horse racing track and stables from an aerial view"
           fill
           className="object-cover"
           priority
-          data-ai-hint="horse racing"
+          data-ai-hint="horse racing track aerial"
         />
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white p-4">
-          <h1 className="font-headline text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-            {text.homeTitle}
-          </h1>
-          <p className="mt-4 max-w-3xl text-lg text-primary-foreground/80 md:text-xl">
-            {text.homeSubtitle}
-          </p>
-          <p className="mt-2 max-w-2xl text-base text-primary-foreground/60">
-            {text.homeDescription}
-          </p>
-          <Button asChild size="lg" className="mt-8 bg-primary text-primary-foreground hover:bg-primary/90">
-            <Link href="/horses">{text.horses} <ArrowRight className="ml-2 size-5" /></Link>
-          </Button>
-        </div>
-      </section>
-      
-      <section className="py-12 md:py-20 lg:py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {features.map((feature) => (
-              <Card key={feature.title} className="flex flex-col bg-card hover:shadow-lg transition-shadow duration-300">
-                <CardHeader className="flex flex-row items-center gap-4 pb-4">
-                  <div className="rounded-full bg-primary/10 p-3">{feature.icon}</div>
-                  <CardTitle className="font-headline text-xl">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                  <CardDescription>{feature.description}</CardDescription>
-                </CardContent>
-                <CardContent>
-                   <Button asChild variant="link" className="p-0 text-primary">
-                      <Link href={feature.href}>{feature.cta}<ArrowRight className="ml-2 size-4" /></Link>
-                    </Button>
-                </CardContent>
-              </Card>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+        <div className="relative z-10 flex h-full flex-col items-start justify-end p-8 md:p-16">
+          <div className="max-w-3xl space-y-4 text-left">
+            <h1 className="font-headline text-5xl font-bold uppercase leading-tight tracking-wide text-shadow-lg md:text-7xl">
+              Racing and Breeding Provides a Tremendous Boost to PA's Economy
+            </h1>
+            <Button
+              asChild
+              variant="link"
+              className="p-0 text-lg font-semibold text-white hover:no-underline"
+            >
+              <Link href="#">
+                Read More <ArrowRight className="ml-2 size-5" />
+              </Link>
+            </Button>
+          </div>
+          <div className="absolute bottom-8 right-8 flex items-center gap-2">
+            {[...Array(6)].map((_, i) => (
+                <div key={i} className={`h-2.5 w-2.5 border-2 border-white ${i === 0 ? 'bg-white' : ''}`} />
             ))}
           </div>
         </div>
