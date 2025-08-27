@@ -15,18 +15,12 @@ export default async function ProfilePage() {
     redirect('/login');
   }
 
-  const { data: profile, error } = await supabase
+  const { data: profile } = await supabase
     .from('profiles')
     .select('*')
     .eq('id', user.id)
     .single();
 
-  if (error && error.code !== 'PGRST116') {
-    // PGRST116 means no rows found, which is a valid case for new users.
-    // We only want to log other, unexpected errors.
-    console.error('Error fetching profile:', error);
-  }
-  
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <PageHeader
