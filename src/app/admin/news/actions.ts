@@ -5,6 +5,20 @@ import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+// Helper function to create a URL-friendly slug
+function slugify(text: string) {
+  return text
+    .toString()
+    .normalize('NFD') // split an accented letter in the base letter and the accent
+    .replace(/[\u0300-\u036f]/g, '') // remove all previously split accents
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-') // replace spaces with -
+    .replace(/[^\w\-]+/g, '') // remove all non-word chars
+    .replace(/\-\-+/g, '-'); // replace multiple - with single -
+}
+
+
 // Using manual validation instead of Zod to avoid session issues.
 async function validateFormData(formData: FormData) {
     const errors: Record<string, string> = {};
@@ -76,7 +90,7 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
                 content,
                 image_url,
                 excerpt,
-                href: `/news/${id}`,
+                // href is based on id, so it doesn't need to be updated unless the slug logic changes
             })
             .eq('id', id);
 
@@ -85,7 +99,7 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
             return { message: error.message };
         }
     } else {
-        // 1. Insert the new post without href, but return the inserted data
+        // 1. Insert the new post with the href. The href will be based on the new ID.
         const { data: newPost, error: insertError } = await supabase
             .from('news_posts')
             .insert({
@@ -98,7 +112,8 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
                 views: 0,
                 likes: 0,
                 comments_count: 0,
-                user_id: user.id
+                user_id: user.id,
+                href: '/news/placeholder' // Temporary placeholder to satisfy NOT NULL constraint
             })
             .select('id')
             .single();
@@ -110,10 +125,11 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
         
         const newId = newPost.id;
 
-        // 2. Update the new post with the correct href
+        // 2. Update the new post with the correct href now that we have the ID
+        const finalHref = `/news/${newId}`;
         const { error: updateError } = await supabase
             .from('news_posts')
-            .update({ href: `/news/${newId}` })
+            .update({ href: finalHref })
             .eq('id', newId);
         
         if (updateError) {
