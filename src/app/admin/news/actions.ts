@@ -42,7 +42,9 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
     
     const { id, ...postData } = validatedFields.data;
     
-    const excerpt = postData.content.substring(0, 150) + '...';
+    // Create a plain text excerpt from HTML content
+    const plainTextContent = postData.content.replace(/<[^>]*>?/gm, '');
+    const excerpt = plainTextContent.substring(0, 150) + '...';
 
     const { error } = await supabase
         .from('news_posts')

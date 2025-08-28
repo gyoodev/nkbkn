@@ -88,10 +88,10 @@ export function NewsPostClientPage({ post }: { post: NewsPost }) {
           />
         </div>
 
-        <div className="prose prose-lg dark:prose-invert max-w-none">
-          <p className="lead text-xl text-muted-foreground">{post.excerpt}</p>
-          <p>{post.content.replace(post.excerpt, '').trim()}</p>
-        </div>
+        <div 
+          className="prose prose-lg dark:prose-invert max-w-none"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
         
         <Separator className="my-8" />
 

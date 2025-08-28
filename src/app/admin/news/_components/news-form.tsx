@@ -1,17 +1,18 @@
 
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState, useMemo } from 'react';
 import { useFormStatus } from 'react-dom';
 import { upsertNewsPost } from '../actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import Link from 'next/link';
 import type { NewsPost } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css';
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -33,10 +34,15 @@ export function NewsPostForm({ post }: { post?: NewsPost }) {
   const isEditing = !!post;
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useActionState(upsertNewsPost, initialState);
+  const [content, setContent] = useState(post?.content || '');
+
+  // Use dynamic import for react-quill to avoid SSR issues
+  const ReactQuill = useMemo(() => dynamic(() => import('react-quill'), { ssr: false }),[]);
 
   return (
     <form action={dispatch}>
         <input type="hidden" name="id" value={post?.id} />
+        <input type="hidden" name="content" value={content} />
       <Card>
         <CardHeader>
           <CardTitle>{isEditing ? 'Редактирай публикация' : 'Нова публикация'}</CardTitle>
@@ -58,9 +64,16 @@ export function NewsPostForm({ post }: { post?: NewsPost }) {
              {state.errors?.image_url && <p className="text-sm font-medium text-destructive">{state.errors.image_url}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="content">Съдържание</Label>
-            {/* Rich text editor will be placed here */}
-            <Textarea id="content" name="content" defaultValue={post?.content} rows={10} />
+            <Label htmlFor="content-editor">Съдържание</Label>
+            <div className="bg-white text-black rounded-md">
+                <ReactQuill 
+                    id="content-editor"
+                    theme="snow" 
+                    value={content} 
+                    onChange={setContent} 
+                    className="min-h-[200px]"
+                />
+            </div>
              {state.errors?.content && <p className="text-sm font-medium text-destructive">{state.errors.content}</p>}
           </div>
         </CardContent>

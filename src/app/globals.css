@@ -98,4 +98,23 @@ body {
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-primary;
   }
+  .prose .ql-editor {
+    padding: 0;
+  }
+  .prose .ql-container.ql-snow {
+    border: none;
+  }
+}
+
+.ql-editor {
+    color: var(--foreground);
+}
+.ql-snow .ql-stroke {
+    stroke: var(--foreground);
+}
+.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
+    fill: var(--foreground);
+}
+.ql-snow .ql-picker-label {
+    color: var(--foreground);
 }
