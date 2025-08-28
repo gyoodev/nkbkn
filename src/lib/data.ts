@@ -13,16 +13,18 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export async function getJockeys(): Promise<Jockey[]> {
     try {
-        const { data, error } = await supabase.from('jockeys').select('*').order('name', { ascending: true });
+        const { data, error } = await supabase.from('jockeys').select('id, name, wins, mounts, imageUrl').order('name', { ascending: true });
         if (error) {
             console.error('Error fetching jockeys:', error.message);
             return [];
         }
         return (data || []).map(jockey => ({
-            ...jockey,
+            id: jockey.id,
+            name: jockey.name,
+            imageUrl: jockey.imageUrl,
             stats: {
-                wins: jockey.wins,
-                mounts: jockey.mounts,
+                wins: jockey.wins || 0,
+                mounts: jockey.mounts || 0,
             }
         }));
     } catch (error: any) {
@@ -40,10 +42,12 @@ export async function getJockey(id: number): Promise<Jockey | null> {
         return null;
     }
      return {
-        ...data,
+        id: data.id,
+        name: data.name,
+        imageUrl: data.imageUrl,
         stats: {
-            wins: data.wins,
-            mounts: data.mounts,
+            wins: data.wins || 0,
+            mounts: data.mounts || 0,
         }
     };
 }
