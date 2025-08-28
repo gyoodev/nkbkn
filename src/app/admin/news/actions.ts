@@ -71,6 +71,7 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
         content,
         image_url,
         excerpt,
+        user_id: user.id, // Ensure user_id is always present
     };
     
     if (id) {
@@ -95,7 +96,6 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
                 likes: 0,
                 comments_count: 0,
                 href: '/news/placeholder', // Temporary placeholder
-                user_id: user.id,
             })
             .select('id')
             .single();
