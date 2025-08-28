@@ -151,7 +151,7 @@ const translations = {
 
     // Jockeys Page
     wins: 'Победи',
-    mounts: 'Язди',
+    mounts: 'Участия',
     winRate: 'Процент победи',
     
     // Trainers Page
