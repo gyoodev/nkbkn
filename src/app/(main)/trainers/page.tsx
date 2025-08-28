@@ -10,21 +10,28 @@ import { Badge } from '@/components/ui/badge';
 import type { Trainer } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { User } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
 function TrainerCard({ trainer, text }: { trainer: Trainer; text: any }) {
     return (
         <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-xl flex flex-col">
-            <div className="relative h-56 w-full">
-                <Image
-                    src={trainer.imageUrl}
-                    alt={trainer.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 33vw, 25vw"
-                    data-ai-hint="portrait person"
-                />
+            <div className="relative h-56 w-full bg-secondary">
+                {trainer.imageUrl ? (
+                    <Image
+                        src={trainer.imageUrl}
+                        alt={trainer.name}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 33vw, 25vw"
+                        data-ai-hint="portrait person"
+                    />
+                ) : (
+                    <div className="flex h-full w-full items-center justify-center">
+                        <User className="h-16 w-16 text-muted-foreground" />
+                    </div>
+                )}
             </div>
             <div className="flex flex-1 flex-col p-6">
                 <CardHeader className="p-0">
