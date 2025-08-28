@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { HorseIcon } from '@/components/icons/horse-icon';
 import type { Jockey, Trainer, Horse, RaceEvent } from '@/lib/types';
 
+export const dynamic = 'force-dynamic';
 
 const resultsData = [
     { 

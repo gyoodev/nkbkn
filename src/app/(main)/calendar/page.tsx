@@ -14,6 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import { Clock, Users, Trophy } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
+export const dynamic = 'force-dynamic';
+
 function CalendarPageSkeleton() {
     return (
         <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3">

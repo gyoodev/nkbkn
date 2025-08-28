@@ -20,6 +20,7 @@ import { getResults } from '@/lib/data';
 import type { Result } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
+export const dynamic = 'force-dynamic';
 
 function ResultsTableSkeleton() {
     return (

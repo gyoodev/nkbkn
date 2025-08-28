@@ -10,6 +10,8 @@ import type { Jockey } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
+export const dynamic = 'force-dynamic';
+
 function JockeyCardSkeleton() {
   return (
     <Card className="overflow-hidden">

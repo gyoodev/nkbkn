@@ -11,6 +11,8 @@ import type { Trainer } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
+export const dynamic = 'force-dynamic';
+
 function TrainerCard({ trainer, text }: { trainer: Trainer; text: any }) {
     return (
         <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-xl flex flex-col sm:flex-row">
