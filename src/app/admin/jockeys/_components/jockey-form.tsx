@@ -49,7 +49,7 @@ export function JockeyForm({ jockey }: { jockey?: Jockey }) {
            <div className="space-y-1">
             <Label htmlFor="imageUrl">URL на снимка</Label>
             <Input id="imageUrl" name="imageUrl" defaultValue={jockey?.imageUrl} />
-             {state.errors?.imageUrl && <p className="text-sm font-medium text-destructive">{state.errors.imageUrl}</p>}
+             {state.errors?.image_url && <p className="text-sm font-medium text-destructive">{state.errors.image_url}</p>}
           </div>
           <div className="space-y-1">
             <Label htmlFor="wins">Победи</Label>

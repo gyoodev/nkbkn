@@ -13,7 +13,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export async function getJockeys(): Promise<Jockey[]> {
     try {
-        const { data, error } = await supabase.from('jockeys').select('id, name, wins, mounts, imageUrl').order('name', { ascending: true });
+        const { data, error } = await supabase.from('jockeys').select('id, name, wins, mounts, image_url').order('name', { ascending: true });
         if (error) {
             console.error('Error fetching jockeys:', error.message);
             return [];
@@ -21,7 +21,7 @@ export async function getJockeys(): Promise<Jockey[]> {
         return (data || []).map(jockey => ({
             id: jockey.id,
             name: jockey.name,
-            imageUrl: jockey.imageUrl,
+            imageUrl: jockey.image_url,
             stats: {
                 wins: jockey.wins || 0,
                 mounts: jockey.mounts || 0,
@@ -34,7 +34,7 @@ export async function getJockeys(): Promise<Jockey[]> {
 }
 
 export async function getJockey(id: number): Promise<Jockey | null> {
-    const { data, error } = await supabase.from('jockeys').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('jockeys').select('*, image_url').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
             console.error(`Error fetching jockey with id ${id}:`, error);
@@ -44,7 +44,7 @@ export async function getJockey(id: number): Promise<Jockey | null> {
      return {
         id: data.id,
         name: data.name,
-        imageUrl: data.imageUrl,
+        imageUrl: data.image_url,
         stats: {
             wins: data.wins || 0,
             mounts: data.mounts || 0,

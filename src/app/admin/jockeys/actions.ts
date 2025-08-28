@@ -11,7 +11,7 @@ const FormSchema = z.object({
   name: z.string().min(1, 'Името е задължително'),
   wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
   mounts: z.coerce.number().min(1, 'Яздите трябва да са поне 1'),
-  imageUrl: z.string().url('Въведете валиден URL адрес на изображение'),
+  image_url: z.string().url('Въведете валиден URL адрес на изображение'),
 });
 
 
@@ -28,7 +28,7 @@ export async function upsertJockey(prevState: any, formData: FormData) {
         name: formData.get('name'),
         wins: formData.get('wins'),
         mounts: formData.get('mounts'),
-        imageUrl: formData.get('imageUrl'),
+        image_url: formData.get('imageUrl'),
     });
 
     if (!validatedFields.success) {
