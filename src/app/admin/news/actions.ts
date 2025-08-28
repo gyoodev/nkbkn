@@ -1,19 +1,42 @@
 
 'use server';
 
-import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-const FormSchema = z.object({
-  id: z.coerce.number().optional(),
-  title: z.string().min(1, 'Заглавието е задължително'),
-  category: z.string().min(1, 'Категорията е задължителна'),
-  content: z.string().min(1, 'Съдържанието е задължително'),
-  image_url: z.string().url('Въведете валиден URL адрес на изображение'),
-  date: z.string(), // The date is set on the server
-});
+// Using manual validation instead of Zod to avoid session issues.
+async function validateFormData(formData: FormData) {
+    const errors: Record<string, string> = {};
+
+    const title = formData.get('title');
+    if (!title || typeof title !== 'string' || title.trim() === '') {
+        errors.title = 'Заглавието е задължително';
+    }
+
+    const category = formData.get('category');
+    if (!category || typeof category !== 'string' || category.trim() === '') {
+        errors.category = 'Категорията е задължителна';
+    }
+    
+    const imageUrl = formData.get('image_url');
+    if (!imageUrl || typeof imageUrl !== 'string' || imageUrl.trim() === '') {
+        errors.image_url = 'URL адресът на изображението е задължителен';
+    } else {
+        try {
+            new URL(imageUrl);
+        } catch (_) {
+            errors.image_url = 'Въведете валиден URL адрес на изображение';
+        }
+    }
+
+    const content = formData.get('content');
+     if (!content || typeof content !== 'string' || content.trim() === '') {
+        errors.content = 'Съдържанието е задължително';
+    }
+
+    return errors;
+}
 
 
 export async function upsertNewsPost(prevState: any, formData: FormData) {
@@ -24,36 +47,37 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
         return { message: 'Authentication required' };
     }
 
-    const validatedFields = FormSchema.safeParse({
-        id: formData.get('id'),
-        title: formData.get('title'),
-        category: formData.get('category'),
-        content: formData.get('content'),
-        image_url: formData.get('image_url'),
-        date: new Date().toISOString(),
-    });
-
-    if (!validatedFields.success) {
+    const errors = await validateFormData(formData);
+    if (Object.keys(errors).length > 0) {
         return {
-        errors: validatedFields.error.flatten().fieldErrors,
-        message: 'Моля, попълнете всички задължителни полета.',
+            errors,
+            message: 'Моля, попълнете всички задължителни полета.',
         };
     }
     
-    const { id, ...postData } = validatedFields.data;
-    
+    const id = formData.get('id');
+    const title = formData.get('title') as string;
+    const category = formData.get('category') as string;
+    const content = formData.get('content') as string;
+    const image_url = formData.get('image_url') as string;
+
     // Create a plain text excerpt from HTML content
-    const plainTextContent = postData.content.replace(/<[^>]*>?/gm, '');
+    const plainTextContent = content.replace(/<[^>]*>?/gm, '');
     const excerpt = plainTextContent.substring(0, 150) + '...';
 
     const upsertData: any = {
-            id: id || undefined,
-            ...postData,
-            excerpt,
-            user_id: user.id,
+        title,
+        category,
+        content,
+        image_url,
+        excerpt,
+        user_id: user.id,
+        date: new Date().toISOString(),
     };
 
-    if (!id) {
+    if (id) {
+        upsertData.id = Number(id);
+    } else {
         upsertData.views = 0;
         upsertData.likes = 0;
         upsertData.comments_count = 0;
