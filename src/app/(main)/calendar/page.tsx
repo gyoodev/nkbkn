@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -11,8 +10,9 @@ import type { RaceEvent } from '@/lib/types';
 import { format } from 'date-fns';
 import { bg, enUS } from 'date-fns/locale';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Users, Trophy } from 'lucide-react';
+import { Clock, Users, Trophy, Info } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export const dynamic = 'force-dynamic';
 
@@ -86,6 +86,13 @@ export default function CalendarPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+       <Alert className="mb-8">
+        <Info className="h-4 w-4" />
+        <AlertTitle>Важно съобщение</AlertTitle>
+        <AlertDescription>
+          В момента сме в процес на организиране на държавно първенство за 2026г. Очаквайте новини скоро!
+        </AlertDescription>
+      </Alert>
       <PageHeader
         title={text.calendar}
         description={text.calendarPageDescription}
