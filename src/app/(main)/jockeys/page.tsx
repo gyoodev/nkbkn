@@ -1,16 +1,30 @@
 
+'use client';
+
 import Image from 'next/image';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getJockeys } from '@/lib/data';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
+import type { Jockey } from '@/lib/types';
+import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
-// This is a server component now, so we can't use the hook directly.
-// We'll pass the text object to a client component or handle it differently.
-// For now, we'll assume a default language or pass it down.
-// Let's create a client component to handle the language-specific text.
+function JockeyCardSkeleton() {
+  return (
+    <Card className="overflow-hidden">
+      <Skeleton className="h-64 w-full" />
+      <CardContent className="p-4 space-y-2">
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-4 w-1/2" />
+        <Skeleton className="h-4 w-1/2" />
+      </CardContent>
+    </Card>
+  );
+}
 
-function JockeyCard({ jockey, text }: { jockey: any, text: any }) {
+function JockeyCard({ jockey, text }: { jockey: Jockey, text: any }) {
   return (
     <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
       <CardHeader className="p-0">
@@ -37,35 +51,37 @@ function JockeyCard({ jockey, text }: { jockey: any, text: any }) {
   );
 }
 
-function JockeysPageClient({ jockeys, text }: { jockeys: any[], text: any }) {
+
+export default function JockeysPage() {
+    const { text } = useLanguage();
+    const [jockeys, setJockeys] = useState<Jockey[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function loadJockeys() {
+            setLoading(true);
+            const data = await getJockeys();
+            setJockeys(data);
+            setLoading(false);
+        }
+        loadJockeys();
+    }, []);
+
     return (
-        <>
+        <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
             <PageHeader 
                 title={text.jockeysPageTitle}
                 description={text.jockeysPageDescription}
             />
             <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {jockeys.map((jockey) => (
-                    <JockeyCard key={jockey.id} jockey={jockey} text={text} />
-                ))}
+                {loading ? (
+                    Array.from({length: 8}).map((_, i) => <JockeyCardSkeleton key={i} />)
+                ) : (
+                    jockeys.map((jockey) => (
+                        <JockeyCard key={jockey.id} jockey={jockey} text={text} />
+                    ))
+                )}
             </div>
-        </>
+        </div>
     );
-}
-
-// Dummy component to use the hook
-function PageWrapper({jockeys}: {jockeys: any[]}) {
-    'use client';
-    const { text } = useLanguage();
-    return <JockeysPageClient jockeys={jockeys} text={text} />
-}
-
-
-export default async function JockeysPage() {
-    const jockeys = await getJockeys();
-  return (
-    <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <PageWrapper jockeys={jockeys} />
-    </div>
-  );
 }

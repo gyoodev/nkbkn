@@ -12,19 +12,24 @@ if (!supabaseUrl || !supabaseAnonKey) {
 const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export async function getJockeys(): Promise<Jockey[]> {
-    const { data, error } = await supabase.from('jockeys').select('*').order('name', { ascending: true });
-    if (error) {
-        console.error('Error fetching jockeys:', error);
+    try {
+        const { data, error } = await supabase.from('jockeys').select('*').order('name', { ascending: true });
+        if (error) {
+            console.error('Error fetching jockeys:', error.message);
+            return [];
+        }
+        return (data || []).map(jockey => ({
+            ...jockey,
+            stats: {
+                wins: jockey.wins,
+                mounts: jockey.mounts,
+                winRate: jockey.mounts > 0 ? `${((jockey.wins / jockey.mounts) * 100).toFixed(1)}%` : '0%'
+            }
+        }));
+    } catch (error: any) {
+        console.error('Error in getJockeys:', error.message);
         return [];
     }
-    return (data || []).map(jockey => ({
-        ...jockey,
-        stats: {
-            wins: jockey.wins,
-            mounts: jockey.mounts,
-            winRate: jockey.mounts > 0 ? `${((jockey.wins / jockey.mounts) * 100).toFixed(1)}%` : '0%'
-        }
-    }));
 }
 
 export async function getJockey(id: number): Promise<Jockey | null> {
@@ -46,17 +51,21 @@ export async function getJockey(id: number): Promise<Jockey | null> {
 }
 
 export async function getTrainers(): Promise<Trainer[]> {
-    const { data, error } = await supabase.from('trainers').select('*').order('name', { ascending: true });
-    if (error) {
-        console.error('Error fetching trainers:', error);
+    try {
+        const { data, error } = await supabase.from('trainers').select('*').order('name', { ascending: true });
+        if (error) {
+            console.error('Error fetching trainers:', error.message);
+            return [];
+        }
+        return (data || []).map(trainer => ({
+            ...trainer,
+            achievements: trainer.achievements ? trainer.achievements.split(',').map((s: string) => s.trim()) : [],
+            associatedHorses: trainer.associatedHorses ? trainer.associatedHorses.split(',').map((s: string) => s.trim()) : [],
+        }));
+    } catch (error: any) {
+        console.error('Error in getTrainers:', error.message);
         return [];
     }
-    return (data || []).map(trainer => ({
-        ...trainer,
-        // Convert comma-separated strings to arrays
-        achievements: trainer.achievements ? trainer.achievements.split(',').map((s: string) => s.trim()) : [],
-        associatedHorses: trainer.associatedHorses ? trainer.associatedHorses.split(',').map((s: string) => s.trim()) : [],
-    }));
 }
 
 
@@ -70,7 +79,6 @@ export async function getTrainer(id: number): Promise<Trainer | null> {
     }
      return {
         ...data,
-        // Convert comma-separated strings to arrays
         achievements: data.achievements ? data.achievements.split(',').map((s: string) => s.trim()) : [],
         associatedHorses: data.associatedHorses ? data.associatedHorses.split(',').map((s: string) => s.trim()) : [],
     };
@@ -78,12 +86,17 @@ export async function getTrainer(id: number): Promise<Trainer | null> {
 
 
 export async function getHorses(): Promise<Horse[]> {
-    const { data, error } = await supabase.from('horses').select('*').order('name', { ascending: true });
-    if (error) {
-        console.error('Error fetching horses:', error);
+    try {
+        const { data, error } = await supabase.from('horses').select('*').order('name', { ascending: true });
+        if (error) {
+            console.error('Error fetching horses:', error.message);
+            return [];
+        }
+        return data || [];
+    } catch(e: any) {
+        console.error('Error in getHorses:', e.message);
         return [];
     }
-    return data || [];
 }
 
 export async function getHorse(id: number): Promise<Horse | null> {
@@ -112,27 +125,31 @@ export const galleryImages: { id: number; src: string; alt: string, hint: string
 }));
 
 export async function getRaceEvents(): Promise<RaceEvent[]> {
-    const { data: events, error: eventsError } = await supabase
-        .from('race_events')
-        .select(`
-            *,
-            races (*)
-        `)
-        .order('date', { ascending: true });
+    try {
+        const { data: events, error: eventsError } = await supabase
+            .from('race_events')
+            .select(`
+                *,
+                races (*)
+            `)
+            .order('date', { ascending: true });
 
-    if (eventsError) {
-        console.error('Error fetching race events:', eventsError);
+        if (eventsError) {
+            console.error('Error fetching race events:', eventsError.message);
+            return [];
+        }
+        
+        for (const event of events) {
+            if (event.races) {
+                event.races.sort((a, b) => a.time.localeCompare(b.time));
+            }
+        }
+
+        return events as RaceEvent[];
+    } catch (e: any) {
+        console.error('Error in getRaceEvents:', e.message);
         return [];
     }
-    
-    // Sort races by time for each event
-    for (const event of events) {
-        if (event.races) {
-            event.races.sort((a, b) => a.time.localeCompare(b.time));
-        }
-    }
-
-    return events as RaceEvent[];
 }
 
 
@@ -145,7 +162,6 @@ export async function getRaceEvent(id: number): Promise<RaceEvent | null> {
         return null;
     }
     
-    // Sort races by time
     if (data.races) {
         data.races.sort((a: any, b: any) => a.time.localeCompare(b.time));
     }
@@ -155,15 +171,20 @@ export async function getRaceEvent(id: number): Promise<RaceEvent | null> {
 
 
 export async function getNewsPosts(): Promise<NewsPost[]> {
-    const { data, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
-    if (error) {
-        console.error('Error fetching news posts:', error);
+    try {
+        const { data, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
+        if (error) {
+            console.error('Error fetching news posts:', error.message);
+            return [];
+        }
+        return (data || []).map(post => ({
+            ...post,
+            href: `/news/${post.id}`,
+        }));
+    } catch(e: any) {
+        console.error('Error fetching news posts:', e.message);
         return [];
     }
-    return (data || []).map(post => ({
-        ...post,
-        href: `/news/${post.id}`,
-    }));
 }
 
 export async function getNewsPost(id: string): Promise<NewsPost | null> {
@@ -184,33 +205,42 @@ export async function getNewsPost(id: string): Promise<NewsPost | null> {
 
 
 export async function getDocuments(): Promise<Document[]> {
-    const { data, error } = await supabase
-        .from('documents')
-        .select('*')
-        .order('created_at', { ascending: false });
-        
-    if (error) {
-        // This can happen during build if the table does not exist yet.
-        console.error('Error fetching documents:', error.message);
+    try {
+        const { data, error } = await supabase
+            .from('documents')
+            .select('*')
+            .order('created_at', { ascending: false });
+            
+        if (error) {
+            console.error('Error fetching documents:', error.message);
+            return [];
+        }
+
+        return data.map(doc => {
+            const { data: { publicUrl } } = supabase.storage.from('documents').getPublicUrl(doc.path);
+            return {
+                ...doc,
+                href: publicUrl,
+            }
+        });
+    } catch (e: any) {
+        console.error('Error fetching documents:', e.message);
         return [];
     }
-
-    return data.map(doc => {
-        const { data: { publicUrl } } = supabase.storage.from('documents').getPublicUrl(doc.path);
-        return {
-            ...doc,
-            href: publicUrl,
-        }
-    });
 }
 
 export async function getResults(): Promise<Result[]> {
-    const { data, error } = await supabase.from('results').select('*').order('date', { ascending: false });
-    if (error) {
-        console.error('Error fetching results:', error);
+    try {
+        const { data, error } = await supabase.from('results').select('*').order('date', { ascending: false });
+        if (error) {
+            console.error('Error fetching results:', error.message);
+            return [];
+        }
+        return data || [];
+    } catch(e: any) {
+        console.error('Error fetching results:', e.message);
         return [];
     }
-    return data || [];
 }
 
 export async function getResult(id: number): Promise<Result | null> {
