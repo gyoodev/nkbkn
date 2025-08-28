@@ -71,13 +71,13 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
         content,
         image_url,
         excerpt,
-        date: new Date().toISOString(),
         user_id: user.id
     };
 
     if (id) {
         upsertData.id = Number(id);
     } else {
+        upsertData.date = new Date().toISOString();
         upsertData.views = 0;
         upsertData.likes = 0;
         upsertData.comments_count = 0;
