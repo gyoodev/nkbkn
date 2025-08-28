@@ -71,10 +71,15 @@ export function HorseForm({ horse }: { horse?: Horse }) {
             <Input id="wins" name="wins" type="number" defaultValue={horse?.wins || 0} />
             {state.errors?.wins && <p className="text-sm font-medium text-destructive">{state.errors.wins}</p>}
           </div>
-          <div className="md:col-span-2 space-y-1">
+          <div className="space-y-1">
             <Label htmlFor="owner">Собственик</Label>
             <Input id="owner" name="owner" defaultValue={horse?.owner} />
              {state.errors?.owner && <p className="text-sm font-medium text-destructive">{state.errors.owner}</p>}
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="bestTime">Най-добро време</Label>
+            <Input id="bestTime" name="bestTime" defaultValue={horse?.bestTime || ''} />
+             {state.errors?.bestTime && <p className="text-sm font-medium text-destructive">{state.errors.bestTime}</p>}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">

@@ -48,6 +48,7 @@ export default async function AdminHorsesPage() {
                 <TableHead>Възраст</TableHead>
                 <TableHead>Участия</TableHead>
                 <TableHead>Победи</TableHead>
+                <TableHead>Най-добро време</TableHead>
                 <TableHead>
                   <span className="sr-only">Действия</span>
                 </TableHead>
@@ -61,6 +62,7 @@ export default async function AdminHorsesPage() {
                   <TableCell>{horse.age}</TableCell>
                   <TableCell>{horse.mounts}</TableCell>
                   <TableCell>{horse.wins}</TableCell>
+                  <TableCell>{horse.bestTime || 'N/A'}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -92,4 +94,3 @@ export default async function AdminHorsesPage() {
     </div>
   );
 }
-

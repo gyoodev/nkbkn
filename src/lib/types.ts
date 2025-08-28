@@ -29,6 +29,7 @@ export interface Horse {
   owner: string;
   wins: number;
   mounts: number;
+  bestTime: string | null;
 }
 
 export interface Track {
