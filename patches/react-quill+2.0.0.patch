@@ -1,0 +1,44 @@
+diff --git a/node_modules/react-quill/lib/component.js b/node_modules/react-quill/lib/component.js
+index 2737073..92c65a0 100644
+--- a/node_modules/react-quill/lib/component.js
++++ b/node_modules/react-quill/lib/component.js
+@@ -10,7 +10,7 @@
+ var Quill = require('quill');
+ var deepEqual = require('deep-equal');
+ var PropTypes = require('prop-types');
+-var ReactDOM = require('react-dom');
++// var ReactDOM = require('react-dom');
+ 
+ var QuillComponent = React.createClass({
+ 
+@@ -298,7 +298,7 @@
+ 	},
+ 
+ 	getEditorNode: function() {
+-		return ReactDOM.findDOMNode(this.editor);
++		return this.editor;
+ 	},
+ 
+ 	getEditingArea: function() {
+diff --git a/node_modules/react-quill/lib/index.js b/node_modules/react-quill/lib/index.js
+index 2737073..92c65a0 100644
+--- a/node_modules/react-quill/lib/index.js
++++ b/node_modules/react-quill/lib/index.js
+@@ -10,7 +10,7 @@
+ var Quill = require('quill');
+ var deepEqual = require('deep-equal');
+ var PropTypes = require('prop-types');
+-var ReactDOM = require('react-dom');
++// var ReactDOM = require('react-dom');
+ 
+ var QuillComponent = React.createClass({
+ 
+@@ -298,7 +298,7 @@
+ 	},
+ 
+ 	getEditorNode: function() {
+-		return ReactDOM.findDOMNode(this.editor);
++		return this.editor;
+ 	},
+ 
+ 	getEditingArea: function() {
