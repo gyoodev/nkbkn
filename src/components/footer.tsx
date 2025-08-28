@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -51,6 +50,9 @@ export function Footer() {
     [text.resources]: [
         { label: text.forms, href: '/forms' },
         { label: text.contact, href: '/contact' },
+        { label: text.termsShort, href: '/terms' },
+        { label: text.privacyShort, href: '/privacy' },
+        { label: text.faq, href: '/faq' },
     ],
   };
 

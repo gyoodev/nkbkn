@@ -175,6 +175,17 @@ const translations = {
     noRacesScheduled: 'Няма планирани състезания за тази дата.',
     selectDateWithRaces: 'Изберете дата с маркирани събития, за да видите състезанията.',
     participants: 'участници',
+
+    // Legal pages
+    termsTitle: 'Условия и правила за ползване',
+    termsDescription: 'Моля, прочетете внимателно нашите условия и правила.',
+    privacyTitle: 'Политика за поверителност',
+    privacyDescription: 'Вашата поверителност е важна за нас.',
+    faqTitle: 'Често задавани въпроси',
+    faqDescription: 'Намерете отговори на най-често задаваните въпроси.',
+    termsShort: 'Условия за ползване',
+    privacyShort: 'Поверителност',
+    faq: 'ЧЗВ',
   },
   en: {
     // General
@@ -337,6 +348,17 @@ const translations = {
     noRacesScheduled: 'No races scheduled for this date.',
     selectDateWithRaces: 'Select a date with marked events to see the races.',
     participants: 'participants',
+
+    // Legal pages
+    termsTitle: 'Terms and Conditions',
+    termsDescription: 'Please read our terms and conditions carefully.',
+    privacyTitle: 'Privacy Policy',
+    privacyDescription: 'Your privacy is important to us.',
+    faqTitle: 'Frequently Asked Questions',
+    faqDescription: 'Find answers to the most common questions.',
+    termsShort: 'Terms of Use',
+    privacyShort: 'Privacy Policy',
+    faq: 'FAQ',
   },
 };
 
