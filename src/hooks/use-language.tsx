@@ -28,7 +28,7 @@ const translations = {
     siteHeader: 'Конни надбягвания в България',
 
     // Hero
-    heroTitle: 'Страст, адреналин и любов към конете',
+    heroTitle: 'СТРАСТ, АДРЕНАЛИН И ЛЮБОВ КЪМ КОНЕТЕ',
     raceCalendar: 'Календар на състезанията',
     latestNews: 'Последни новини',
 
@@ -60,7 +60,7 @@ const translations = {
     jockeys: 'Жокеи',
     trainers: 'Треньори',
     horses: 'Коне',
-    tracks: 'Хиподруми',
+    tracks: 'Хиподрум',
     gallery: 'Галерия',
     racePreview: 'Превю на състезание',
     contact: 'Контакти',
@@ -191,7 +191,7 @@ const translations = {
     siteHeader: 'Horse Racing in Bulgaria',
 
     // Hero
-    heroTitle: 'Passion, Adrenaline and Love for Horses',
+    heroTitle: 'PASSION, ADRENALINE AND LOVE FOR HORSES',
     raceCalendar: 'Race Calendar',
     latestNews: 'Latest News',
 
@@ -223,7 +223,7 @@ const translations = {
     jockeys: 'Jockeys',
     trainers: 'Trainers',
     horses: 'Horses',
-    tracks: 'Tracks',
+    tracks: 'Track',
     gallery: 'Gallery',
     racePreview: 'Race Preview',
     contact: 'Contact',
