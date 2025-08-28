@@ -13,6 +13,8 @@ const FormSchema = z.object({
   sire: z.string().min(1, 'Бащата е задължителен'),
   dam: z.string().min(1, 'Майката е задължителна'),
   owner: z.string().min(1, 'Собственикът е задължителен'),
+  wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
+  mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
 });
 
 
@@ -26,6 +28,8 @@ export async function upsertHorse(prevState: any, formData: FormData) {
         sire: formData.get('sire'),
         dam: formData.get('dam'),
         owner: formData.get('owner'),
+        wins: formData.get('wins'),
+        mounts: formData.get('mounts'),
     });
 
     if (!validatedFields.success) {

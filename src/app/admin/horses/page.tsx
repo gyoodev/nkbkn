@@ -46,6 +46,8 @@ export default async function AdminHorsesPage() {
                 <TableHead>Име</TableHead>
                 <TableHead>Собственик</TableHead>
                 <TableHead>Възраст</TableHead>
+                <TableHead>Участия</TableHead>
+                <TableHead>Победи</TableHead>
                 <TableHead>
                   <span className="sr-only">Действия</span>
                 </TableHead>
@@ -57,6 +59,8 @@ export default async function AdminHorsesPage() {
                   <TableCell className="font-medium">{horse.name}</TableCell>
                   <TableCell>{horse.owner}</TableCell>
                   <TableCell>{horse.age}</TableCell>
+                  <TableCell>{horse.mounts}</TableCell>
+                  <TableCell>{horse.wins}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

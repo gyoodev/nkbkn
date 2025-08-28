@@ -61,6 +61,16 @@ export function HorseForm({ horse }: { horse?: Horse }) {
             <Input id="dam" name="dam" defaultValue={horse?.dam} />
             {state.errors?.dam && <p className="text-sm font-medium text-destructive">{state.errors.dam}</p>}
           </div>
+           <div className="space-y-1">
+            <Label htmlFor="mounts">Участия</Label>
+            <Input id="mounts" name="mounts" type="number" defaultValue={horse?.mounts || 0} />
+            {state.errors?.mounts && <p className="text-sm font-medium text-destructive">{state.errors.mounts}</p>}
+          </div>
+           <div className="space-y-1">
+            <Label htmlFor="wins">Победи</Label>
+            <Input id="wins" name="wins" type="number" defaultValue={horse?.wins || 0} />
+            {state.errors?.wins && <p className="text-sm font-medium text-destructive">{state.errors.wins}</p>}
+          </div>
           <div className="md:col-span-2 space-y-1">
             <Label htmlFor="owner">Собственик</Label>
             <Input id="owner" name="owner" defaultValue={horse?.owner} />

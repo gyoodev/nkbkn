@@ -27,6 +27,8 @@ function HorsesTableSkeleton() {
                 <TableHead>Име на коня</TableHead>
                 <TableHead>Баща</TableHead>
                 <TableHead>Майка</TableHead>
+                <TableHead className="text-center">Участия</TableHead>
+                <TableHead className="text-center">Победи</TableHead>
                 <TableHead className="text-center">Възраст</TableHead>
                 <TableHead>Собственик</TableHead>
               </TableRow>
@@ -37,6 +39,8 @@ function HorsesTableSkeleton() {
                         <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                        <TableCell className="text-center"><Skeleton className="h-4 w-10 mx-auto" /></TableCell>
+                        <TableCell className="text-center"><Skeleton className="h-4 w-10 mx-auto" /></TableCell>
                         <TableCell className="text-center"><Skeleton className="h-4 w-10 mx-auto" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-40" /></TableCell>
                     </TableRow>
@@ -77,6 +81,8 @@ export default function HorsesPage() {
                     <TableHead>{text.horseName}</TableHead>
                     <TableHead>{text.sire}</TableHead>
                     <TableHead>{text.dam}</TableHead>
+                    <TableHead className="text-center">{text.mounts}</TableHead>
+                    <TableHead className="text-center">{text.wins}</TableHead>
                     <TableHead className="text-center">{text.age}</TableHead>
                     <TableHead>{text.owner}</TableHead>
                 </TableRow>
@@ -87,6 +93,8 @@ export default function HorsesPage() {
                     <TableCell className="font-medium text-primary">{horse.name}</TableCell>
                     <TableCell>{horse.sire}</TableCell>
                     <TableCell>{horse.dam}</TableCell>
+                    <TableCell className="text-center">{horse.mounts || 0}</TableCell>
+                    <TableCell className="text-center">{horse.wins || 0}</TableCell>
                     <TableCell className="text-center">{horse.age}</TableCell>
                     <TableCell>{horse.owner}</TableCell>
                     </TableRow>

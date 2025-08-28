@@ -27,6 +27,8 @@ export interface Horse {
   dam: string;
   age: number;
   owner: string;
+  wins: number;
+  mounts: number;
 }
 
 export interface Track {
