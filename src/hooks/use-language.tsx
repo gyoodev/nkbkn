@@ -28,7 +28,7 @@ const translations = {
     siteHeader: 'Конни надбягвания в България',
 
     // Hero
-    heroTitle: 'Скорост, страст и традиция',
+    heroTitle: 'Страст, адреналин и любов към конете',
     raceCalendar: 'Календар на състезанията',
     latestNews: 'Последни новини',
 
@@ -191,7 +191,7 @@ const translations = {
     siteHeader: 'Horse Racing in Bulgaria',
 
     // Hero
-    heroTitle: 'Speed, Passion, and Tradition',
+    heroTitle: 'Passion, Adrenaline and Love for Horses',
     raceCalendar: 'Race Calendar',
     latestNews: 'Latest News',
 
