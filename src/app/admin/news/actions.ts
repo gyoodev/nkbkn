@@ -65,33 +65,65 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
     const plainTextContent = content.replace(/<[^>]*>?/gm, '');
     const excerpt = plainTextContent.substring(0, 150) + '...';
 
-    const upsertData: any = {
-        title,
-        category,
-        content,
-        image_url,
-        excerpt,
-        user_id: user.id
-    };
+    const isEditing = !!id;
 
-    if (id) {
-        upsertData.id = Number(id);
+    if (isEditing) {
+        const { error } = await supabase
+            .from('news_posts')
+            .update({
+                title,
+                category,
+                content,
+                image_url,
+                excerpt,
+                href: `/news/${id}`,
+            })
+            .eq('id', id);
+
+        if (error) {
+            console.error('Supabase error:', error);
+            return { message: error.message };
+        }
     } else {
-        upsertData.date = new Date().toISOString();
-        upsertData.views = 0;
-        upsertData.likes = 0;
-        upsertData.comments_count = 0;
+        // 1. Insert the new post without href, but return the inserted data
+        const { data: newPost, error: insertError } = await supabase
+            .from('news_posts')
+            .insert({
+                title,
+                category,
+                content,
+                image_url,
+                excerpt,
+                date: new Date().toISOString(),
+                views: 0,
+                likes: 0,
+                comments_count: 0,
+                user_id: user.id
+            })
+            .select('id')
+            .single();
+
+        if (insertError) {
+            console.error('Supabase insert error:', insertError);
+            return { message: insertError.message };
+        }
+        
+        const newId = newPost.id;
+
+        // 2. Update the new post with the correct href
+        const { error: updateError } = await supabase
+            .from('news_posts')
+            .update({ href: `/news/${newId}` })
+            .eq('id', newId);
+        
+        if (updateError) {
+             console.error('Supabase href update error:', updateError);
+             // Optionally, delete the just-inserted row to avoid orphaned data
+             await supabase.from('news_posts').delete().eq('id', newId);
+             return { message: `Failed to update href: ${updateError.message}` };
+        }
     }
 
-    const { error } = await supabase
-        .from('news_posts')
-        .upsert(upsertData);
-
-
-    if (error) {
-        console.error('Supabase error:', error);
-        return { message: error.message };
-    }
 
     revalidatePath('/admin/news');
     revalidatePath('/news');
