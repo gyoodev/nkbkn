@@ -15,31 +15,38 @@ export const dynamic = 'force-dynamic';
 
 function TrainerCard({ trainer, text }: { trainer: Trainer; text: any }) {
     return (
-        <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-xl flex flex-col sm:flex-row">
-            <div className="relative h-48 sm:h-auto sm:w-1/3 flex-shrink-0">
-            <Image
-                src={trainer.imageUrl}
-                alt={trainer.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 1280px) 33vw, 25vw"
-                data-ai-hint="portrait person"
-            />
+        <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-xl flex flex-col">
+            <div className="relative h-56 w-full">
+                <Image
+                    src={trainer.imageUrl}
+                    alt={trainer.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 33vw, 25vw"
+                    data-ai-hint="portrait person"
+                />
             </div>
-            <div className="flex flex-col p-6">
-            <CardTitle className="font-headline text-xl text-primary">{trainer.name}</CardTitle>
-            <CardDescription className="mt-2 text-sm">
-                <strong>{text.achievements}:</strong>
-                <div className="flex flex-wrap gap-1 mt-1">
-                {trainer.achievements.map((ach, index) => <Badge variant="secondary" key={index}>{ach}</Badge>)}
-                </div>
-            </CardDescription>
-            <CardDescription className="mt-4 text-sm">
-                <strong>{text.associatedHorses}:</strong>
-                <div className="flex flex-wrap gap-1 mt-1">
-                    {trainer.associatedHorses.join(', ')}
-                </div>
-            </CardDescription>
+            <div className="flex flex-1 flex-col p-6">
+                <CardHeader className="p-0">
+                     <CardTitle className="font-headline text-xl text-primary">{trainer.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 p-0 pt-4">
+                    <div className="space-y-4">
+                        <div>
+                             <h4 className="font-semibold text-sm mb-2">{text.achievements}:</h4>
+                            <div className="flex flex-wrap gap-1">
+                            {trainer.achievements.map((ach, index) => <Badge variant="secondary" key={index}>{ach}</Badge>)}
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="font-semibold text-sm mb-2">Статистика:</h4>
+                            <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                                <p><strong>{text.wins}:</strong> {trainer.stats.wins}</p>
+                                <p><strong>{text.mounts}:</strong> {trainer.stats.mounts}</p>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
             </div>
         </Card>
     );
@@ -47,8 +54,8 @@ function TrainerCard({ trainer, text }: { trainer: Trainer; text: any }) {
 
 function TrainerCardSkeleton() {
     return (
-        <Card className="overflow-hidden flex flex-col sm:flex-row">
-             <div className="relative h-48 sm:h-auto sm:w-1/3 flex-shrink-0">
+        <Card className="overflow-hidden flex flex-col">
+             <div className="relative h-56 w-full">
                 <Skeleton className="h-full w-full" />
             </div>
              <div className="flex flex-col p-6 space-y-4">
@@ -91,7 +98,7 @@ export default function TrainersPage() {
         title={text.trainersPageTitle}
         description={text.trainersPageDescription}
       />
-      <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
              Array.from({length: 3}).map((_, i) => <TrainerCardSkeleton key={i} />)
         ) : (

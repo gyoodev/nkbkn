@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import type { Trainer } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
-import RichTextEditor from '@/components/rich-text-editor';
+import { Textarea } from '@/components/ui/textarea';
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -34,15 +34,13 @@ export function TrainerForm({ trainer }: { trainer?: Trainer }) {
   const initialState = { message: null, errors: {} };
   
   const [achievements, setAchievements] = useState(trainer?.achievements.join(', ') || '');
-  const [associatedHorses, setAssociatedHorses] = useState(trainer?.associatedHorses.join(', ') || '');
+  
+  const [state, dispatch] = useActionState(upsertTrainer, initialState);
 
   const formActionWithEditor = (formData: FormData) => {
     formData.set('achievements', achievements);
-    formData.set('associatedHorses', associatedHorses);
     dispatch(formData);
   };
-  
-  const [state, dispatch] = useActionState(upsertTrainer, initialState);
 
   return (
     <form action={formActionWithEditor}>
@@ -51,26 +49,36 @@ export function TrainerForm({ trainer }: { trainer?: Trainer }) {
         <CardHeader>
           <CardTitle>{isEditing ? 'Редактирай треньор' : 'Нов треньор'}</CardTitle>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-1">
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-1.5">
             <Label htmlFor="name">Име</Label>
             <Input id="name" name="name" defaultValue={trainer?.name} />
             {state.errors?.name && <p className="text-sm font-medium text-destructive">{state.errors.name}</p>}
           </div>
-           <div className="space-y-1">
+           <div className="space-y-1.5">
             <Label htmlFor="imageUrl">URL на снимка</Label>
             <Input id="imageUrl" name="imageUrl" defaultValue={trainer?.imageUrl} />
              {state.errors?.imageUrl && <p className="text-sm font-medium text-destructive">{state.errors.imageUrl}</p>}
           </div>
-          <div className="space-y-1 md:col-span-2">
-            <Label htmlFor="achievements">Постижения</Label>
-            <RichTextEditor value={achievements} onChange={setAchievements} />
-            {state.errors?.achievements && <p className="text-sm font-medium text-destructive">{state.errors.achievements}</p>}
+           <div className="space-y-1.5">
+            <Label htmlFor="wins">Победи</Label>
+            <Input id="wins" name="wins" type="number" defaultValue={trainer?.stats?.wins || 0} />
+            {state.errors?.wins && <p className="text-sm font-medium text-destructive">{state.errors.wins}</p>}
           </div>
-          <div className="space-y-1 md:col-span-2">
-            <Label htmlFor="associatedHorses">Свързани коне</Label>
-            <RichTextEditor value={associatedHorses} onChange={setAssociatedHorses} />
-             {state.errors?.associatedHorses && <p className="text-sm font-medium text-destructive">{state.errors.associatedHorses}</p>}
+          <div className="space-y-1.5">
+            <Label htmlFor="mounts">Участия</Label>
+            <Input id="mounts" name="mounts" type="number" defaultValue={trainer?.stats?.mounts || 0} />
+             {state.errors?.mounts && <p className="text-sm font-medium text-destructive">{state.errors.mounts}</p>}
+          </div>
+          <div className="space-y-1.5 md:col-span-2">
+            <Label htmlFor="achievements">Постижения (разделени със запетая)</Label>
+            <Textarea 
+              id="achievements"
+              name="achievements" 
+              value={achievements}
+              onChange={e => setAchievements(e.target.value)}
+            />
+            {state.errors?.achievements && <p className="text-sm font-medium text-destructive">{state.errors.achievements}</p>}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">

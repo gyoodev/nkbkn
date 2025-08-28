@@ -40,7 +40,8 @@ export default async function AdminTrainersPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Име</TableHead>
-                <TableHead>Постижения</TableHead>
+                <TableHead>Победи</TableHead>
+                <TableHead>Участия</TableHead>
                 <TableHead>
                   <span className="sr-only">Действия</span>
                 </TableHead>
@@ -50,7 +51,8 @@ export default async function AdminTrainersPage() {
               {trainers.map((trainer) => (
                 <TableRow key={trainer.id}>
                   <TableCell className="font-medium">{trainer.name}</TableCell>
-                  <TableCell>{trainer.achievements.join(', ')}</TableCell>
+                  <TableCell>{trainer.stats.wins}</TableCell>
+                  <TableCell>{trainer.stats.mounts}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

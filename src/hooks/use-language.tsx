@@ -160,7 +160,7 @@ const translations = {
 
     // Tracks Page
     interactiveMapComingSoon: 'Интерактивна карта - скоро',
-    
+
     // News Post Page
     views: 'Прочитания',
     likes: 'Харесвания',

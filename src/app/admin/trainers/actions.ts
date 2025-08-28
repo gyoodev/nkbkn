@@ -11,7 +11,8 @@ const FormSchema = z.object({
   name: z.string().min(1, 'Името е задължително'),
   imageUrl: z.string().url('Въведете валиден URL адрес на изображение'),
   achievements: z.string().min(1, 'Въведете поне едно постижение'),
-  associatedHorses: z.string().min(1, 'Въведете поне един свързан кон'),
+  wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
+  mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
 });
 
 
@@ -28,7 +29,8 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
         name: formData.get('name'),
         imageUrl: formData.get('imageUrl'),
         achievements: formData.get('achievements'),
-        associatedHorses: formData.get('associatedHorses'),
+        wins: formData.get('wins'),
+        mounts: formData.get('mounts'),
     });
 
     if (!validatedFields.success) {
@@ -38,19 +40,17 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
         };
     }
     
-    const { id, ...trainerData } = validatedFields.data;
-    
-    const plainAchievements = trainerData.achievements.replace(/<[^>]*>?/gm, ' ');
-    const plainAssociatedHorses = trainerData.associatedHorses.replace(/<[^>]*>?/gm, ' ');
+    const { id, name, imageUrl, achievements, wins, mounts } = validatedFields.data;
     
     const { error } = await supabase
         .from('trainers')
         .upsert({
             id: id || undefined,
-            name: trainerData.name,
-            imageUrl: trainerData.imageUrl,
-            achievements: plainAchievements.split(',').map(s => s.trim()).filter(Boolean),
-            associatedHorses: plainAssociatedHorses.split(',').map(s => s.trim()).filter(Boolean),
+            name,
+            imageUrl,
+            achievements: achievements.split(',').map(s => s.trim()).filter(Boolean),
+            wins,
+            mounts,
             user_id: user.id
         });
 

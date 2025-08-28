@@ -13,7 +13,10 @@ export interface Trainer {
   id: number;
   name: string;
   achievements: string[];
-  associatedHorses: string[];
+  stats: {
+    wins: number;
+    mounts: number;
+  };
   imageUrl: string;
 }
 

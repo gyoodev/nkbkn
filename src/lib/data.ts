@@ -60,9 +60,14 @@ export async function getTrainers(): Promise<Trainer[]> {
             return [];
         }
         return (data || []).map(trainer => ({
-            ...trainer,
+            id: trainer.id,
+            name: trainer.name,
+            imageUrl: trainer.imageUrl,
             achievements: Array.isArray(trainer.achievements) ? trainer.achievements : (typeof trainer.achievements === 'string' ? trainer.achievements.split(',').map((s: string) => s.trim()) : []),
-            associatedHorses: Array.isArray(trainer.associatedHorses) ? trainer.associatedHorses : (typeof trainer.associatedHorses === 'string' ? trainer.associatedHorses.split(',').map((s: string) => s.trim()) : []),
+            stats: {
+                wins: trainer.wins || 0,
+                mounts: trainer.mounts || 0,
+            }
         }));
     } catch (error: any) {
         console.error('Error in getTrainers:', error.message);
@@ -80,9 +85,14 @@ export async function getTrainer(id: number): Promise<Trainer | null> {
         return null;
     }
      return {
-        ...data,
+        id: data.id,
+        name: data.name,
+        imageUrl: data.imageUrl,
         achievements: Array.isArray(data.achievements) ? data.achievements : (typeof data.achievements === 'string' ? data.achievements.split(',').map((s: string) => s.trim()) : []),
-        associatedHorses: Array.isArray(data.associatedHorses) ? data.associatedHorses : (typeof data.associatedHorses === 'string' ? data.associatedHorses.split(',').map((s: string) => s.trim()) : []),
+        stats: {
+            wins: data.wins || 0,
+            mounts: data.mounts || 0,
+        }
     };
 }
 
