@@ -13,6 +13,7 @@ import {
   Newspaper,
   Users,
   Trophy,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -41,6 +42,7 @@ export default function AdminLayout({
     { href: '/admin/news', label: 'Новини', icon: <Newspaper className="h-5 w-5" /> },
     { href: '/admin/results', label: 'Резултати', icon: <Trophy className="h-5 w-5" /> },
     { href: '/admin/documents', label: 'Документи', icon: <FileText className="h-5 w-5" /> },
+    { href: '/admin/gallery', label: 'Галерия', icon: <ImageIcon className="h-5 w-5" /> },
   ];
 
   const managementNavItems = [
@@ -63,7 +65,7 @@ export default function AdminLayout({
               <Link
                 href={item.href}
                 className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 ${
-                  pathname === item.href
+                  pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))
                     ? 'bg-accent text-accent-foreground'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
@@ -82,7 +84,7 @@ export default function AdminLayout({
                 <Link
                     href={item.href}
                     className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 ${
-                    pathname === item.href
+                      pathname.startsWith(item.href)
                         ? 'bg-accent text-accent-foreground'
                         : 'text-muted-foreground hover:text-foreground'
                     }`}
@@ -101,7 +103,7 @@ export default function AdminLayout({
                 <Link
                     href={item.href}
                     className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 ${
-                    pathname === item.href
+                      pathname.startsWith(item.href)
                         ? 'bg-accent text-accent-foreground'
                         : 'text-muted-foreground hover:text-foreground'
                     }`}
