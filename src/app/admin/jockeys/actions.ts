@@ -44,7 +44,8 @@ export async function upsertJockey(prevState: any, formData: FormData) {
         .from('jockeys')
         .upsert({
             id: id || undefined,
-            ...jockeyData
+            ...jockeyData,
+            user_id: user.id,
         });
 
 

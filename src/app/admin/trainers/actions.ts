@@ -51,6 +51,7 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
             imageUrl: trainerData.imageUrl,
             achievements: plainAchievements.split(',').map(s => s.trim()).filter(Boolean),
             associatedHorses: plainAssociatedHorses.split(',').map(s => s.trim()).filter(Boolean),
+            user_id: user.id
         });
 
 
