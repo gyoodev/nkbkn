@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/page-header';
 import type { Jockey } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { User } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -30,15 +31,21 @@ function JockeyCard({ jockey, text }: { jockey: Jockey, text: any }) {
   return (
     <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
       <CardHeader className="p-0">
-        <div className="relative h-64 w-full">
-          <Image
-            src={jockey.imageUrl}
-            alt={jockey.name}
-            fill
-            className="object-cover"
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
-            data-ai-hint="portrait person"
-          />
+        <div className="relative h-64 w-full bg-secondary">
+          {jockey.imageUrl ? (
+            <Image
+                src={jockey.imageUrl}
+                alt={jockey.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                data-ai-hint="portrait person"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center">
+                <User className="h-16 w-16 text-muted-foreground" />
+            </div>
+          )}
         </div>
       </CardHeader>
       <CardContent className="p-4">
