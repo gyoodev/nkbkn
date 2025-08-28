@@ -40,11 +40,17 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
     
     const { id, ...trainerData } = validatedFields.data;
     
+    const plainAchievements = trainerData.achievements.replace(/<[^>]*>?/gm, ' ');
+    const plainAssociatedHorses = trainerData.associatedHorses.replace(/<[^>]*>?/gm, ' ');
+    
     const { error } = await supabase
         .from('trainers')
         .upsert({
             id: id || undefined,
-            ...trainerData
+            name: trainerData.name,
+            imageUrl: trainerData.imageUrl,
+            achievements: plainAchievements.split(',').map(s => s.trim()).filter(Boolean),
+            associatedHorses: plainAssociatedHorses.split(',').map(s => s.trim()).filter(Boolean),
         });
 
 

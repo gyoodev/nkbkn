@@ -1,13 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
+import RichTextEditor from '@/components/rich-text-editor';
 
 export default function AdminContentPage() {
+  const [historyContent, setHistoryContent] = useState(
+    "Тук ще се появи текущият текст на страницата 'История'..."
+  );
+  const [missionContent, setMissionContent] = useState(
+    "Тук ще се появи текущият текст на страницата 'Мисия'..."
+  );
+
   return (
     <div>
       <PageHeader
@@ -23,7 +30,10 @@ export default function AdminContentPage() {
           <CardContent className="space-y-4">
             <div>
               <Label htmlFor="history-text">Текст</Label>
-              <Textarea id="history-text" rows={10} defaultValue="Тук ще се появи текущият текст на страницата 'История'..." />
+              <RichTextEditor
+                value={historyContent}
+                onChange={setHistoryContent}
+              />
             </div>
             <Button>Запази промените</Button>
           </CardContent>
@@ -37,7 +47,10 @@ export default function AdminContentPage() {
           <CardContent className="space-y-4">
             <div>
               <Label htmlFor="mission-text">Текст</Label>
-              <Textarea id="mission-text" rows={10} defaultValue="Тук ще се появи текущият текст на страницата 'Мисия'..." />
+              <RichTextEditor
+                value={missionContent}
+                onChange={setMissionContent}
+              />
             </div>
             <Button>Запази промените</Button>
           </CardContent>

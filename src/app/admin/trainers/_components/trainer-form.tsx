@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { upsertTrainer } from '../actions';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import type { Trainer } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/rich-text-editor';
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -32,10 +32,20 @@ function SubmitButton({ isEditing }: { isEditing: boolean }) {
 export function TrainerForm({ trainer }: { trainer?: Trainer }) {
   const isEditing = !!trainer;
   const initialState = { message: null, errors: {} };
+  
+  const [achievements, setAchievements] = useState(trainer?.achievements.join(', ') || '');
+  const [associatedHorses, setAssociatedHorses] = useState(trainer?.associatedHorses.join(', ') || '');
+
+  const formActionWithEditor = (formData: FormData) => {
+    formData.set('achievements', achievements);
+    formData.set('associatedHorses', associatedHorses);
+    dispatch(formData);
+  };
+  
   const [state, dispatch] = useActionState(upsertTrainer, initialState);
 
   return (
-    <form action={dispatch}>
+    <form action={formActionWithEditor}>
         <input type="hidden" name="id" value={trainer?.id} />
       <Card>
         <CardHeader>
@@ -53,13 +63,13 @@ export function TrainerForm({ trainer }: { trainer?: Trainer }) {
              {state.errors?.imageUrl && <p className="text-sm font-medium text-destructive">{state.errors.imageUrl}</p>}
           </div>
           <div className="space-y-1 md:col-span-2">
-            <Label htmlFor="achievements">Постижения (разделени със запетая)</Label>
-            <Textarea id="achievements" name="achievements" defaultValue={trainer?.achievements.join(', ')} />
+            <Label htmlFor="achievements">Постижения</Label>
+            <RichTextEditor value={achievements} onChange={setAchievements} />
             {state.errors?.achievements && <p className="text-sm font-medium text-destructive">{state.errors.achievements}</p>}
           </div>
           <div className="space-y-1 md:col-span-2">
-            <Label htmlFor="associatedHorses">Свързани коне (разделени със запетая)</Label>
-            <Textarea id="associatedHorses" name="associatedHorses" defaultValue={trainer?.associatedHorses.join(', ')} />
+            <Label htmlFor="associatedHorses">Свързани коне</Label>
+            <RichTextEditor value={associatedHorses} onChange={setAssociatedHorses} />
              {state.errors?.associatedHorses && <p className="text-sm font-medium text-destructive">{state.errors.associatedHorses}</p>}
           </div>
         </CardContent>
