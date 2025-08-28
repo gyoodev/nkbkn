@@ -5,20 +5,6 @@ import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-// Helper function to create a URL-friendly slug
-function slugify(text: string) {
-  return text
-    .toString()
-    .normalize('NFD') // split an accented letter in the base letter and the accent
-    .replace(/[\u0300-\u036f]/g, '') // remove all previously split accents
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, '-') // replace spaces with -
-    .replace(/[^\w\-]+/g, '') // remove all non-word chars
-    .replace(/\-\-+/g, '-'); // replace multiple - with single -
-}
-
-
 // Using manual validation instead of Zod to avoid session issues.
 async function validateFormData(formData: FormData) {
     const errors: Record<string, string> = {};
@@ -69,7 +55,7 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
         };
     }
     
-    const id = formData.get('id');
+    const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const category = formData.get('category') as string;
     const content = formData.get('content') as string;
@@ -80,40 +66,36 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
     const excerpt = plainTextContent.substring(0, 150) + '...';
 
     const isEditing = !!id;
+    const postData = {
+        title,
+        category,
+        content,
+        image_url,
+        excerpt,
+        user_id: user.id
+    };
 
     if (isEditing) {
         const { error } = await supabase
             .from('news_posts')
-            .update({
-                title,
-                category,
-                content,
-                image_url,
-                excerpt,
-                // href is based on id, so it doesn't need to be updated unless the slug logic changes
-            })
+            .update(postData)
             .eq('id', id);
 
         if (error) {
-            console.error('Supabase error:', error);
+            console.error('Supabase update error:', error);
             return { message: error.message };
         }
     } else {
-        // 1. Insert the new post with the href. The href will be based on the new ID.
+        // 1. Insert the new post with a placeholder href.
         const { data: newPost, error: insertError } = await supabase
             .from('news_posts')
             .insert({
-                title,
-                category,
-                content,
-                image_url,
-                excerpt,
+                ...postData,
                 date: new Date().toISOString(),
                 views: 0,
                 likes: 0,
                 comments_count: 0,
-                user_id: user.id,
-                href: '/news/placeholder' // Temporary placeholder to satisfy NOT NULL constraint
+                href: '/news/placeholder' // Temporary placeholder
             })
             .select('id')
             .single();
