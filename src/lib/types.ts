@@ -5,7 +5,6 @@ export interface Jockey {
   stats: {
     wins: number;
     mounts: number;
-    winRate: string;
   };
   imageUrl: string;
 }

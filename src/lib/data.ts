@@ -23,7 +23,6 @@ export async function getJockeys(): Promise<Jockey[]> {
             stats: {
                 wins: jockey.wins,
                 mounts: jockey.mounts,
-                winRate: jockey.mounts > 0 ? `${((jockey.wins / jockey.mounts) * 100).toFixed(1)}%` : '0%'
             }
         }));
     } catch (error: any) {
@@ -45,7 +44,6 @@ export async function getJockey(id: number): Promise<Jockey | null> {
         stats: {
             wins: data.wins,
             mounts: data.mounts,
-            winRate: data.mounts > 0 ? `${((data.wins / data.mounts) * 100).toFixed(1)}%` : '0%'
         }
     };
 }
