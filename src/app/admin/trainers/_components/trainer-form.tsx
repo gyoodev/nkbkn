@@ -62,12 +62,12 @@ export function TrainerForm({ trainer }: { trainer?: Trainer }) {
           </div>
            <div className="space-y-1.5">
             <Label htmlFor="wins">Победи</Label>
-            <Input id="wins" name="wins" type="number" defaultValue={trainer?.stats?.wins || 0} />
+            <Input id="wins" name="wins" type="number" defaultValue={trainer?.stats.wins || 0} />
             {state.errors?.wins && <p className="text-sm font-medium text-destructive">{state.errors.wins}</p>}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="mounts">Участия</Label>
-            <Input id="mounts" name="mounts" type="number" defaultValue={trainer?.stats?.mounts || 0} />
+            <Input id="mounts" name="mounts" type="number" defaultValue={trainer?.stats.mounts || 0} />
              {state.errors?.mounts && <p className="text-sm font-medium text-destructive">{state.errors.mounts}</p>}
           </div>
           <div className="space-y-1.5 md:col-span-2">
