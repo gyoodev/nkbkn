@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { upsertNewsPost } from '../actions';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,8 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import type { NewsPost } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
+import RichTextEditor from '@/components/rich-text-editor';
+
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -33,9 +34,17 @@ export function NewsPostForm({ post }: { post?: NewsPost }) {
   const isEditing = !!post;
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useActionState(upsertNewsPost, initialState);
+  const [content, setContent] = useState(post?.content || '');
+  
+  // Use a hidden input to pass the content to the server action
+  const formAction = (formData: FormData) => {
+    formData.set('content', content);
+    dispatch(formData);
+  };
+
 
   return (
-    <form action={dispatch}>
+    <form action={formAction}>
         <input type="hidden" name="id" value={post?.id} />
       <Card>
         <CardHeader>
@@ -58,14 +67,8 @@ export function NewsPostForm({ post }: { post?: NewsPost }) {
              {state.errors?.image_url && <p className="text-sm font-medium text-destructive">{state.errors.image_url}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="content">Съдържание</Label>
-            <Textarea 
-                id="content"
-                name="content"
-                defaultValue={post?.content || ''} 
-                className="min-h-[200px]"
-                rows={10}
-            />
+            <Label htmlFor="content-editor">Съдържание</Label>
+             <RichTextEditor value={content} onChange={setContent} />
              {state.errors?.content && <p className="text-sm font-medium text-destructive">{state.errors.content}</p>}
           </div>
         </CardContent>

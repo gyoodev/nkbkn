@@ -11,6 +11,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Heart, MessageCircle, Eye, Calendar } from 'lucide-react';
 import type { NewsPost } from '@/lib/types';
+import StarterKit from '@tiptap/starter-kit';
+import Youtube from '@tiptap/extension-youtube';
+import { useEditor, EditorContent } from '@tiptap/react';
 
 // Moved comments data outside the component to prevent re-creation on each render
 const comments = [
@@ -32,6 +35,23 @@ const comments = [
 
 export function NewsPostClientPage({ post }: { post: NewsPost }) {
   const { language, text } = useLanguage();
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Youtube.configure({
+        controls: false,
+        modestBranding: true,
+      }),
+    ],
+    content: post.content,
+    editable: false,
+    editorProps: {
+        attributes: {
+            class: "prose dark:prose-invert max-w-none focus:outline-none"
+        }
+    }
+  });
 
   const formattedDate = (date: string) => {
     return new Date(date).toLocaleDateString(language, {
@@ -88,11 +108,7 @@ export function NewsPostClientPage({ post }: { post: NewsPost }) {
           />
         </div>
 
-        <div 
-          className="prose prose-lg dark:prose-invert max-w-none whitespace-pre-wrap"
-        >
-          {post.content}
-        </div>
+        <EditorContent editor={editor} />
         
         <Separator className="my-8" />
 

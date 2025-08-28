@@ -100,7 +100,18 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+       typography: {
+        DEFAULT: {
+          css: {
+            'iframe': {
+              'width': '100%',
+              'aspect-ratio': '16 / 9',
+              'border-radius': '0.5rem'
+            },
+          },
+        },
+      },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [require('tailwindcss-animate'), require('@tailwindcss/typography')],
 } satisfies Config;
