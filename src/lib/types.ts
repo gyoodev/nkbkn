@@ -25,11 +25,6 @@ export interface Horse {
   dam: string;
   age: number;
   owner: string;
-  pastResults: {
-    date: string;
-    track: string;
-    position: number;
-  }[];
 }
 
 export interface Track {

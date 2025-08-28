@@ -5,11 +5,11 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { raceEvents, horses, getJockeys, getTrainers } from '@/lib/data';
+import { getRaceEvents, getHorses, getJockeys, getTrainers } from '@/lib/data';
 import { Activity, Users, Calendar as CalendarIcon, PlusCircle, ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { HorseIcon } from '@/components/icons/horse-icon';
-import type { Jockey, Trainer } from '@/lib/types';
+import type { Jockey, Trainer, Horse, RaceEvent } from '@/lib/types';
 
 
 const resultsData = [
@@ -36,6 +36,9 @@ const resultsData = [
 export default function AdminDashboardPage() {
     const [jockeysCount, setJockeysCount] = useState(0);
     const [trainersCount, setTrainersCount] = useState(0);
+    const [horsesCount, setHorsesCount] = useState(0);
+    const [eventsCount, setEventsCount] = useState(0);
+
 
     useEffect(() => {
         const fetchCounts = async () => {
@@ -43,15 +46,19 @@ export default function AdminDashboardPage() {
             setJockeysCount(jockeys.length);
             const trainers = await getTrainers();
             setTrainersCount(trainers.length);
+            const horses = await getHorses();
+            setHorsesCount(horses.length);
+            const events = await getRaceEvents();
+            setEventsCount(events.length);
         }
         fetchCounts();
     },[])
 
     const stats = [
-        { title: 'Общо коне', value: horses.length, icon: <HorseIcon className="h-4 w-4 text-muted-foreground" /> },
+        { title: 'Общо коне', value: horsesCount, icon: <HorseIcon className="h-4 w-4 text-muted-foreground" /> },
         { title: 'Общо жокеи', value: jockeysCount, icon: <Users className="h-4 w-4 text-muted-foreground" /> },
         { title: 'Общо треньори', value: trainersCount, icon: <Users className="h-4 w-4 text-muted-foreground" /> },
-        { title: 'Предстоящи събития', value: raceEvents.length, icon: <CalendarIcon className="h-4 w-4 text-muted-foreground" /> },
+        { title: 'Предстоящи събития', value: eventsCount, icon: <CalendarIcon className="h-4 w-4 text-muted-foreground" /> },
     ]
 
   return (
