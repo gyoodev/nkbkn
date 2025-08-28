@@ -59,6 +59,7 @@ export function NewsPostForm({ post }: { post?: NewsPost }) {
           </div>
           <div className="space-y-1">
             <Label htmlFor="content">Съдържание</Label>
+            {/* Rich text editor will be placed here */}
             <Textarea id="content" name="content" defaultValue={post?.content} rows={10} />
              {state.errors?.content && <p className="text-sm font-medium text-destructive">{state.errors.content}</p>}
           </div>
