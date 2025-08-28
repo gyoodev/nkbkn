@@ -46,17 +46,22 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
     const plainTextContent = postData.content.replace(/<[^>]*>?/gm, '');
     const excerpt = plainTextContent.substring(0, 150) + '...';
 
-    const { error } = await supabase
-        .from('news_posts')
-        .upsert({
+    const upsertData: any = {
             id: id || undefined,
             ...postData,
             excerpt,
-            // These are placeholder values as they are not on the form
-            views: 0,
-            likes: 0,
-            comments_count: 0
-        });
+            user_id: user.id,
+    };
+
+    if (!id) {
+        upsertData.views = 0;
+        upsertData.likes = 0;
+        upsertData.comments_count = 0;
+    }
+
+    const { error } = await supabase
+        .from('news_posts')
+        .upsert(upsertData);
 
 
     if (error) {
