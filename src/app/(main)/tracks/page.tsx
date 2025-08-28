@@ -24,7 +24,7 @@ export default function TracksPage() {
                 src="https://archigeya-s.com/wp-content/uploads/2016/02/c4-1.jpg"
                 alt="Проект за хиподрум"
                 fill
-                className="object-cover rounded-lg"
+                className="object-contain rounded-lg"
                 sizes="(max-width: 768px) 100vw, 50vw"
                 data-ai-hint="hippodrome project"
             />
