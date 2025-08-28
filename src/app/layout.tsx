@@ -26,6 +26,9 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('font-body antialiased min-h-screen bg-background')}>
+        <div className="bg-destructive text-destructive-foreground text-center p-2 text-sm font-bold">
+            Сайтът е в процес на разработка. Всички информационни блокове ще бъда актуализирани в най-скоро време!
+        </div>
         <LanguageProvider>
           <AuthProvider>
             {children}

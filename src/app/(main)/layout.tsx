@@ -129,9 +129,6 @@ export default function MainLayout({
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <div className="bg-destructive text-destructive-foreground text-center p-2 text-sm font-bold">
-        Сайтът е в процес на разработка. Всички информационни блокове ще бъда актуализирани в най-скоро време!
-      </div>
       <header className="sticky top-0 z-50 bg-white shadow-md">
         <div className="bg-primary text-primary-foreground">
           <div className="container mx-auto flex h-10 items-center justify-between px-4">
