@@ -89,9 +89,10 @@ export function NewsPostClientPage({ post }: { post: NewsPost }) {
         </div>
 
         <div 
-          className="prose prose-lg dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
+          className="prose prose-lg dark:prose-invert max-w-none whitespace-pre-wrap"
+        >
+          {post.content}
+        </div>
         
         <Separator className="my-8" />
 

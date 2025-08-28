@@ -105,16 +105,3 @@ body {
     border: none;
   }
 }
-
-.ql-editor {
-    color: var(--foreground);
-}
-.ql-snow .ql-stroke {
-    stroke: var(--foreground);
-}
-.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill {
-    fill: var(--foreground);
-}
-.ql-snow .ql-picker-label {
-    color: var(--foreground);
-}
