@@ -40,6 +40,12 @@ const nextConfig: NextConfig = {
         hostname: 'ekip7.bg',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'archigeya-s.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

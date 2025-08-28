@@ -21,7 +21,7 @@ export default function TracksPage() {
       <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2">
         <div className="relative h-96 w-full min-h-[400px] md:h-auto">
             <Image
-                src="https://picsum.photos/1200/800?random=hippodrome"
+                src="https://archigeya-s.com/wp-content/uploads/2016/02/c4-1.jpg"
                 alt="Проект за хиподрум"
                 fill
                 className="object-cover rounded-lg"
