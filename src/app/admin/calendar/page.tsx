@@ -24,6 +24,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import Link from 'next/link';
 
 
 function DeleteButton({ id, onDeleted }: { id: number, onDeleted: () => void }) {
@@ -97,9 +98,11 @@ export default function AdminCalendarPage() {
           <Card>
              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Календар</CardTitle>
-                 <Button size="sm" disabled>
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Добави събитие
+                 <Button size="sm" asChild>
+                    <Link href="/admin/calendar/new">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Добави събитие
+                    </Link>
                 </Button>
             </CardHeader>
             <CardContent className="p-2">
@@ -136,9 +139,11 @@ export default function AdminCalendarPage() {
                           <CardDescription>{event.races.length} състезания</CardDescription>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Button variant="outline" size="icon" disabled>
-                            <Edit className="h-4 w-4" />
-                            <span className="sr-only">Редактирай</span>
+                          <Button variant="outline" size="icon" asChild>
+                            <Link href={`/admin/calendar/${event.id}/edit`}>
+                                <Edit className="h-4 w-4" />
+                                <span className="sr-only">Редактирай</span>
+                            </Link>
                           </Button>
                           <DeleteButton id={event.id} onDeleted={fetchEvents} />
                         </div>
@@ -162,9 +167,11 @@ export default function AdminCalendarPage() {
                     <p className="text-sm text-muted-foreground">
                       Изберете друга дата или добавете ново събитие.
                     </p>
-                    <Button className="mt-4" disabled>
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Добави събитие
+                    <Button className="mt-4" asChild>
+                        <Link href="/admin/calendar/new">
+                            <PlusCircle className="mr-2 h-4 w-4" />
+                            Добави събитие
+                        </Link>
                     </Button>
                   </div>
                 </div>

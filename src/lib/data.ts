@@ -125,6 +125,24 @@ export async function getRaceEvents(): Promise<RaceEvent[]> {
 }
 
 
+export async function getRaceEvent(id: number): Promise<RaceEvent | null> {
+    const { data, error } = await supabase.from('race_events').select('*, races (*)').eq('id', id).single();
+    if (error || !data) {
+        if (error && error.code !== 'PGRST116') {
+            console.error(`Error fetching race event with id ${id}:`, error);
+        }
+        return null;
+    }
+    
+    // Sort races by time
+    if (data.races) {
+        data.races.sort((a: any, b: any) => a.time.localeCompare(b.time));
+    }
+
+    return data as RaceEvent;
+}
+
+
 export async function getNewsPosts(): Promise<NewsPost[]> {
     const { data, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
     if (error) {
