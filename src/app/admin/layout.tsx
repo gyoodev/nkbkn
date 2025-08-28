@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, redirect } from 'next/navigation';
 import {
   Calendar,
   FileText,
@@ -14,6 +14,7 @@ import {
   Users,
   Trophy,
   Image as ImageIcon,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -27,6 +28,19 @@ import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
 import { Separator } from '@/components/ui/separator';
 import { HorseIcon } from '@/components/icons/horse-icon';
+import { useAuth } from '@/hooks/use-auth';
+import { useEffect } from 'react';
+
+function AdminLayoutSkeleton() {
+  return (
+    <div className="flex min-h-screen w-full items-center justify-center bg-muted/40">
+        <div className="flex items-center space-x-2">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <span className="text-lg font-semibold text-muted-foreground">Зареждане на панела...</span>
+        </div>
+    </div>
+  )
+}
 
 export default function AdminLayout({
   children,
@@ -35,6 +49,21 @@ export default function AdminLayout({
 }) {
   const pathname = usePathname();
   const { text } = useLanguage();
+  const { isAdmin, loading } = useAuth();
+  
+  useEffect(() => {
+    if (!loading && !isAdmin) {
+      redirect('/');
+    }
+  }, [isAdmin, loading]);
+
+  if (loading) {
+    return <AdminLayoutSkeleton />;
+  }
+
+  if (!isAdmin) {
+      return null;
+  }
 
   const mainNavItems = [
     { href: '/admin', label: 'Табло', icon: <Home className="h-5 w-5" /> },

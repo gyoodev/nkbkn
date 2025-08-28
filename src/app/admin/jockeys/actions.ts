@@ -65,10 +65,6 @@ export async function upsertJockey(prevState: any, formData: FormData) {
 
 export async function deleteJockey(id: number) {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-     if (!user) {
-        return { message: 'Authentication required' };
-    }
 
     const { error } = await supabase.from('jockeys').delete().eq('id', id);
 

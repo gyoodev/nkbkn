@@ -22,12 +22,7 @@ const EventSchema = z.object({
 
 export async function upsertRaceEvent(prevState: any, formData: FormData) {
   const supabase = createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { message: 'Authentication required' };
-  }
-
+  
   const raceCount = Array.from(formData.keys()).filter(key => key.startsWith('race-name-')).length;
   const races = [];
   for (let i = 0; i < raceCount; i++) {
@@ -89,16 +84,19 @@ export async function upsertRaceEvent(prevState: any, formData: FormData) {
   
   // Delete races that were removed in the form
   const raceIdsToKeep = raceData.map(r => r.id).filter(Boolean);
-  const { error: deleteError } = await supabase
-    .from('races')
-    .delete()
-    .eq('event_id', eventId)
-    .not('id', 'in', `(${raceIdsToKeep.join(',')})`);
-  
-  if (deleteError) {
-      console.error('Race delete error:', deleteError);
-      // Not returning error as it's not critical if old races are not deleted
+  if (raceIdsToKeep.length > 0) {
+    const { error: deleteError } = await supabase
+        .from('races')
+        .delete()
+        .eq('event_id', eventId)
+        .not('id', 'in', `(${raceIdsToKeep.join(',')})`);
+    
+    if (deleteError) {
+        console.error('Race delete error:', deleteError);
+        // Not returning error as it's not critical if old races are not deleted
+    }
   }
+
 
   revalidatePath('/admin/calendar');
   revalidatePath('/calendar');
@@ -108,10 +106,6 @@ export async function upsertRaceEvent(prevState: any, formData: FormData) {
 
 export async function deleteRaceEvent(id: number) {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-     if (!user) {
-        return { message: 'Authentication required' };
-    }
 
     // Must delete races first due to foreign key constraint
     const { error: racesError } = await supabase.from('races').delete().eq('event_id', id);

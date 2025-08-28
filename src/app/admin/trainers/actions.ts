@@ -68,10 +68,6 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
 
 export async function deleteTrainer(id: number) {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-     if (!user) {
-        return { message: 'Authentication required' };
-    }
 
     const { error } = await supabase.from('trainers').delete().eq('id', id);
 

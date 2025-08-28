@@ -1,3 +1,4 @@
+
 'use server';
 
 import { z } from 'zod';
@@ -17,11 +18,6 @@ const FormSchema = z.object({
 
 export async function uploadDocument(prevState: any, formData: FormData) {
   const supabase = createServerClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (!user) {
-    return { message: 'Authentication required' };
-  }
 
   const validatedFields = FormSchema.safeParse({
     name: formData.get('name'),
@@ -67,10 +63,6 @@ export async function uploadDocument(prevState: any, formData: FormData) {
 
 export async function deleteDocument(id: number) {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-     if (!user) {
-        return { message: 'Authentication required' };
-    }
 
     // First get the document path
     const { data: doc, error: fetchError } = await supabase.from('documents').select('path').eq('id', id).single();

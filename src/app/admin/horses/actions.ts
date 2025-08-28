@@ -18,11 +18,6 @@ const FormSchema = z.object({
 
 export async function upsertHorse(prevState: any, formData: FormData) {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        return { message: 'Authentication required' };
-    }
 
     const validatedFields = FormSchema.safeParse({
         id: formData.get('id'),
@@ -63,10 +58,6 @@ export async function upsertHorse(prevState: any, formData: FormData) {
 
 export async function deleteHorse(id: number) {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-     if (!user) {
-        return { message: 'Authentication required' };
-    }
 
     const { error } = await supabase.from('horses').delete().eq('id', id);
 
