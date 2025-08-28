@@ -8,21 +8,8 @@ import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
-import { DeleteNewsPost } from './actions';
+import { DeleteButton } from './_components/delete-button';
 
-
-function DeleteButton({ id }: { id: number }) {
-    const deleteWithId = DeleteNewsPost.bind(null, id);
-    return (
-        <form action={deleteWithId}>
-            <button className='w-full text-left'>
-                <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                    Изтрий
-                </DropdownMenuItem>
-            </button>
-        </form>
-    );
-}
 
 export default async function AdminNewsPage() {
     const newsPosts = await getNewsPosts();

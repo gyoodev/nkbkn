@@ -1,3 +1,4 @@
+
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,21 +8,7 @@ import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { getDocuments } from '@/lib/data';
 import Link from 'next/link';
-import { deleteDocument } from './actions';
-
-function DeleteButton({ id }: { id: number }) {
-  const deleteWithId = deleteDocument.bind(null, id);
-  return (
-      <form action={deleteWithId}>
-          <button className='w-full text-left'>
-              <DropdownMenuItem onSelect={e => e.preventDefault()}>
-                  Изтрий
-              </DropdownMenuItem>
-          </button>
-      </form>
-  );
-}
-
+import { DeleteButton } from './_components/delete-button';
 
 export default async function AdminDocumentsPage() {
   const documents = await getDocuments();

@@ -190,7 +190,8 @@ export async function getDocuments(): Promise<Document[]> {
         .order('created_at', { ascending: false });
         
     if (error) {
-        console.error('Error fetching documents:', error);
+        // This can happen during build if the table does not exist yet.
+        console.error('Error fetching documents:', error.message);
         return [];
     }
 
