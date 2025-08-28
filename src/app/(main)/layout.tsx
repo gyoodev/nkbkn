@@ -36,10 +36,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Footer } from '@/components/footer';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
-import { createBrowserClient } from '@/lib/supabase/client';
 import Image from 'next/image';
+import { useAuth } from '@/hooks/use-auth';
+import { createBrowserClient } from '@/lib/supabase/client';
 
 export default function MainLayout({
   children,
@@ -48,43 +47,8 @@ export default function MainLayout({
 }) {
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user, isAdmin, signOut } = useAuth();
   const supabase = createBrowserClient();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUser(user);
-        // Fetch profile to check role
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single();
-        if (profile) {
-          setIsAdmin(profile.role === 'admin');
-        }
-      }
-    };
-    fetchUser();
-
-     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setUser(session?.user ?? null);
-        if (session?.user) {
-            fetchUser();
-        } else {
-            setIsAdmin(false);
-        }
-      }
-    );
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [supabase]);
 
 
   const socialLinks = [
@@ -142,9 +106,7 @@ export default function MainLayout({
   );
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setIsAdmin(false);
+    await signOut();
     window.location.href = '/';
   };
 

@@ -3,6 +3,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { LanguageProvider } from '@/hooks/use-language';
+import { AuthProvider } from '@/hooks/use-auth';
 
 export const metadata: Metadata = {
   title: 'НКБКН - Национална комисия за Български конни надбягвания',
@@ -26,8 +27,10 @@ export default function RootLayout({
       </head>
       <body className={cn('font-body antialiased min-h-screen bg-background')}>
         <LanguageProvider>
-          {children}
-          <Toaster />
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
         </LanguageProvider>
       </body>
     </html>
