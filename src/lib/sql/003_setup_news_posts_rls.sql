@@ -1,49 +1,33 @@
--- 003_setup_news_posts_rls.sql
+-- Enable Row Level Security
+alter table news_posts enable row level security;
 
--- First, ensure RLS is enabled on the table
-alter table public.news_posts enable row level security;
+-- Drop existing policies if they exist, to avoid conflicts
+drop policy if exists "Authenticated users can insert news posts" on news_posts;
+drop policy if exists "Users can update their own news posts" on news_posts;
+drop policy if exists "Users can delete their own news posts" on news_posts;
+drop policy if exists "Allow public read access to news posts" on news_posts;
 
--- Drop existing policies to avoid conflicts
-drop policy if exists "Enable read access for all users" on public.news_posts;
-drop policy if exists "Enable insert for authenticated users only" on public.news_posts;
-drop policy if exists "Enable update for users based on user_id" on public.news_posts;
-drop policy if exists "Enable delete for users based on user_id" on public.news_posts;
+-- Create new, simpler policies
+-- 1. Allow public read access to everyone
+create policy "Allow public read access to news posts"
+  on news_posts for select
+  using ( true );
 
+-- 2. Allow authenticated users to insert new posts
+create policy "Authenticated users can insert news posts"
+  on news_posts for insert
+  to authenticated
+  with check ( auth.uid() = user_id );
 
--- Create policies
-create policy "Enable read access for all users"
-on public.news_posts
-for select
-using (true);
-
-create policy "Enable insert for authenticated users only"
-on public.news_posts
-for insert
-with check (auth.role() = 'authenticated');
-
-create policy "Enable update for users based on user_id"
-on public.news_posts
-for update
-using (auth.uid() = user_id or check_if_user_is_admin(auth.uid()))
-with check (auth.uid() = user_id or check_if_user_is_admin(auth.uid()));
-
-create policy "Enable delete for users based on user_id"
-on public.news_posts
-for delete
-using (auth.uid() = user_id or check_if_user_is_admin(auth.uid()));
-
-
--- Helper function to check if a user is an admin
-create or replace function check_if_user_is_admin(user_id uuid)
-returns boolean
-language plpgsql
-security definer
-as $$
-begin
-  return exists (
-    select 1
-    from public.profiles
-    where profiles.id = user_id and profiles.role = 'admin'
-  );
-end;
-$$;
+-- 3. Allow authenticated users to update any post
+create policy "Authenticated users can update any post"
+  on news_posts for update
+  to authenticated
+  using ( true )
+  with check ( true );
+  
+-- 4. Allow authenticated users to delete any post
+create policy "Authenticated users can delete any post"
+  on news_posts for delete
+  to authenticated
+  using ( true );
