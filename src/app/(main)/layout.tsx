@@ -87,14 +87,13 @@ export default function MainLayout({
     { href: '/tracks', label: text.tracks },
     { href: '/gallery', label: text.gallery },
     { href: '/news', label: text.news },
-    { href: '/regulations', label: text.regulations, icon: <FileText /> },
+    { href: '/forms', label: text.forms, icon: <FileText /> },
   ];
   
   const allNavItems = [
       { href: '/', label: text.home, exact: true },
       ...leftNavItems, 
       ...rightNavItems,
-      { href: '/forms', label: text.forms, icon: <FileText /> },
       { href: '/contact', label: text.contact },
       { href: '/calendar', label: text.calendar },
     ];

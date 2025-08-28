@@ -49,7 +49,6 @@ export function Footer() {
       { label: text.news, href: '/news' },
     ],
     [text.resources]: [
-        { label: text.regulations, href: '/regulations' },
         { label: text.forms, href: '/forms' },
         { label: text.contact, href: '/contact' },
     ],
