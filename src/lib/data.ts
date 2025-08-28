@@ -253,3 +253,6 @@ export async function getResult(id: number): Promise<Result | null> {
     }
     return data;
 }
+
+
+    
