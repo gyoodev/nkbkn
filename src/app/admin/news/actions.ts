@@ -72,6 +72,7 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
         image_url,
         excerpt,
         date: new Date().toISOString(),
+        user_id: user.id
     };
 
     if (id) {
