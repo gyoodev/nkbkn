@@ -114,12 +114,10 @@ export const tracks: Track[] = [
     { id: 1, name: 'Хиподрум "Гецово"', location: 'с. Гецово, обл. Разград', description: 'Проектът за хиподрум в с. Гецово е в процес на разработка. Очаквайте скоро повече информация и визуализации на бъдещото съоръжение, което ще се превърне в модерен център за конни надбягвания в региона.' },
 ];
 
-export const galleryImages: { id: number; src: string; alt: string, hint: string }[] = Array.from({ length: 12 }, (_, i) => ({
-  id: i + 1,
-  src: `https://picsum.photos/600/400?random=${20 + i}`,
-  alt: `Race image ${i + 1}`,
-  hint: 'horse race',
-}));
+// This is now an empty array.
+// The gallery page will check this and display a message if it's empty.
+export const galleryImages: { id: number; src: string; alt: string, hint: string }[] = [];
+
 
 export async function getRaceEvents(): Promise<RaceEvent[]> {
     try {
