@@ -36,7 +36,7 @@ export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
           src="https://ekip7.bg/wp-content/uploads/2022/09/19-09-2022_kusii-3.jpg"
           alt="Close-up of a horse racing"
           fill
-          className="object-cover"
+          className="object-cover object-center"
           priority
           sizes="100vw"
           data-ai-hint="horse racing action"
