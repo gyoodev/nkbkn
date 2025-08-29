@@ -47,54 +47,34 @@ export async function submitApplication(prevState: State, formData: FormData): P
         phone: formData.get('phone'),
     };
 
-    switch(formType) {
-        case 'Жокей':
-            dataToValidate = {
-                ...dataToValidate,
-                first_name: formData.get('first_name'),
-                last_name: formData.get('last_name'),
-                date_of_birth: formData.get('date_of_birth'),
-                egn: formData.get('egn'),
-                address: formData.get('address'),
-                wins: formData.get('wins'),
-            };
-            break;
-        case 'Собственик':
-            dataToValidate = {
-                ...dataToValidate,
-                first_name: formData.get('first_name'),
-                last_name: formData.get('last_name'),
-                date_of_birth: formData.get('date_of_birth'),
-                egn: formData.get('egn'),
-                address: formData.get('address'),
-            };
-            break;
-        case 'Треньор':
-             dataToValidate = {
-                ...dataToValidate,
-                first_name: formData.get('first_name'),
-                last_name: formData.get('last_name'),
-                date_of_birth: formData.get('date_of_birth'),
-                egn: formData.get('egn'),
-                address: formData.get('address'),
-                wins: formData.get('wins'),
-                horse_count: formData.get('horse_count'),
-            };
-            break;
-        case 'Кон':
-             dataToValidate = {
-                ...dataToValidate,
-                horse_name: formData.get('horse_name'),
-                age: formData.get('age'),
-                sire: formData.get('sire'),
-                dam: formData.get('dam'),
-                owner: formData.get('owner'),
-                mounts: formData.get('mounts'),
-                wins: formData.get('wins'),
-            };
-            break;
-        default:
-             return { success: false, message: "Невалиден тип на формуляра." };
+    // Consolidate data based on type
+    if (formType === 'Жокей' || formType === 'Треньор' || formType === 'Собственик') {
+        dataToValidate = {
+            ...dataToValidate,
+            first_name: formData.get('first_name'),
+            last_name: formData.get('last_name'),
+            date_of_birth: formData.get('date_of_birth'),
+            egn: formData.get('egn'),
+            address: formData.get('address'),
+        };
+    }
+     if (formType === 'Жокей' || formType === 'Треньор') {
+        dataToValidate.wins = formData.get('wins');
+    }
+    if (formType === 'Треньор') {
+        dataToValidate.horse_count = formData.get('horse_count');
+    }
+    if (formType === 'Кон') {
+        dataToValidate = {
+            ...dataToValidate,
+            horse_name: formData.get('horse_name'),
+            age: formData.get('age'),
+            sire: formData.get('sire'),
+            dam: formData.get('dam'),
+            owner: formData.get('owner'),
+            mounts: formData.get('mounts'),
+            wins: formData.get('wins'),
+        };
     }
 
     const validatedFields = ApplicationSchema.safeParse(dataToValidate);
@@ -104,17 +84,20 @@ export async function submitApplication(prevState: State, formData: FormData): P
         return { success: false, message: errorMessage || "Моля, поправете грешките във формата." };
     }
     
+    // Determine the 'name' for the database based on the form type
     const nameForDb = formType === 'Кон' 
         ? validatedFields.data.horse_name 
         : `${validatedFields.data.first_name} ${validatedFields.data.last_name}`;
 
+    const submissionData = {
+      ...validatedFields.data,
+      name: nameForDb,
+      status: 'new'
+    }
+
     const { error } = await supabase
         .from('submissions')
-        .insert({
-            ...validatedFields.data,
-            name: nameForDb,
-            status: 'new'
-        });
+        .insert(submissionData);
 
 
     if (error) {

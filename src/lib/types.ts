@@ -122,13 +122,13 @@ export interface Submission {
     created_at: string;
     type: 'Жокей' | 'Треньор' | 'Кон' | 'Собственик';
     status: 'new' | 'read' | 'archived';
+    name: string | null;
 
-    // Shared
-    email: string;
-    phone: string;
+    // Shared Contact
+    email: string | null;
+    phone: string | null;
     
-    // Jockey/Trainer/Owner
-    name?: string | null; // Corresponds to first_name
+    // Person-specific
     first_name?: string | null;
     last_name?: string | null;
     date_of_birth?: string | null;
@@ -139,13 +139,13 @@ export interface Submission {
     horse_count?: number | null;
     
     // Horse specific
-    horse_name?: string | null; // Corresponds to horse_name in form, but uses 'name' in DB
+    horse_name?: string | null;
     age?: number | null;
     sire?: string | null;
     dam?: string | null;
     owner?: string | null;
     
-    // Shared stats
+    // Shared stats for horse/jockey/trainer
     mounts?: number | null;
     wins?: number | null;
 }

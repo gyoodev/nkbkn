@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Separator } from '@/components/ui/separator';
 
 
 async function getSubmissions(): Promise<Submission[]> {
@@ -35,11 +36,11 @@ async function getSubmissions(): Promise<Submission[]> {
 }
 
 function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {
-    if (!value) return null;
+    if (value === null || value === undefined || value === '') return null;
     return (
          <div className="grid grid-cols-3 items-center gap-4">
-            <span className="text-right font-semibold">{label}:</span>
-            <span className="col-span-2">{value}</span>
+            <span className="text-sm font-semibold text-right text-muted-foreground">{label}:</span>
+            <span className="col-span-2 text-sm">{value}</span>
         </div>
     )
 }
@@ -53,44 +54,53 @@ function ViewSubmissionDialog({ submission }: { submission: Submission }) {
                     Преглед
                 </DropdownMenuItem>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-2xl">
+            <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
-                    <DialogTitle>Преглед на заявка - {submission.type}</DialogTitle>
+                    <DialogTitle>Преглед на заявка: {submission.type}</DialogTitle>
                     <DialogDescription>
-                        Заявка от {submission.name || submission.first_name}, получена на {new Date(submission.created_at).toLocaleString('bg-BG')}.
+                        Заявка от {submission.name}, получена на {new Date(submission.created_at).toLocaleString('bg-BG')}.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-2 py-4 text-sm">
-                    <SubmissionDetail label="Име" value={submission.first_name} />
-                    <SubmissionDetail label="Фамилия" value={submission.last_name} />
-                    <SubmissionDetail label="Дата на раждане" value={submission.date_of_birth} />
-                    <SubmissionDetail label="ЕГН" value={submission.egn} />
-                    <SubmissionDetail label="Адрес" value={submission.address} />
-                    <SubmissionDetail label="Имейл" value={submission.email} />
-                    <SubmissionDetail label="Телефон" value={submission.phone} />
+                <div className="space-y-3 py-4">
+                   
+                    {(submission.type === 'Жокей' || submission.type === 'Треньор' || submission.type === 'Собственик') && (
+                        <div className="space-y-2 rounded-md border p-4">
+                            <h4 className="font-semibold text-md">Лични данни</h4>
+                            <Separator />
+                            <SubmissionDetail label="Име" value={submission.first_name} />
+                            <SubmissionDetail label="Фамилия" value={submission.last_name} />
+                            <SubmissionDetail label="Дата на раждане" value={submission.date_of_birth} />
+                            <SubmissionDetail label="ЕГН" value={submission.egn} />
+                            <SubmissionDetail label="Адрес" value={submission.address} />
+                            {(submission.type === 'Жокей' || submission.type === 'Треньор') && (
+                                <SubmissionDetail label="Победи" value={submission.wins} />
+                            )}
+                            {submission.type === 'Треньор' && (
+                                <SubmissionDetail label="Брой коне" value={submission.horse_count} />
+                            )}
+                        </div>
+                    )}
                     
                     {submission.type === 'Кон' && (
-                        <>
-                             <SubmissionDetail label="Име на коня" value={submission.name} />
+                         <div className="space-y-2 rounded-md border p-4">
+                             <h4 className="font-semibold text-md">Данни за коня</h4>
+                             <Separator />
+                             <SubmissionDetail label="Име на коня" value={submission.horse_name} />
                              <SubmissionDetail label="Възраст" value={submission.age} />
                              <SubmissionDetail label="Баща" value={submission.sire} />
                              <SubmissionDetail label="Майка" value={submission.dam} />
                              <SubmissionDetail label="Собственик" value={submission.owner} />
                              <SubmissionDetail label="Участия" value={submission.mounts} />
                              <SubmissionDetail label="Победи" value={submission.wins} />
-                        </>
-                    )}
-                    
-                    {submission.type === 'Треньор' && (
-                        <>
-                             <SubmissionDetail label="Победи" value={submission.wins} />
-                             <SubmissionDetail label="Брой коне" value={submission.horse_count} />
-                        </>
+                        </div>
                     )}
 
-                    {submission.type === 'Жокей' && (
-                         <SubmissionDetail label="Победи" value={submission.wins} />
-                    )}
+                    <div className="space-y-2 rounded-md border p-4">
+                        <h4 className="font-semibold text-md">Данни за контакт</h4>
+                        <Separator />
+                        <SubmissionDetail label="Имейл" value={submission.email} />
+                        <SubmissionDetail label="Телефон" value={submission.phone} />
+                    </div>
 
                 </div>
             </DialogContent>
@@ -153,7 +163,7 @@ export default async function AdminSubmissionsPage() {
             <TableBody>
               {submissions.map((sub) => (
                 <TableRow key={sub.id}>
-                  <TableCell className="font-medium">{sub.name || `${sub.first_name} ${sub.last_name}`}</TableCell>
+                  <TableCell className="font-medium">{sub.name}</TableCell>
                   <TableCell>{sub.type}</TableCell>
                    <TableCell>
                     <Badge variant={getStatusVariant(sub.status)}>{sub.status}</Badge>
