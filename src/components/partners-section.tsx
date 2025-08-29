@@ -1,10 +1,11 @@
+
 'use client';
 
 import { useLanguage } from "@/hooks/use-language";
 import Image from "next/image";
 
 const partnerLogos = [
-    { name: 'Partner 1', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner1' },
+    { name: 'Starbucks', logoUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png' },
     { name: 'Partner 2', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner2' },
     { name: 'Partner 3', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner3' },
     { name: 'Partner 4', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner4' },
