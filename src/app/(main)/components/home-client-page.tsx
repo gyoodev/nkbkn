@@ -31,7 +31,7 @@ export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative h-[60vh] w-full text-white sm:h-[70vh] lg:h-[80vh]">
+      <section className="relative flex h-[70vh] w-full items-center justify-center text-white md:h-[80vh]">
         <Image
           src="https://ekip7.bg/wp-content/uploads/2022/09/19-09-2022_kusii-3.jpg"
           alt="Close-up of a horse racing"
@@ -43,14 +43,14 @@ export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
         <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center">
-          <div className="max-w-4xl space-y-6">
-            <h1 className="font-headline text-4xl font-extrabold uppercase leading-tight tracking-wide text-shadow-lg sm:text-5xl md:text-7xl">
+          <div className="max-w-4xl space-y-4 md:space-y-6">
+            <h1 className="font-headline text-4xl font-extrabold uppercase leading-tight tracking-wide text-shadow-lg sm:text-5xl md:text-6xl lg:text-7xl">
               {text.heroTitle}
             </h1>
             <p className="text-lg text-gray-200 sm:text-xl md:text-2xl">
               {text.homeSubtitle}
             </p>
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <div className="flex flex-col gap-4 pt-4 sm:flex-row sm:justify-center">
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
                 <Link href="#">
                   <Calendar className="mr-2" />
