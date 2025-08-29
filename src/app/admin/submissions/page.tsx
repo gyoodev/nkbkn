@@ -34,6 +34,16 @@ async function getSubmissions(): Promise<Submission[]> {
     return data;
 }
 
+function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {
+    if (!value) return null;
+    return (
+         <div className="grid grid-cols-3 items-center gap-4">
+            <span className="text-right font-semibold">{label}:</span>
+            <span className="col-span-2">{value}</span>
+        </div>
+    )
+}
+
 function ViewSubmissionDialog({ submission }: { submission: Submission }) {
     return (
         <Dialog>
@@ -47,26 +57,41 @@ function ViewSubmissionDialog({ submission }: { submission: Submission }) {
                 <DialogHeader>
                     <DialogTitle>Преглед на заявка - {submission.type}</DialogTitle>
                     <DialogDescription>
-                        Заявка от {submission.name}, получена на {new Date(submission.created_at).toLocaleString('bg-BG')}.
+                        Заявка от {submission.name || submission.first_name}, получена на {new Date(submission.created_at).toLocaleString('bg-BG')}.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
-                    <div className="grid grid-cols-4 items-center gap-4">
-                        <span className="text-right font-semibold">Име:</span>
-                        <span className="col-span-3">{submission.name}</span>
-                    </div>
-                     <div className="grid grid-cols-4 items-center gap-4">
-                        <span className="text-right font-semibold">Имейл:</span>
-                        <span className="col-span-3">{submission.email}</span>
-                    </div>
-                     <div className="grid grid-cols-4 items-center gap-4">
-                        <span className="text-right font-semibold">Телефон:</span>
-                        <span className="col-span-3">{submission.phone}</span>
-                    </div>
-                     <div className="grid grid-cols-4 items-start gap-4">
-                        <span className="text-right font-semibold">Съобщение:</span>
-                        <p className="col-span-3 whitespace-pre-wrap">{submission.message || 'Няма'}</p>
-                    </div>
+                <div className="grid gap-2 py-4 text-sm">
+                    <SubmissionDetail label="Име" value={submission.first_name} />
+                    <SubmissionDetail label="Фамилия" value={submission.last_name} />
+                    <SubmissionDetail label="Дата на раждане" value={submission.date_of_birth} />
+                    <SubmissionDetail label="ЕГН" value={submission.egn} />
+                    <SubmissionDetail label="Адрес" value={submission.address} />
+                    <SubmissionDetail label="Имейл" value={submission.email} />
+                    <SubmissionDetail label="Телефон" value={submission.phone} />
+                    
+                    {submission.type === 'Кон' && (
+                        <>
+                             <SubmissionDetail label="Име на коня" value={submission.name} />
+                             <SubmissionDetail label="Възраст" value={submission.age} />
+                             <SubmissionDetail label="Баща" value={submission.sire} />
+                             <SubmissionDetail label="Майка" value={submission.dam} />
+                             <SubmissionDetail label="Собственик" value={submission.owner} />
+                             <SubmissionDetail label="Участия" value={submission.mounts} />
+                             <SubmissionDetail label="Победи" value={submission.wins} />
+                        </>
+                    )}
+                    
+                    {submission.type === 'Треньор' && (
+                        <>
+                             <SubmissionDetail label="Победи" value={submission.wins} />
+                             <SubmissionDetail label="Брой коне" value={submission.horse_count} />
+                        </>
+                    )}
+
+                    {submission.type === 'Жокей' && (
+                         <SubmissionDetail label="Победи" value={submission.wins} />
+                    )}
+
                 </div>
             </DialogContent>
         </Dialog>
@@ -128,7 +153,7 @@ export default async function AdminSubmissionsPage() {
             <TableBody>
               {submissions.map((sub) => (
                 <TableRow key={sub.id}>
-                  <TableCell className="font-medium">{sub.name}</TableCell>
+                  <TableCell className="font-medium">{sub.name || `${sub.first_name} ${sub.last_name}`}</TableCell>
                   <TableCell>{sub.type}</TableCell>
                    <TableCell>
                     <Badge variant={getStatusVariant(sub.status)}>{sub.status}</Badge>
@@ -172,4 +197,3 @@ export default async function AdminSubmissionsPage() {
     </div>
   );
 }
-

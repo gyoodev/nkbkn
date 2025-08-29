@@ -6,11 +6,29 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const ApplicationSchema = z.object({
-  type: z.enum(['Жокей', 'Треньор', 'Кон']),
-  name: z.string().min(2, "Името трябва да е поне 2 символа."),
+  type: z.enum(['Жокей', 'Треньор', 'Кон', 'Собственик']),
+  // Common fields
   email: z.string().email("Моля, въведете валиден имейл."),
   phone: z.string().min(5, "Моля, въведете валиден телефонен номер."),
-  message: z.string().optional(),
+
+  // Jockey/Trainer/Owner fields
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  date_of_birth: z.string().optional(),
+  egn: z.string().optional(),
+  address: z.string().optional(),
+
+  // Trainer specific
+  horse_count: z.coerce.number().optional(),
+  
+  // Horse specific
+  horse_name: z.string().optional(),
+  age: z.coerce.number().optional(),
+  sire: z.string().optional(),
+  dam: z.string().optional(),
+  owner: z.string().optional(),
+  mounts: z.coerce.number().optional(),
+  wins: z.coerce.number().optional(),
 });
 
 
@@ -22,30 +40,87 @@ type State = {
 export async function submitApplication(prevState: State, formData: FormData): Promise<State> {
     const supabase = createServerClient();
 
-    const validatedFields = ApplicationSchema.safeParse({
-        type: formData.get('type'),
-        name: formData.get('name'),
-        email: formData.get('email'),
-        phone: formData.get('phone'),
-        message: formData.get('message')
-    });
+    const formType = formData.get('type');
+    let dataToValidate = {};
+
+    switch(formType) {
+        case 'Жокей':
+        case 'Собственик':
+            dataToValidate = {
+                type: formType,
+                first_name: formData.get('first_name'),
+                last_name: formData.get('last_name'),
+                date_of_birth: formData.get('date_of_birth'),
+                egn: formData.get('egn'),
+                address: formData.get('address'),
+                wins: formData.get('wins'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+            };
+            break;
+        case 'Треньор':
+             dataToValidate = {
+                type: formType,
+                first_name: formData.get('first_name'),
+                last_name: formData.get('last_name'),
+                date_of_birth: formData.get('date_of_birth'),
+                egn: formData.get('egn'),
+                address: formData.get('address'),
+                wins: formData.get('wins'),
+                horse_count: formData.get('horse_count'),
+                email: formData.get('email'),
+                phone: formData.get('phone'),
+            };
+            break;
+        case 'Кон':
+             dataToValidate = {
+                type: formType,
+                horse_name: formData.get('horse_name'),
+                age: formData.get('age'),
+                sire: formData.get('sire'),
+                dam: formData.get('dam'),
+                owner: formData.get('owner'),
+                mounts: formData.get('mounts'),
+                wins: formData.get('wins'),
+                email: formData.get('email'), // Contact email
+                phone: formData.get('phone'), // Contact phone
+            };
+            break;
+        default:
+             return { success: false, message: "Невалиден тип на формуляра." };
+    }
+
+    const validatedFields = ApplicationSchema.safeParse(dataToValidate);
 
     if (!validatedFields.success) {
-        // Concatenate all errors into a single message
-        const errorMessage = validatedFields.error.errors.map(e => e.message).join(' ');
+        const errorMessage = Object.values(validatedFields.error.flatten().fieldErrors).map(e => e.join(' ')).join(' ');
         return { success: false, message: errorMessage || "Моля, поправете грешките във формата." };
     }
     
-    const { type, name, email, phone, message } = validatedFields.data;
+    const { type, first_name, last_name, date_of_birth, egn, address, horse_count, horse_name, age, sire, dam, owner, mounts, wins, email, phone } = validatedFields.data;
+
+    // Use first_name for 'name' column for jockeys/trainers, and horse_name for horses
+    const mainName = type === 'Кон' ? horse_name : first_name;
 
     const { error } = await supabase
         .from('submissions')
         .insert({
             type,
-            name,
+            name: mainName, // Main name field in DB
+            first_name,
+            last_name,
+            date_of_birth,
+            egn,
+            address,
+            horse_count,
+            age,
+            sire,
+            dam,
+            owner,
+            mounts,
+            wins,
             email,
             phone,
-            message,
             status: 'new'
         });
 

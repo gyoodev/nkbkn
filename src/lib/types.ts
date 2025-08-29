@@ -120,10 +120,35 @@ export interface Comment {
 export interface Submission {
     id: number;
     created_at: string;
-    type: string;
-    name: string;
+    type: 'Жокей' | 'Треньор' | 'Кон' | 'Собственик';
+    status: 'new' | 'read' | 'archived';
+
+    // Shared
     email: string;
     phone: string;
-    message: string | null;
-    status: 'new' | 'read' | 'archived';
+    
+    // Jockey/Trainer/Owner
+    name?: string | null; // Corresponds to first_name
+    first_name?: string | null;
+    last_name?: string | null;
+    date_of_birth?: string | null;
+    egn?: string | null;
+    address?: string | null;
+
+    // Trainer specific
+    horse_count?: number | null;
+    
+    // Horse specific
+    horse_name?: string | null; // Corresponds to horse_name in form, but uses 'name' in DB
+    age?: number | null;
+    sire?: string | null;
+    dam?: string | null;
+    owner?: string | null;
+    
+    // Shared stats
+    mounts?: number | null;
+    wins?: number | null;
+
+    // Legacy message field
+    message?: string | null;
 }
