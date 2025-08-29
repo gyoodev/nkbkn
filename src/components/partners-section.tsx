@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useLanguage } from "@/hooks/use-language";
@@ -6,7 +7,7 @@ import Image from "next/image";
 const partnerLogos = [
     { name: 'Starbucks', logoUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png' },
     { name: 'YouTube', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/YouTube_Logo_2017.svg/1280px-YouTube_Logo_2017.svg.png' },
-    { name: 'Partner 3', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner3' },
+    { name: 'Meta', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/ab/Meta-Logo.png' },
     { name: 'Partner 4', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner4' },
     { name: 'Partner 5', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner5' },
     { name: 'Partner 6', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner6' },
