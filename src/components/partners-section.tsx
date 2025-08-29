@@ -8,7 +8,7 @@ const partnerLogos = [
     { name: 'GKDEV', logoUrl: 'https://storage.googleapis.com/stabl-media/65942d99-5d46-4458-9a48-18e38a202dff.png' },
     { name: 'YouTube', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/YouTube_Logo_2017.svg/1280px-YouTube_Logo_2017.svg.png' },
     { name: 'Meta', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/ab/Meta-Logo.png' },
-    { name: 'Partner 4', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner4' },
+    { name: 'Starbucks', logoUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png' },
     { name: 'Partner 5', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner5' },
     { name: 'Partner 6', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner6' },
     { name: 'Partner 7', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner7' },
