@@ -16,6 +16,7 @@ import {
   LogOut,
   Info,
   FileText,
+  Loader2,
 } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
 import { Button } from '@/components/ui/button';
@@ -66,7 +67,7 @@ export default function MainLayout({
 }) {
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin, signOut, loading } = useAuth();
 
 
   const socialLinks = [
@@ -126,6 +127,53 @@ export default function MainLayout({
     await signOut();
     window.location.href = '/';
   };
+  
+  const AuthButton = () => {
+      if (loading) {
+        return (
+             <div className="flex items-center justify-center h-full w-[86px]">
+                <Loader2 className="h-5 w-5 animate-spin text-white" />
+            </div>
+        )
+      }
+      if (user) {
+          return (
+             <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
+                        <User className="mr-1.5 h-4 w-4" />
+                        {text.profile}
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                        <Link href="/profile"><User className="mr-2 h-4 w-4" />{text.profile}</Link>
+                    </DropdownMenuItem>
+                    {isAdmin && (
+                        <DropdownMenuItem asChild>
+                        <Link href="/admin"><LayoutGrid className="mr-2 h-4 w-4" />{text.adminPanel}</Link>
+                        </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        {text.logout}
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+          )
+      }
+      return (
+         <Button asChild variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
+            <Link href="/login">
+                <LogIn className="mr-1.5 h-4 w-4" />
+                {text.login}
+            </Link>
+        </Button>
+      )
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -159,40 +207,7 @@ export default function MainLayout({
             </div>
             <div className="flex-1 flex justify-end items-center gap-4">
                 <LanguageSelector />
-                 {user ? (
-                   <DropdownMenu>
-                     <DropdownMenuTrigger asChild>
-                       <Button variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
-                         <User className="mr-1.5 h-4 w-4" />
-                         {text.profile}
-                       </Button>
-                     </DropdownMenuTrigger>
-                     <DropdownMenuContent align="end">
-                       <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
-                       <DropdownMenuSeparator />
-                       <DropdownMenuItem asChild>
-                         <Link href="/profile"><User className="mr-2 h-4 w-4" />{text.profile}</Link>
-                       </DropdownMenuItem>
-                       {isAdmin && (
-                         <DropdownMenuItem asChild>
-                           <Link href="/admin"><LayoutGrid className="mr-2 h-4 w-4" />{text.adminPanel}</Link>
-                         </DropdownMenuItem>
-                       )}
-                       <DropdownMenuSeparator />
-                       <DropdownMenuItem onClick={handleLogout}>
-                         <LogOut className="mr-2 h-4 w-4" />
-                         {text.logout}
-                       </DropdownMenuItem>
-                     </DropdownMenuContent>
-                   </DropdownMenu>
-                 ) : (
-                   <Button asChild variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
-                     <Link href="/login">
-                         <LogIn className="mr-1.5 h-4 w-4" />
-                         {text.login}
-                     </Link>
-                   </Button>
-                 )}
+                 <AuthButton />
             </div>
           </div>
         </div>
