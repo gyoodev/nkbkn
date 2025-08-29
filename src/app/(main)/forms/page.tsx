@@ -203,15 +203,11 @@ export default function FormsPage() {
                         <Tabs defaultValue="jockey" className="w-full">
                              <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
                                 {tabs.map(tab => (
-                                    <TabsTrigger key={tab.value} value={tab.value} className="flex-1">
-                                        <span className="sm:hidden">{tab.icon}</span>
-                                        <span className="hidden sm:flex items-center">
+                                    <TabsTrigger key={tab.value} value={tab.value}>
+                                        <div className="flex items-center gap-2">
                                             {tab.icon}
-                                            <span className="ml-2">{tab.title}</span>
-                                        </span>
-                                         <span className="sm:hidden flex items-center md:hidden">
-                                             <span className="ml-2">{tab.title}</span>
-                                         </span>
+                                            <span className="hidden sm:inline">{tab.title}</span>
+                                        </div>
                                     </TabsTrigger>
                                 ))}
                             </TabsList>
