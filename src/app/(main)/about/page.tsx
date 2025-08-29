@@ -32,12 +32,12 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <PageHeader
         title={text.aboutPageTitle}
         description={text.aboutPageDescription}
       />
-      <div className="mt-8 grid grid-cols-1 gap-12 lg:grid-cols-2">
+      <div className="mt-8">
         <div className="space-y-8">
           {sections.map((section, index) => (
             <Card key={index}>
@@ -50,16 +50,6 @@ export default function AboutPage() {
               </CardContent>
             </Card>
           ))}
-        </div>
-        <div className="relative h-96 w-full min-h-[400px] lg:h-auto">
-            <Image 
-                src="https://images.unsplash.com/photo-1553282490-8904e9240552?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxob3JzZSUyMHN0YWJsZXxlbnwwfHx8fDE3NTY1Mzc3Njd8MA&ixlib=rb-4.1.0&q=80&w=1080"
-                alt="Horse stable"
-                fill
-                className="object-cover rounded-lg"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                data-ai-hint="horse stable"
-            />
         </div>
       </div>
     </div>
