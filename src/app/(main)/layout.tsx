@@ -67,7 +67,6 @@ export default function MainLayout({
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
   const { user, isAdmin, signOut } = useAuth();
-  const supabase = createBrowserClient();
 
 
   const socialLinks = [

@@ -12,12 +12,13 @@ if (!supabaseUrl || !supabaseAnonKey) {
   throw new Error('Supabase URL and anonymous key are required. Please set them in your .env file.');
 }
 
-const supabaseAdmin = createClient(supabaseUrl, supabaseAnonKey)
+// Universal client that can be used on server and client
+const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 
 export async function getJockeys(): Promise<Jockey[]> {
     try {
-        const { data, error } = await supabaseAdmin.from('jockeys').select('id, name, wins, mounts, image_url').order('name', { ascending: true });
+        const { data, error } = await supabase.from('jockeys').select('id, name, wins, mounts, image_url').order('name', { ascending: true });
         if (error) {
             console.error('Error fetching jockeys:', error.message);
             return [];
@@ -42,7 +43,7 @@ export async function getJockeys(): Promise<Jockey[]> {
 }
 
 export async function getJockey(id: number): Promise<Jockey | null> {
-    const { data, error } = await supabaseAdmin.from('jockeys').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('jockeys').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
             console.error(`Error fetching jockey with id ${id}:`, error);
@@ -64,7 +65,7 @@ export async function getJockey(id: number): Promise<Jockey | null> {
 
 export async function getTrainers(): Promise<Trainer[]> {
     try {
-        const { data, error } = await supabaseAdmin.from('trainers').select('*').order('name', { ascending: true });
+        const { data, error } = await supabase.from('trainers').select('*').order('name', { ascending: true });
         if (error) {
             console.error('Error fetching trainers:', error.message);
             return [];
@@ -87,7 +88,7 @@ export async function getTrainers(): Promise<Trainer[]> {
 
 
 export async function getTrainer(id: number): Promise<Trainer | null> {
-    const { data, error } = await supabaseAdmin.from('trainers').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('trainers').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
             console.error(`Error fetching trainer with id ${id}:`, error);
@@ -109,7 +110,7 @@ export async function getTrainer(id: number): Promise<Trainer | null> {
 
 export async function getHorses(): Promise<Horse[]> {
     try {
-        const { data, error } = await supabaseAdmin.from('horses').select('*').order('name', { ascending: true });
+        const { data, error } = await supabase.from('horses').select('*').order('name', { ascending: true });
         if (error) {
             console.error('Error fetching horses:', error.message);
             return [];
@@ -122,7 +123,7 @@ export async function getHorses(): Promise<Horse[]> {
 }
 
 export async function getHorse(id: number): Promise<Horse | null> {
-    const { data, error } = await supabaseAdmin.from('horses').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('horses').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
             console.error(`Error fetching horse with id ${id}:`, error);
@@ -143,7 +144,7 @@ export const galleryImages: { id: number; src: string; alt: string, hint: string
 
 export async function getRaceEvents(): Promise<RaceEvent[]> {
     try {
-        const { data: events, error: eventsError } = await supabaseAdmin
+        const { data: events, error: eventsError } = await supabase
             .from('race_events')
             .select(`
                 *,
@@ -171,7 +172,7 @@ export async function getRaceEvents(): Promise<RaceEvent[]> {
 
 
 export async function getRaceEvent(id: number): Promise<RaceEvent | null> {
-    const { data, error } = await supabaseAdmin.from('race_events').select('*, races (*)').eq('id', id).single();
+    const { data, error } = await supabase.from('race_events').select('*, races (*)').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
             console.error(`Error fetching race event with id ${id}:`, error);
@@ -189,7 +190,7 @@ export async function getRaceEvent(id: number): Promise<RaceEvent | null> {
 
 export async function getNewsPosts(): Promise<Omit<NewsPost, 'comments' | 'content'>[]> {
     try {
-        const { data, error } = await supabaseAdmin.from('news_posts').select('id, title, date, category, excerpt, image_url, href, views, likes').order('date', { ascending: false });
+        const { data, error } = await supabase.from('news_posts').select('id, title, date, category, excerpt, image_url, href, views, likes').order('date', { ascending: false });
         if (error) {
             console.error('Error fetching news posts:', error.message);
             return [];
@@ -208,14 +209,16 @@ export async function getNewsPost(id: string): Promise<NewsPost | null> {
     // We use the admin client here to bypass RLS for the view count increment.
     // This is a simplified approach. In a production environment, you'd want a more robust system
     // to prevent view count manipulation (e.g., tracking IPs or using a dedicated service).
-    const { error: incrementError } = await supabaseAdmin.rpc('increment_views', { post_id_arg: parseInt(id, 10) });
+    
+    // Using the universal client here
+    const { error: incrementError } = await supabase.rpc('increment_views', { post_id_arg: parseInt(id, 10) });
     if (incrementError) {
         console.error(`Error incrementing view count for post ${id}:`, incrementError);
         // We don't stop execution, just log the error.
     }
     
     // Now fetch the post data using the regular server client to respect RLS for data fetching.
-    const supabase = createServerClient();
+    // Using the universal client is also fine here as RLS is enforced on the database level.
     const { data, error } = await supabase
         .from('news_posts')
         .select(`
@@ -246,7 +249,7 @@ export async function getNewsPost(id: string): Promise<NewsPost | null> {
 
 export async function getDocuments(): Promise<Document[]> {
     try {
-        const { data, error } = await supabaseAdmin
+        const { data, error } = await supabase
             .from('documents')
             .select('*')
             .order('created_at', { ascending: false });
@@ -257,7 +260,7 @@ export async function getDocuments(): Promise<Document[]> {
         }
 
         return data.map(doc => {
-            const { data: { publicUrl } } = supabaseAdmin.storage.from('documents').getPublicUrl(doc.path);
+            const { data: { publicUrl } } = supabase.storage.from('documents').getPublicUrl(doc.path);
             return {
                 ...doc,
                 href: publicUrl,
@@ -271,7 +274,7 @@ export async function getDocuments(): Promise<Document[]> {
 
 export async function getResults(): Promise<Result[]> {
     try {
-        const { data, error } = await supabaseAdmin.from('results').select('*').order('date', { ascending: false });
+        const { data, error } = await supabase.from('results').select('*').order('date', { ascending: false });
         if (error) {
             console.error('Error fetching results:', error.message);
             return [];
@@ -284,7 +287,7 @@ export async function getResults(): Promise<Result[]> {
 }
 
 export async function getResult(id: number): Promise<Result | null> {
-    const { data, error } = await supabaseAdmin.from('results').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('results').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
             console.error(`Error fetching result with id ${id}:`, error);
@@ -296,7 +299,7 @@ export async function getResult(id: number): Promise<Result | null> {
 
 export async function getPartners(): Promise<Partner[]> {
     try {
-        const { data, error } = await supabaseAdmin.from('partners').select('*').order('created_at', { ascending: true });
+        const { data, error } = await supabase.from('partners').select('*').order('created_at', { ascending: true });
         if (error) {
             console.error('Error fetching partners:', error.message);
             return [];
@@ -309,7 +312,7 @@ export async function getPartners(): Promise<Partner[]> {
 }
 
 export async function getPartner(id: number): Promise<Partner | null> {
-    const { data, error } = await supabaseAdmin.from('partners').select('*').eq('id', id).single();
+    const { data, error } = await supabase.from('partners').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
             console.error(`Error fetching partner with id ${id}:`, error);
@@ -321,7 +324,7 @@ export async function getPartner(id: number): Promise<Partner | null> {
 
 export async function getSiteContent(key: string): Promise<string> {
     try {
-        const { data, error } = await supabaseAdmin
+        const { data, error } = await supabase
             .from('site_content')
             .select('content')
             .eq('key', key)
@@ -341,7 +344,6 @@ export async function getSiteContent(key: string): Promise<string> {
 }
 
 export async function getCommentsForPost(postId: number): Promise<Comment[]> {
-    const supabase = createServerClient();
     const { data, error } = await supabase
         .from('comments')
         .select(`
