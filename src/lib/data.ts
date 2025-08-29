@@ -1,6 +1,6 @@
 
 
-import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent, Comment } from '@/lib/types';
+import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent, Comment, Submission } from '@/lib/types';
 import { createServerClient } from './supabase/server';
 import { createClient } from '@supabase/supabase-js';
 
@@ -359,3 +359,18 @@ export async function getCommentsForPost(postId: number): Promise<Comment[]> {
     }
     return data;
 }
+
+export async function getSubmissions(): Promise<Submission[]> {
+    const supabase = createServerClient();
+    const { data, error } = await supabase
+        .from('submissions')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error("Error fetching submissions:", error);
+        return [];
+    }
+    return data;
+}
+
