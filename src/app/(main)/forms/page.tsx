@@ -5,8 +5,9 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/use-language';
-import { Horse, User, PlusCircle } from 'lucide-react';
+import { User, PlusCircle } from 'lucide-react';
 import Link from 'next/link';
+import { HorseIcon } from '@/components/icons/horse-icon';
 
 export default function FormsPage() {
     const { text } = useLanguage();
@@ -30,7 +31,7 @@ export default function FormsPage() {
             title: "Регистрация на коне",
             description: "Добавете нов кон към системата, включително информация за собственик, произход и статистика.",
             href: "/admin/horses/new",
-            icon: <Horse className="h-8 w-8 text-primary" />,
+            icon: <HorseIcon className="h-8 w-8 text-primary" />,
             buttonText: "Добави кон"
         }
     ];
