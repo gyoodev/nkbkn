@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Link from 'next/link';
@@ -8,9 +7,6 @@ import {
   Calendar,
   FileText,
   Home,
-  Menu,
-  PanelLeft,
-  Settings,
   Newspaper,
   Users,
   Trophy,
@@ -18,21 +14,31 @@ import {
   Loader2,
   Building,
   Mail,
+  Settings,
+  LogOut,
+  ExternalLink,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { HorseLogo } from '@/components/icons/horse-logo';
 import { useLanguage } from '@/hooks/use-language';
 import { Separator } from '@/components/ui/separator';
 import { HorseIcon } from '@/components/icons/horse-icon';
 import { useAuth } from '@/hooks/use-auth';
 import { useEffect } from 'react';
+import {
+    Sidebar,
+    SidebarContent,
+    SidebarFooter,
+    SidebarHeader,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarProvider,
+    SidebarTrigger,
+    SidebarInset,
+    SidebarGroup,
+    SidebarGroupLabel
+} from '@/components/ui/sidebar';
+import { HorseLogo } from '@/components/icons/horse-logo';
 
 function AdminLayoutSkeleton() {
   return (
@@ -69,145 +75,113 @@ export default function AdminLayout({
   }
 
   const mainNavItems = [
-    { href: '/admin', label: 'Табло', icon: <Home className="h-5 w-5" /> },
-    { href: '/admin/submissions', label: 'Заявки', icon: <Mail className="h-5 w-5" /> },
-    { href: '/admin/calendar', label: 'Календар', icon: <Calendar className="h-5 w-5" /> },
-    { href: '/admin/news', label: 'Новини', icon: <Newspaper className="h-5 w-5" /> },
-    { href: '/admin/results', label: 'Резултати', icon: <Trophy className="h-5 w-5" /> },
-    { href: '/admin/documents', label: 'Документи', icon: <FileText className="h-5 w-5" /> },
-    { href: '/admin/gallery', label: 'Галерия', icon: <ImageIcon className="h-5 w-5" /> },
+    { href: '/admin', label: 'Табло', icon: <Home /> },
+    { href: '/admin/submissions', label: 'Заявки', icon: <Mail /> },
+    { href: '/admin/calendar', label: 'Календар', icon: <Calendar /> },
+    { href: '/admin/news', label: 'Новини', icon: <Newspaper /> },
+    { href: '/admin/results', label: 'Резултати', icon: <Trophy /> },
+    { href: '/admin/documents', label: 'Документи', icon: <FileText /> },
+    { href: '/admin/gallery', label: 'Галерия', icon: <ImageIcon /> },
   ];
 
   const managementNavItems = [
-     { href: '/admin/jockeys', label: 'Жокеи', icon: <Users className="h-5 w-5" /> },
-     { href: '/admin/trainers', label: 'Треньори', icon: <Users className="h-5 w-5" /> },
-     { href: '/admin/horses', label: 'Коне', icon: <HorseIcon className="h-5 w-5" /> },
-     { href: '/admin/partners', label: 'Партньори', icon: <Building className="h-5 w-5" /> },
+     { href: '/admin/jockeys', label: 'Жокеи', icon: <Users /> },
+     { href: '/admin/trainers', label: 'Треньори', icon: <Users /> },
+     { href: '/admin/horses', label: 'Коне', icon: <HorseIcon /> },
+     { href: '/admin/partners', label: 'Партньори', icon: <Building /> },
   ];
   
   const settingsNavItems = [
-      { href: '/admin/content', label: 'Съдържание', icon: <Settings className="h-5 w-5" /> },
-  ]
+      { href: '/admin/content', label: 'Съдържание', icon: <Settings /> },
+  ];
 
-  const allNavItems = [...mainNavItems, ...managementNavItems, ...settingsNavItems];
-
-  const NavContent = () => (
-     <TooltipProvider>
-        {mainNavItems.map((item) => (
-          <Tooltip key={item.href}>
-            <TooltipTrigger asChild>
-              <Link
-                href={item.href}
-                className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 ${
-                  pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))
-                    ? 'bg-accent text-accent-foreground'
-                    : 'text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {item.icon}
-                <span className="sr-only">{item.label}</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">{item.label}</TooltipContent>
-          </Tooltip>
-        ))}
-        <Separator className="my-2" />
-        {managementNavItems.map((item) => (
-            <Tooltip key={item.href}>
-                <TooltipTrigger asChild>
-                <Link
-                    href={item.href}
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 ${
-                      pathname.startsWith(item.href)
-                        ? 'bg-accent text-accent-foreground'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                >
-                    {item.icon}
-                    <span className="sr-only">{item.label}</span>
-                </Link>
-                </TooltipTrigger>
-                <TooltipContent side="right">{item.label}</TooltipContent>
-            </Tooltip>
-        ))}
-        <Separator className="my-2" />
-        {settingsNavItems.map((item) => (
-            <Tooltip key={item.href}>
-                <TooltipTrigger asChild>
-                <Link
-                    href={item.href}
-                    className={`flex h-9 w-9 items-center justify-center rounded-lg transition-colors md:h-8 md:w-8 ${
-                      pathname.startsWith(item.href)
-                        ? 'bg-accent text-accent-foreground'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                >
-                    {item.icon}
-                    <span className="sr-only">{item.label}</span>
-                </Link>
-                </TooltipTrigger>
-                <TooltipContent side="right">{item.label}</TooltipContent>
-            </Tooltip>
-        ))}
-     </TooltipProvider>
-  );
+  const isActive = (href: string) => {
+    return href === '/admin' ? pathname === href : pathname.startsWith(href);
+  }
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
-        <nav className="flex flex-col items-center gap-4 px-2 sm:py-5">
-          <Link
-            href="/"
-            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
-          >
-            <HorseLogo className="h-5 w-5 transition-all group-hover:scale-110" />
-            <span className="sr-only">{text.appName}</span>
-          </Link>
-          <NavContent />
-        </nav>
-      </aside>
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button size="icon" variant="outline" className="sm:hidden">
-                <PanelLeft className="h-5 w-5" />
-                <span className="sr-only">Toggle Menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="left" className="sm:max-w-xs">
-              <SheetHeader>
-                <SheetTitle className="sr-only">Admin Menu</SheetTitle>
-              </SheetHeader>
-              <nav className="grid gap-6 text-lg font-medium">
-                <Link
-                  href="/"
-                  className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
-                >
-                  <HorseLogo className="h-5 w-5 transition-all group-hover:scale-110" />
-                  <span className="sr-only">{text.appName}</span>
-                </Link>
-                {allNavItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`flex items-center gap-4 px-2.5 ${
-                      pathname === item.href
-                        ? 'text-foreground'
-                        : 'text-muted-foreground hover:text-foreground'
-                    }`}
-                  >
-                    {item.icon}
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
-            </SheetContent>
-          </Sheet>
-           <h1 className="text-xl font-semibold">Административен панел</h1>
-        </header>
-        <main className="flex-1 p-4 sm:px-6 sm:py-0">{children}</main>
-      </div>
-    </div>
+    <SidebarProvider>
+        <Sidebar>
+            <SidebarHeader>
+                <div className="flex items-center gap-2">
+                    <HorseLogo className="h-8 w-8 text-primary" />
+                    <span className="text-lg font-semibold">Админ</span>
+                </div>
+            </SidebarHeader>
+            <SidebarContent>
+                <SidebarMenu>
+                     <SidebarGroup>
+                        <SidebarGroupLabel>Основно</SidebarGroupLabel>
+                         <SidebarGroupContent>
+                            {mainNavItems.map((item) => (
+                                <SidebarMenuItem key={item.href}>
+                                    <Link href={item.href} legacyBehavior passHref>
+                                        <SidebarMenuButton tooltip={item.label} isActive={isActive(item.href)}>
+                                            {item.icon}
+                                            <span>{item.label}</span>
+                                        </SidebarMenuButton>
+                                    </Link>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                    <SidebarGroup>
+                        <SidebarGroupLabel>Управление</SidebarGroupLabel>
+                         <SidebarGroupContent>
+                            {managementNavItems.map((item) => (
+                                <SidebarMenuItem key={item.href}>
+                                    <Link href={item.href} legacyBehavior passHref>
+                                        <SidebarMenuButton tooltip={item.label} isActive={isActive(item.href)}>
+                                            {item.icon}
+                                            <span>{item.label}</span>
+                                        </SidebarMenuButton>
+                                    </Link>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                     <SidebarGroup>
+                        <SidebarGroupLabel>Настройки</SidebarGroupLabel>
+                         <SidebarGroupContent>
+                            {settingsNavItems.map((item) => (
+                                <SidebarMenuItem key={item.href}>
+                                    <Link href={item.href} legacyBehavior passHref>
+                                        <SidebarMenuButton tooltip={item.label} isActive={isActive(item.href)}>
+                                            {item.icon}
+                                            <span>{item.label}</span>
+                                        </SidebarMenuButton>
+                                    </Link>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarGroupContent>
+                    </SidebarGroup>
+                </SidebarMenu>
+            </SidebarContent>
+             <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                         <Link href="/" legacyBehavior passHref>
+                            <SidebarMenuButton tooltip="Към сайта">
+                                <ExternalLink />
+                                <span>Към сайта</span>
+                            </SidebarMenuButton>
+                        </Link>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarFooter>
+        </Sidebar>
+         <SidebarInset>
+            <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
+                <SidebarTrigger className="md:hidden" />
+                 <h1 className="text-xl font-semibold">
+                    {mainNavItems.find(item => isActive(item.href))?.label || 
+                     managementNavItems.find(item => isActive(item.href))?.label ||
+                     settingsNavItems.find(item => isActive(item.href))?.label ||
+                     'Табло'}
+                 </h1>
+            </header>
+            <main className="flex-1 p-4 sm:px-6 sm:py-4">{children}</main>
+        </SidebarInset>
+    </SidebarProvider>
   );
 }
