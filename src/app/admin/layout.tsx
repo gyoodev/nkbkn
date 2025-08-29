@@ -167,10 +167,10 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             </SidebarFooter>
         </Sidebar>
          <SidebarInset>
-            <div className="flex flex-col w-full">
-              <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
+            <div className="flex flex-col w-full min-h-screen">
+              <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:justify-end sm:px-6">
                   <SidebarTrigger className="md:hidden" />
-                   <h1 className="text-xl font-semibold shrink-0">
+                   <h1 className="text-xl font-semibold shrink-0 md:hidden">
                       {mainNavItems.find(item => isActive(item.href))?.label || 
                        managementNavItems.find(item => isActive(item.href))?.label ||
                        settingsNavItems.find(item => isActive(item.href))?.label ||
