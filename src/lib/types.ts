@@ -148,7 +148,4 @@ export interface Submission {
     // Shared stats
     mounts?: number | null;
     wins?: number | null;
-
-    // Legacy message field
-    message?: string | null;
 }
