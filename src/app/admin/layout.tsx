@@ -51,15 +51,10 @@ function AdminLayoutSkeleton() {
   )
 }
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { text } = useLanguage();
   const { isAdmin, loading } = useAuth();
-  
+
   useEffect(() => {
     if (!loading && !isAdmin) {
       redirect('/');
@@ -100,7 +95,7 @@ export default function AdminLayout({
   }
 
   return (
-    <SidebarProvider>
+      <>
         <Sidebar>
             <SidebarHeader>
                 <div className="flex items-center gap-2">
@@ -182,6 +177,19 @@ export default function AdminLayout({
             </header>
             <main className="flex-1 p-4 sm:px-6 sm:py-4">{children}</main>
         </SidebarInset>
+      </>
+  )
+}
+
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <SidebarProvider>
+      <AdminLayoutContent>{children}</AdminLayoutContent>
     </SidebarProvider>
   );
 }
