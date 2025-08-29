@@ -50,7 +50,7 @@ export interface NewsPost {
     href: string;
     views: number;
     likes: number;
-    comments_count: number;
+    comments: Comment[];
 }
 
 export interface Race {
@@ -98,4 +98,21 @@ export interface Partner {
 export interface SiteContent {
     key: string;
     content: string;
+}
+
+export type UserProfile = {
+  id: string
+  full_name: string | null
+  username: string | null
+  avatar_url: string | null
+}
+
+export interface Comment {
+  id: number
+  created_at: string
+  content: string
+  post_id: number
+  user_id: string | null
+  guest_name: string | null
+  profiles: UserProfile | null
 }

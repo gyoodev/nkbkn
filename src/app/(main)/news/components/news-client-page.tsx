@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { PageHeader } from '@/components/page-header';
 import type { NewsPost } from '@/lib/types';
 
-export function NewsClientPage({ newsPosts }: { newsPosts: NewsPost[] }) {
+export function NewsClientPage({ newsPosts }: { newsPosts: Omit<NewsPost, 'comments' | 'content'>[] }) {
   const { language, text } = useLanguage();
 
   const formatDate = (date: string) => {
@@ -29,7 +29,7 @@ export function NewsClientPage({ newsPosts }: { newsPosts: NewsPost[] }) {
         description={text.latestFromTheTrackDescription}
       />
       <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {newsPosts.map((post: NewsPost) => (
+        {newsPosts.map((post) => (
           <Card key={post.id} className="flex flex-col overflow-hidden shadow-lg transition-shadow hover:shadow-2xl">
             <Link href={post.href} className="block">
                 <div className="relative h-56 w-full">
@@ -55,15 +55,11 @@ export function NewsClientPage({ newsPosts }: { newsPosts: NewsPost[] }) {
                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1.5">
                             <Eye className="h-4 w-4" />
-                            <span>{post.views}</span>
+                            <span>{post.views || 0}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
                             <Heart className="h-4 w-4" />
-                            <span>{post.likes}</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                            <MessageCircle className="h-4 w-4" />
-                            <span>{post.comments_count}</span>
+                            <span>{post.likes || 0}</span>
                         </div>
                     </div>
                      <Link href={post.href} className="flex items-center font-semibold text-primary">
