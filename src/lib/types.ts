@@ -3,10 +3,9 @@
 export interface Jockey {
   id: number;
   name: string;
-  stats: {
-    wins: number;
-    mounts: number;
-  };
+  wins: number;
+  mounts: number;
+  winRate: string;
   imageUrl: string;
 }
 

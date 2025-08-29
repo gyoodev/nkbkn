@@ -19,15 +19,19 @@ export async function getJockeys(): Promise<Jockey[]> {
             console.error('Error fetching jockeys:', error.message);
             return [];
         }
-        return (data || []).map(jockey => ({
-            id: jockey.id,
-            name: jockey.name,
-            imageUrl: jockey.image_url,
-            stats: {
-                wins: jockey.wins || 0,
-                mounts: jockey.mounts || 0,
+        return (data || []).map(jockey => {
+            const wins = jockey.wins || 0;
+            const mounts = jockey.mounts || 0;
+            const winRate = mounts > 0 ? ((wins / mounts) * 100).toFixed(1) + '%' : '0%';
+            return {
+                id: jockey.id,
+                name: jockey.name,
+                imageUrl: jockey.image_url,
+                wins: wins,
+                mounts: mounts,
+                winRate: winRate,
             }
-        }));
+        });
     } catch (error: any) {
         console.error('Error in getJockeys:', error.message);
         return [];
@@ -35,21 +39,23 @@ export async function getJockeys(): Promise<Jockey[]> {
 }
 
 export async function getJockey(id: number): Promise<Jockey | null> {
-    const { data, error } = await supabase.from('jockeys').select('*, image_url').eq('id', id).single();
+    const { data, error } = await supabase.from('jockeys').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
             console.error(`Error fetching jockey with id ${id}:`, error);
         }
         return null;
     }
+    const wins = data.wins || 0;
+    const mounts = data.mounts || 0;
+    const winRate = mounts > 0 ? ((wins / mounts) * 100).toFixed(1) + '%' : '0%';
      return {
         id: data.id,
         name: data.name,
         imageUrl: data.image_url,
-        stats: {
-            wins: data.wins || 0,
-            mounts: data.mounts || 0,
-        }
+        wins: wins,
+        mounts: mounts,
+        winRate: winRate
     };
 }
 

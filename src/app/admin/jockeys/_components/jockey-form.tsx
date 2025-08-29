@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useActionState } from 'react';
@@ -53,12 +52,12 @@ export function JockeyForm({ jockey }: { jockey?: Jockey }) {
           </div>
           <div className="space-y-1">
             <Label htmlFor="wins">Победи</Label>
-            <Input id="wins" name="wins" type="number" defaultValue={jockey?.stats.wins} />
+            <Input id="wins" name="wins" type="number" defaultValue={jockey?.wins} />
             {state.errors?.wins && <p className="text-sm font-medium text-destructive">{state.errors.wins}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="mounts">Язди</Label>
-            <Input id="mounts" name="mounts" type="number" defaultValue={jockey?.stats.mounts} />
+            <Label htmlFor="mounts">Участия</Label>
+            <Input id="mounts" name="mounts" type="number" defaultValue={jockey?.mounts} />
              {state.errors?.mounts && <p className="text-sm font-medium text-destructive">{state.errors.mounts}</p>}
           </div>
         </CardContent>

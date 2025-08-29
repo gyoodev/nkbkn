@@ -10,18 +10,13 @@ const FormSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(1, 'Името е задължително'),
   wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
-  mounts: z.coerce.number().min(1, 'Яздите трябва да са поне 1'),
+  mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
   image_url: z.string().url('Въведете валиден URL адрес на изображение'),
 });
 
 
 export async function upsertJockey(prevState: any, formData: FormData) {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        return { message: 'Authentication required' };
-    }
 
     const validatedFields = FormSchema.safeParse({
         id: formData.get('id'),

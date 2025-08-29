@@ -28,8 +28,6 @@ function JockeyCardSkeleton() {
 }
 
 function JockeyCard({ jockey, text }: { jockey: Jockey, text: any }) {
-    const winRate = jockey.stats.mounts > 0 ? ((jockey.stats.wins / jockey.stats.mounts) * 100).toFixed(1) + '%' : '0%';
-    
   return (
     <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
       <CardHeader className="p-0">
@@ -53,9 +51,9 @@ function JockeyCard({ jockey, text }: { jockey: Jockey, text: any }) {
       <CardContent className="p-4">
         <CardTitle className="font-headline text-xl text-primary">{jockey.name}</CardTitle>
         <div className="mt-2 space-y-1 text-sm text-muted-foreground">
-          <p><strong>{text.wins}:</strong> {jockey.stats.wins}</p>
-          <p><strong>{text.mounts}:</strong> {jockey.stats.mounts}</p>
-          <p><strong>{text.winRate}:</strong> {winRate}</p>
+          <p><strong>{text.wins}:</strong> {jockey.wins}</p>
+          <p><strong>{text.mounts}:</strong> {jockey.mounts}</p>
+          <p><strong>{text.winRate}:</strong> {jockey.winRate}</p>
         </div>
       </CardContent>
     </Card>

@@ -41,7 +41,7 @@ export default async function AdminJockeysPage() {
               <TableRow>
                 <TableHead>Име</TableHead>
                 <TableHead>Победи</TableHead>
-                <TableHead>Язди</TableHead>
+                <TableHead>Участия</TableHead>
                 <TableHead>% Победи</TableHead>
                 <TableHead>
                   <span className="sr-only">Действия</span>
@@ -52,9 +52,9 @@ export default async function AdminJockeysPage() {
               {jockeys.map((jockey) => (
                 <TableRow key={jockey.id}>
                   <TableCell className="font-medium">{jockey.name}</TableCell>
-                  <TableCell>{jockey.stats.wins}</TableCell>
-                  <TableCell>{jockey.stats.mounts}</TableCell>
-                  <TableCell>{jockey.stats.winRate}</TableCell>
+                  <TableCell>{jockey.wins}</TableCell>
+                  <TableCell>{jockey.mounts}</TableCell>
+                  <TableCell>{jockey.winRate}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
