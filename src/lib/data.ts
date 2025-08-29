@@ -1,6 +1,6 @@
 
 
-import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner } from '@/lib/types';
+import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent } from '@/lib/types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -26,7 +26,7 @@ export async function getJockeys(): Promise<Jockey[]> {
             return {
                 id: jockey.id,
                 name: jockey.name,
-                image_url: jockey.image_url,
+                imageUrl: jockey.image_url,
                 wins: wins,
                 mounts: mounts,
                 winRate: winRate,
@@ -52,7 +52,7 @@ export async function getJockey(id: number): Promise<Jockey | null> {
      return {
         id: data.id,
         name: data.name,
-        image_url: data.image_url,
+        imageUrl: data.image_url,
         wins: wins,
         mounts: mounts,
         winRate: winRate
@@ -291,4 +291,25 @@ export async function getPartner(id: number): Promise<Partner | null> {
         return null;
     }
     return data;
+}
+
+export async function getSiteContent(key: string): Promise<string> {
+    try {
+        const { data, error } = await supabase
+            .from('site_content')
+            .select('content')
+            .eq('key', key)
+            .single();
+
+        if (error || !data) {
+            if (error && error.code !== 'PGRST116') { // 'PGRST116' means no rows found
+                console.error(`Error fetching site content for key "${key}":`, error.message);
+            }
+            return '';
+        }
+        return data.content || '';
+    } catch (e: any) {
+        console.error(`Error in getSiteContent for key "${key}":`, e.message);
+        return '';
+    }
 }

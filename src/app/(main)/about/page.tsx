@@ -1,34 +1,33 @@
-
-'use client';
-
-import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { getSiteContent } from '@/lib/data';
 import { Users, Goal, History } from 'lucide-react';
 
-export default function AboutPage() {
-  const { text } = useLanguage();
+// Make the component async to fetch data on the server
+export default async function AboutPage() {
+
+  // Fetch dynamic content
+  const historyContent = await getSiteContent('about_history');
+  const missionContent = await getSiteContent('about_mission');
+  const teamContent = await getSiteContent('about_team_text');
 
   const sections = [
     {
       icon: <History className="h-10 w-10 text-primary" />,
       title: 'Нашата история',
-      content:
-        'Националната комисия за български конни надбягвания е създадена с цел да възроди и развие конните спортове в България, стъпвайки на дългогодишни традиции. От самото си създаване, ние работим за утвърждаването на честни и прозрачни правила в спорта.',
+      content: historyContent,
       className: 'md:col-span-2',
     },
     {
       icon: <Goal className="h-10 w-10 text-primary" />,
       title: 'Нашата мисия',
-      content:
-        'Нашата мисия е да популяризираме конните надбягвания, да създадем устойчива среда за развитие на коне, жокеи и треньори, както и да осигурим вълнуващи и честни състезания за публиката. Ние се стремим да достигнем най-високите международни стандарти.',
+      content: missionContent,
       className: 'md:col-span-1',
     },
     {
       icon: <Users className="h-10 w-10 text-primary" />,
       title: 'Нашият екип',
-      content:
-        'Екипът на НКБКН се състои от отдадени професионалисти с богат опит в конните спортове, управлението на събития и регулаторната дейност. Всички ние споделяме обща страст към конете и състезанията и работим неуморно за успеха на българските конни надбягвания.',
+      content: teamContent,
       className: 'md:col-span-3',
     },
   ];
@@ -45,7 +44,7 @@ export default function AboutPage() {
         />
       <div className="container mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 relative z-10">
         <PageHeader
-          title={text.aboutPageTitle}
+          title="За комисията"
           description="Научете повече за нашата история, мисия и хората, които стоят зад Националната комисия за български конни надбягвания."
           className="text-center mb-12"
         />
@@ -59,7 +58,12 @@ export default function AboutPage() {
                 <CardTitle className="text-2xl font-bold">{section.title}</CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0 text-center">
-                <p className="text-base text-muted-foreground">{section.content}</p>
+                 {/* Use dangerouslySetInnerHTML for rich text from the history and mission sections */}
+                {section.title !== 'Нашият екип' ? (
+                     <div className="text-base text-muted-foreground prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: section.content }} />
+                ) : (
+                     <p className="text-base text-muted-foreground">{section.content}</p>
+                )}
               </CardContent>
             </Card>
           ))}

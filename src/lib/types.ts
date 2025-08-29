@@ -6,7 +6,7 @@ export interface Jockey {
   wins: number;
   mounts: number;
   winRate: string;
-  image_url: string;
+  imageUrl: string;
 }
 
 export interface Trainer {
@@ -93,4 +93,9 @@ export interface Partner {
     name: string;
     logo_url: string;
     created_at: string;
+}
+
+export interface SiteContent {
+    key: string;
+    content: string;
 }
