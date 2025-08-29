@@ -3,18 +3,20 @@
 
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { submitApplication } from './actions';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { HorseIcon } from '@/components/icons/horse-icon';
 import { User } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { AnimatePresence, motion } from 'framer-motion';
+
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -183,66 +185,75 @@ function OwnerForm() {
     )
 }
 
+type FormType = 'jockey' | 'trainer' | 'owner' | 'horse';
+
 export default function FormsPage() {
-    const tabs = [
-        { value: 'jockey', title: 'Заявка за жокей', icon: <User className="h-5 w-5" /> },
-        { value: 'trainer', title: 'Заявка за треньор', icon: <User className="h-5 w-5" /> },
-        { value: 'owner', title: 'Заявка за собственик', icon: <User className="h-5 w-5" /> },
-        { value: 'horse', title: 'Заявка за кон', icon: <HorseIcon className="h-5 w-5" /> },
+    const [activeForm, setActiveForm] = useState<FormType>('jockey');
+
+    const forms: { value: FormType; title: string; description: string; icon: React.ReactNode; component: React.ReactNode }[] = [
+        { value: 'jockey', title: 'Заявка за жокей', description: 'Кандидатствайте за лиценз', icon: <User className="h-8 w-8" />, component: <JockeyForm /> },
+        { value: 'trainer', title: 'Заявка за треньор', description: 'Кандидатствайте за лиценз', icon: <User className="h-8 w-8" />, component: <TrainerForm /> },
+        { value: 'owner', title: 'Заявка за собственик', description: 'Регистрирайте се в системата', icon: <User className="h-8 w-8" />, component: <OwnerForm /> },
+        { value: 'horse', title: 'Заявка за кон', description: 'Регистрирайте нов състезателен кон', icon: <HorseIcon className="h-8 w-8" />, component: <HorseForm /> },
     ];
+    
+    const activeFormData = forms.find(f => f.value === activeForm);
 
     return (
-        <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="container mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
             <PageHeader
                 title="Формуляри за регистрация"
-                description="Попълнете съответния формуляр, за да подадете заявка за регистрация. Нашата комисия ще се свърже с вас след преглед на кандидатурата."
+                description="Изберете типа заявка и попълнете съответния формуляр. Нашата комисия ще се свърже с вас след преглед на кандидатурата."
             />
             <div className="mt-8">
-                <Card>
-                    <CardContent className="p-6">
-                        <Tabs defaultValue="jockey" className="w-full">
-                             <TabsList className="grid w-full grid-cols-2 md:grid-cols-4">
-                                {tabs.map(tab => (
-                                    <TabsTrigger key={tab.value} value={tab.value}>
-                                        <div className="flex items-center gap-2">
-                                            {tab.icon}
-                                            <span className="hidden sm:inline">{tab.title}</span>
-                                        </div>
-                                    </TabsTrigger>
-                                ))}
-                            </TabsList>
-                            <TabsContent value="jockey">
-                                 <CardHeader className="px-0">
-                                    <CardTitle>Формуляр за кандидатстване - Жокеи</CardTitle>
-                                    <CardDescription>Попълнете полетата по-долу. Ще се свържем с вас за следващите стъпки.</CardDescription>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                    {forms.map(form => (
+                        <button key={form.value} onClick={() => setActiveForm(form.value)} className="text-left">
+                            <Card className={cn(
+                                "h-full transition-all duration-300",
+                                activeForm === form.value 
+                                    ? "ring-2 ring-primary shadow-2xl scale-105" 
+                                    : "hover:shadow-lg hover:-translate-y-1"
+                            )}>
+                                <CardHeader className="flex flex-row items-center gap-4">
+                                    <div className={cn(
+                                        "p-3 rounded-full transition-colors",
+                                        activeForm === form.value ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                                    )}>
+                                        {form.icon}
+                                    </div>
+                                    <div>
+                                        <CardTitle className="text-lg">{form.title}</CardTitle>
+                                    </div>
                                 </CardHeader>
-                                <JockeyForm />
-                            </TabsContent>
-                            <TabsContent value="trainer">
-                                 <CardHeader className="px-0">
-                                    <CardTitle>Формуляр за кандидатстване - Треньори</CardTitle>
-                                    <CardDescription>Попълнете полетата по-долу. Ще се свържем с вас за следващите стъпки.</CardDescription>
+                            </Card>
+                        </button>
+                    ))}
+                </div>
+
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeForm}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                    >
+                        {activeFormData && (
+                             <Card>
+                                <CardHeader>
+                                    <CardTitle className="text-2xl">{activeFormData.title}</CardTitle>
+                                    <CardDescription>{activeFormData.description}</CardDescription>
                                 </CardHeader>
-                                <TrainerForm />
-                            </TabsContent>
-                             <TabsContent value="owner">
-                                 <CardHeader className="px-0">
-                                    <CardTitle>Формуляр за кандидатстване - Собственици</CardTitle>
-                                    <CardDescription>Попълнете полетата по-долу. Ще се свържем с вас за следващите стъпки.</CardDescription>
-                                </CardHeader>
-                                <OwnerForm />
-                            </TabsContent>
-                            <TabsContent value="horse">
-                                 <CardHeader className="px-0">
-                                    <CardTitle>Формуляр за кандидатстване - Коне</CardTitle>
-                                    <CardDescription>Въведете информация за коня. Уверете се, че данните са точни.</CardDescription>
-                                </CardHeader>
-                                <HorseForm />
-                            </TabsContent>
-                        </Tabs>
-                    </CardContent>
-                </Card>
+                                <CardContent>
+                                    {activeFormData.component}
+                                </CardContent>
+                            </Card>
+                        )}
+                    </motion.div>
+                </AnimatePresence>
             </div>
         </div>
     );
 }
+
