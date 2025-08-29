@@ -97,32 +97,17 @@ export async function submitApplication(prevState: State, formData: FormData): P
         return { success: false, message: errorMessage || "Моля, поправете грешките във формата." };
     }
     
-    const { type, first_name, last_name, date_of_birth, egn, address, horse_count, horse_name, age, sire, dam, owner, mounts, wins, email, phone } = validatedFields.data;
-
-    // Use first_name for 'name' column for jockeys/trainers, and horse_name for horses
-    const mainName = type === 'Кон' ? horse_name : first_name;
+    // Use first_name from form directly for the 'name' column in DB
+    const nameForDb = formType === 'Кон' ? validatedFields.data.horse_name : validatedFields.data.first_name;
 
     const { error } = await supabase
         .from('submissions')
         .insert({
-            type,
-            name: mainName, // Main name field in DB
-            first_name,
-            last_name,
-            date_of_birth,
-            egn,
-            address,
-            horse_count,
-            age,
-            sire,
-            dam,
-            owner,
-            mounts,
-            wins,
-            email,
-            phone,
+            ...validatedFields.data,
+            name: nameForDb,
             status: 'new'
         });
+
 
     if (error) {
         console.error("Submission error:", error);

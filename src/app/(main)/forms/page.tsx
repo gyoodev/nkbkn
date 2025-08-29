@@ -52,14 +52,14 @@ function JockeyForm() {
             <input type="hidden" name="type" value="Жокей" />
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5"><Label htmlFor="first_name-jockey">Име</Label><Input id="first_name-jockey" name="first_name" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="last_name-jockey">Фамилия</Label><Input id="last_name-jockey" name="last_name" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="date_of_birth-jockey">Дата на раждане</Label><Input id="date_of_birth-jockey" name="date_of_birth" type="date" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="wins-jockey">Победи</Label><Input id="wins-jockey" name="wins" type="number" defaultValue={0} required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="egn-jockey">ЕГН</Label><Input id="egn-jockey" name="egn" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="address-jockey">Адрес</Label><Input id="address-jockey" name="address" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="email-jockey">Имейл за контакт</Label><Input id="email-jockey" name="email" type="email" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="phone-jockey">Телефон за контакт</Label><Input id="phone-jockey" name="phone" required/></div>
+                  <div className="space-y-1.5"><Label htmlFor="first_name">Име</Label><Input id="first_name" name="first_name" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="last_name">Фамилия</Label><Input id="last_name" name="last_name" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="date_of_birth">Дата на раждане</Label><Input id="date_of_birth" name="date_of_birth" type="date" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="wins">Победи</Label><Input id="wins" name="wins" type="number" defaultValue={0} required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="egn">ЕГН</Label><Input id="egn" name="egn" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="address">Адрес</Label><Input id="address" name="address" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="email">Имейл за контакт</Label><Input id="email" name="email" type="email" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="phone">Телефон за контакт</Label><Input id="phone" name="phone" required/></div>
               </div>
               <SubmitButton />
             </div>
@@ -91,15 +91,15 @@ function TrainerForm() {
             <input type="hidden" name="type" value="Треньор" />
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5"><Label htmlFor="first_name-trainer">Име</Label><Input id="first_name-trainer" name="first_name" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="last_name-trainer">Фамилия</Label><Input id="last_name-trainer" name="last_name" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="date_of_birth-trainer">Дата на раждане</Label><Input id="date_of_birth-trainer" name="date_of_birth" type="date" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="wins-trainer">Победи</Label><Input id="wins-trainer" name="wins" type="number" defaultValue={0} required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="egn-trainer">ЕГН</Label><Input id="egn-trainer" name="egn" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="address-trainer">Адрес</Label><Input id="address-trainer" name="address" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="horse_count-trainer">Брой коне</Label><Input id="horse_count-trainer" name="horse_count" type="number" defaultValue={0} required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="email-trainer">Имейл за контакт</Label><Input id="email-trainer" name="email" type="email" required /></div>
-                  <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="phone-trainer">Телефон за контакт</Label><Input id="phone-trainer" name="phone" required/></div>
+                  <div className="space-y-1.5"><Label htmlFor="first_name">Име</Label><Input id="first_name" name="first_name" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="last_name">Фамилия</Label><Input id="last_name" name="last_name" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="date_of_birth">Дата на раждане</Label><Input id="date_of_birth" name="date_of_birth" type="date" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="wins">Победи</Label><Input id="wins" name="wins" type="number" defaultValue={0} required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="egn">ЕГН</Label><Input id="egn" name="egn" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="address">Адрес</Label><Input id="address" name="address" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="horse_count">Брой коне</Label><Input id="horse_count" name="horse_count" type="number" defaultValue={0} required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="email">Имейл за контакт</Label><Input id="email" name="email" type="email" required /></div>
+                  <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="phone">Телефон за контакт</Label><Input id="phone" name="phone" required/></div>
               </div>
               <SubmitButton />
             </div>
@@ -131,15 +131,15 @@ function HorseForm() {
             <input type="hidden" name="type" value="Кон" />
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5"><Label htmlFor="horse_name-horse">Име на коня</Label><Input id="horse_name-horse" name="horse_name" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="age-horse">Възраст</Label><Input id="age-horse" name="age" type="number" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="sire-horse">Баща</Label><Input id="sire-horse" name="sire" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="dam-horse">Майка</Label><Input id="dam-horse" name="dam" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="owner-horse">Собственик</Label><Input id="owner-horse" name="owner" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="mounts-horse">Участия</Label><Input id="mounts-horse" name="mounts" type="number" defaultValue={0} required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="wins-horse">Победи</Label><Input id="wins-horse" name="wins" type="number" defaultValue={0} required /></div>
-                  <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="email-horse">Имейл за контакт със собственика</Label><Input id="email-horse" name="email" type="email" required /></div>
-                  <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="phone-horse">Телефон за контакт със собственика</Label><Input id="phone-horse" name="phone" required/></div>
+                  <div className="space-y-1.5"><Label htmlFor="horse_name">Име на коня</Label><Input id="horse_name" name="horse_name" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="age">Възраст</Label><Input id="age" name="age" type="number" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="sire">Баща</Label><Input id="sire" name="sire" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="dam">Майка</Label><Input id="dam" name="dam" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="owner">Собственик</Label><Input id="owner" name="owner" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="mounts">Участия</Label><Input id="mounts" name="mounts" type="number" defaultValue={0} required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="wins">Победи</Label><Input id="wins" name="wins" type="number" defaultValue={0} required /></div>
+                  <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="email">Имейл за контакт със собственика</Label><Input id="email" name="email" type="email" required /></div>
+                  <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="phone">Телефон за контакт със собственика</Label><Input id="phone" name="phone" required/></div>
               </div>
               <SubmitButton />
             </div>
@@ -171,13 +171,13 @@ function OwnerForm() {
             <input type="hidden" name="type" value="Собственик" />
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5"><Label htmlFor="first_name-owner">Име</Label><Input id="first_name-owner" name="first_name" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="last_name-owner">Фамилия</Label><Input id="last_name-owner" name="last_name" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="date_of_birth-owner">Дата на раждане</Label><Input id="date_of_birth-owner" name="date_of_birth" type="date" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="egn-owner">ЕГН</Label><Input id="egn-owner" name="egn" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="address-owner">Адрес</Label><Input id="address-owner" name="address" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="email-owner">Имейл за контакт</Label><Input id="email-owner" name="email" type="email" required /></div>
-                  <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="phone-owner">Телефон за контакт</Label><Input id="phone-owner" name="phone" required/></div>
+                  <div className="space-y-1.5"><Label htmlFor="first_name">Име</Label><Input id="first_name" name="first_name" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="last_name">Фамилия</Label><Input id="last_name" name="last_name" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="date_of_birth">Дата на раждане</Label><Input id="date_of_birth" name="date_of_birth" type="date" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="egn">ЕГН</Label><Input id="egn" name="egn" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="address">Адрес</Label><Input id="address" name="address" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="email">Имейл за контакт</Label><Input id="email" name="email" type="email" required /></div>
+                  <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="phone">Телефон за контакт</Label><Input id="phone" name="phone" required/></div>
               </div>
               <SubmitButton />
             </div>
