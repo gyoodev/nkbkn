@@ -16,7 +16,21 @@ const FormSchema = z.object({
     .refine((file) => file?.size > 0, 'Файлът е задължителен.')
 });
 
+async function checkAdmin() {
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Authentication required');
+
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'admin') throw new Error('Administrator privileges required');
+}
+
 export async function uploadDocument(prevState: any, formData: FormData) {
+  try {
+    await checkAdmin();
+  } catch (error: any) {
+    return { message: error.message };
+  }
   const supabase = createServerClient();
 
   const validatedFields = FormSchema.safeParse({
@@ -62,6 +76,11 @@ export async function uploadDocument(prevState: any, formData: FormData) {
 }
 
 export async function deleteDocument(id: number) {
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
+    }
     const supabase = createServerClient();
 
     // First get the document path

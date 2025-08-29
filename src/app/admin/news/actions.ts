@@ -5,6 +5,17 @@ import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+async function checkAdmin() {
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Authentication required');
+
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'admin') throw new Error('Administrator privileges required');
+
+    return user;
+}
+
 // Using manual validation instead of Zod to avoid session issues.
 async function validateFormData(formData: FormData) {
     const errors: Record<string, string> = {};
@@ -40,13 +51,14 @@ async function validateFormData(formData: FormData) {
 
 
 export async function upsertNewsPost(prevState: any, formData: FormData) {
-    const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-        return { message: 'Authentication required' };
+    let user;
+    try {
+        user = await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
     }
-
+    const supabase = createServerClient();
+    
     const errors = await validateFormData(formData);
     if (Object.keys(errors).length > 0) {
         return {
@@ -129,11 +141,12 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
 
 
 export async function DeleteNewsPost(id: number) {
-    const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
-     if (!user) {
-        return { message: 'Authentication required' };
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
     }
+    const supabase = createServerClient();
 
     const { error } = await supabase.from('news_posts').delete().eq('id', id);
 

@@ -20,7 +20,21 @@ const EventSchema = z.object({
   races: z.array(RaceSchema),
 });
 
+async function checkAdmin() {
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Authentication required');
+
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'admin') throw new Error('Administrator privileges required');
+}
+
 export async function upsertRaceEvent(prevState: any, formData: FormData) {
+  try {
+    await checkAdmin();
+  } catch (error: any) {
+    return { message: error.message };
+  }
   const supabase = createServerClient();
   
   const raceCount = Array.from(formData.keys()).filter(key => key.startsWith('race-name-')).length;
@@ -84,7 +98,7 @@ export async function upsertRaceEvent(prevState: any, formData: FormData) {
   
   // Delete races that were removed in the form
   const raceIdsToKeep = raceData.map(r => r.id).filter(Boolean);
-  if (raceIdsToKeep.length > 0) {
+  if (id && raceIdsToKeep.length > 0) { // Only delete if it's an existing event
     const { error: deleteError } = await supabase
         .from('races')
         .delete()
@@ -95,6 +109,12 @@ export async function upsertRaceEvent(prevState: any, formData: FormData) {
         console.error('Race delete error:', deleteError);
         // Not returning error as it's not critical if old races are not deleted
     }
+  } else if (id && raceData.length === 0) {
+      // If all races are removed, delete all associated races
+      const { error: deleteAllRacesError } = await supabase.from('races').delete().eq('event_id', eventId);
+      if (deleteAllRacesError) {
+          console.error('Error deleting all races for event:', deleteAllRacesError);
+      }
   }
 
 
@@ -105,6 +125,11 @@ export async function upsertRaceEvent(prevState: any, formData: FormData) {
 
 
 export async function deleteRaceEvent(id: number) {
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
+    }
     const supabase = createServerClient();
 
     // Must delete races first due to foreign key constraint

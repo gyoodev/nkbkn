@@ -15,14 +15,22 @@ const FormSchema = z.object({
   mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
 });
 
-
-export async function upsertTrainer(prevState: any, formData: FormData) {
+async function checkAdmin() {
     const supabase = createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Authentication required');
 
-    if (!user) {
-        return { message: 'Authentication required' };
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'admin') throw new Error('Administrator privileges required');
+}
+
+export async function upsertTrainer(prevState: any, formData: FormData) {
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
     }
+    const supabase = createServerClient();
 
     const validatedFields = FormSchema.safeParse({
         id: formData.get('id'),
@@ -66,6 +74,11 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
 
 
 export async function deleteTrainer(id: number) {
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
+    }
     const supabase = createServerClient();
 
     const { error } = await supabase.from('trainers').delete().eq('id', id);

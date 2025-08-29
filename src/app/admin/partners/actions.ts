@@ -12,8 +12,21 @@ const FormSchema = z.object({
   logo_url: z.string().url('Въведете валиден URL адрес на лого'),
 });
 
+async function checkAdmin() {
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Authentication required');
+
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'admin') throw new Error('Administrator privileges required');
+}
 
 export async function upsertPartner(prevState: any, formData: FormData) {
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
+    }
     const supabase = createServerClient();
 
     const validatedFields = FormSchema.safeParse({
@@ -51,6 +64,11 @@ export async function upsertPartner(prevState: any, formData: FormData) {
 
 
 export async function deletePartner(id: number) {
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
+    }
     const supabase = createServerClient();
 
     const { error } = await supabase.from('partners').delete().eq('id', id);

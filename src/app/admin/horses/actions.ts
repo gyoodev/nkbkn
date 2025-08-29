@@ -18,8 +18,21 @@ const FormSchema = z.object({
   bestTime: z.string().optional().nullable(),
 });
 
+async function checkAdmin() {
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Authentication required');
+
+    const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
+    if (profile?.role !== 'admin') throw new Error('Administrator privileges required');
+}
 
 export async function upsertHorse(prevState: any, formData: FormData) {
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
+    }
     const supabase = createServerClient();
 
     const validatedFields = FormSchema.safeParse({
@@ -63,6 +76,11 @@ export async function upsertHorse(prevState: any, formData: FormData) {
 
 
 export async function deleteHorse(id: number) {
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
+    }
     const supabase = createServerClient();
 
     const { error } = await supabase.from('horses').delete().eq('id', id);
