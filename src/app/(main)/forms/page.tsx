@@ -28,7 +28,7 @@ function SubmitButton() {
   );
 }
 
-function ApplicationForm({ type }: { type: 'Жокей' | 'Треьор' | 'Кон' }) {
+function ApplicationForm({ type }: { type: 'Жокей' | 'Треньор' | 'Кон' }) {
     const { toast } = useToast();
     const initialState = { success: false, message: '' };
     const [state, dispatch] = useActionState(submitApplication, initialState);
@@ -81,9 +81,9 @@ export default function FormsPage() {
     const { text } = useLanguage();
 
     const tabs = [
-        { value: 'jockey', title: 'Регистрация на жокей', icon: <User className="mr-2 h-5 w-5" /> },
-        { value: 'trainer', title: 'Регистрация на треньор', icon: <User className="mr-2 h-5 w-5" /> },
-        { value: 'horse', title: 'Регистрация на кон', icon: <HorseIcon className="mr-2 h-5 w-5" /> },
+        { value: 'jockey', title: 'Заявка за жокей', icon: <User className="h-5 w-5" /> },
+        { value: 'trainer', title: 'Заявка за треньор', icon: <User className="h-5 w-5" /> },
+        { value: 'horse', title: 'Заявка за кон', icon: <HorseIcon className="h-5 w-5" /> },
     ];
 
     return (
@@ -96,11 +96,14 @@ export default function FormsPage() {
                 <Card>
                     <CardContent className="p-6">
                         <Tabs defaultValue="jockey" className="w-full">
-                            <TabsList className="grid w-full grid-cols-3">
+                             <TabsList className="grid w-full grid-cols-3">
                                 {tabs.map(tab => (
                                     <TabsTrigger key={tab.value} value={tab.value}>
-                                        {tab.icon}
-                                        {tab.title}
+                                        <span className="sm:hidden">{tab.icon}</span>
+                                        <span className="hidden sm:flex items-center">
+                                            {tab.icon}
+                                            <span className="ml-2">{tab.title}</span>
+                                        </span>
                                     </TabsTrigger>
                                 ))}
                             </TabsList>
