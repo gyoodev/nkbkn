@@ -19,38 +19,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const getInitialSession = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            setUser(session.user);
-            await checkAdminRole(session.user);
-        }
-        setLoading(false);
-    }
-    
-    getInitialSession();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event: AuthChangeEvent, session: Session | null) => {
-        setLoading(true);
-        setUser(session?.user ?? null);
-        if (session?.user) {
-          await checkAdminRole(session.user);
-        } else {
-          setIsAdmin(false);
-        }
-        setLoading(false);
-      }
-    );
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [supabase]);
-
-  const checkAdminRole = async (user: User) => {
+  
+  const checkAdminRole = async (user: User | null) => {
     if (!user) {
         setIsAdmin(false);
         return;
@@ -62,6 +32,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .single();
     setIsAdmin(profile?.role === 'admin');
   };
+
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (event: AuthChangeEvent, session: Session | null) => {
+        setLoading(true);
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        await checkAdminRole(currentUser);
+        setLoading(false);
+      }
+    );
+
+    // Initial check in case onAuthStateChange doesn't fire on initial load
+    const initialCheck = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+             const currentUser = session?.user ?? null;
+             setUser(currentUser);
+             await checkAdminRole(currentUser);
+        }
+        setLoading(false);
+    };
+    initialCheck();
+
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [supabase]);
+
 
   const signOut = async () => {
     await supabase.auth.signOut();
