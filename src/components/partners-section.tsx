@@ -9,10 +9,7 @@ const partnerLogos = [
     { name: 'YouTube', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/YouTube_Logo_2017.svg/1280px-YouTube_Logo_2017.svg.png' },
     { name: 'Meta', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/ab/Meta-Logo.png' },
     { name: 'Starbucks', logoUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png' },
-    { name: 'Partner 5', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner5' },
-    { name: 'Partner 6', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner6' },
-    { name: 'Partner 7', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner7' },
-    { name: 'Partner 8', logoUrl: 'https://placehold.co/150x60/gray/white?text=Partner8' },
+    { name: 'Община Търговище', logoUrl: 'https://storage.googleapis.com/stabl-media/e1418f77-3e5f-40e8-b193-a4e985873995.png' },
 ];
 
 export function PartnersSection() {
@@ -31,14 +28,15 @@ export function PartnersSection() {
                 >
                     <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-[scroll_40s_linear_infinite]" style={{'--logo-count': partnerLogos.length} as React.CSSProperties}>
                         {[...partnerLogos, ...partnerLogos].map((p, index) => (
-                            <li key={`${p.name}-${index}`}>
+                            <li key={`${p.name}-${index}`} className="flex flex-col items-center gap-2">
                                 <Image
                                     src={p.logoUrl}
                                     alt={p.name}
                                     width={150}
                                     height={60}
-                                    className="object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all"
+                                    className="object-contain h-16 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all"
                                 />
+                                <span className="text-sm font-medium text-muted-foreground">{p.name}</span>
                             </li>
                         ))}
                     </ul>
