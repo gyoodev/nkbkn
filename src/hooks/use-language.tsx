@@ -23,6 +23,9 @@ const translations = {
     english: 'English',
     allRightsReserved: 'Всички права запазени',
     developedBy: 'Разработено от GKDEV',
+    accept: 'Приемам',
+    privacyPolicy: 'Политика за поверителност',
+    cookieBannerText: 'Този уебсайт използва бисквитки, за да подобри вашето потребителско изживяване. Като продължавате да използвате сайта, вие се съгласявате с нашата',
 
     // Header & Nav
     siteHeader: 'Конни надбягвания в България',
@@ -197,6 +200,9 @@ const translations = {
     english: 'English',
     allRightsReserved: 'All rights reserved',
     developedBy: 'Developed by GKDEV',
+    accept: 'Accept',
+    privacyPolicy: 'Privacy Policy',
+    cookieBannerText: 'This website uses cookies to enhance your user experience. By continuing to use the site, you agree to our',
 
     // Header & Nav
     siteHeader: 'Horse Racing in Bulgaria',

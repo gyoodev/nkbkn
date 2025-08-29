@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { LanguageProvider } from '@/hooks/use-language';
 import { AuthProvider } from '@/hooks/use-auth';
 import { DevBanner } from '@/components/dev-banner';
+import { CookieBanner } from '@/components/cookie-banner';
 
 export const metadata: Metadata = {
   title: 'НКБКН - Национална комисия за Български конни надбягвания',
@@ -32,6 +33,7 @@ export default function RootLayout({
           <AuthProvider>
             {children}
             <Toaster />
+            <CookieBanner />
           </AuthProvider>
         </LanguageProvider>
       </body>
