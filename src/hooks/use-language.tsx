@@ -156,8 +156,7 @@ const translations = {
     
     // Trainers Page
     achievements: 'Постижения',
-    associatedHorses: 'Свързани коне',
-
+    
     // Tracks Page
     interactiveMapComingSoon: 'Интерактивна карта - скоро',
 
@@ -186,6 +185,7 @@ const translations = {
     termsShort: 'Условия за ползване',
     privacyShort: 'Поверителност',
     faq: 'ЧЗВ',
+    ourTrustedPartners: 'Нашите доверени партньори',
   },
   en: {
     // General
@@ -329,7 +329,6 @@ const translations = {
 
     // Trainers Page
     achievements: 'Achievements',
-    associatedHorses: 'Associated Horses',
 
     // Tracks Page
     interactiveMapComingSoon: 'Interactive Map - Coming Soon',
@@ -359,6 +358,7 @@ const translations = {
     termsShort: 'Terms of Use',
     privacyShort: 'Privacy Policy',
     faq: 'FAQ',
+    ourTrustedPartners: 'Our Trusted Partners',
   },
 };
 

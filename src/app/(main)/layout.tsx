@@ -38,6 +38,7 @@ import { Footer } from '@/components/footer';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/use-auth';
 import { createBrowserClient } from '@/lib/supabase/client';
+import { PartnersSection } from '@/components/partners-section';
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -258,6 +259,7 @@ export default function MainLayout({
       <main className="flex-1">
         {children}
       </main>
+      <PartnersSection />
       <Footer />
     </div>
   );
