@@ -37,6 +37,10 @@ function JockeyForm() {
             <Label htmlFor="jockey-wins">Победи</Label>
             <Input id="jockey-wins" type="number" placeholder="10" />
           </div>
+          <div className="space-y-2">
+            <Label htmlFor="jockey-mounts">Брой участия</Label>
+            <Input id="jockey-mounts" type="number" placeholder="100" />
+          </div>
           <div className="space-y-2 md:col-span-2">
             <Label htmlFor="jockey-address">Адрес</Label>
             <Input id="jockey-address" placeholder="гр. София, ул. Примерна 1" />
@@ -78,6 +82,10 @@ function TrainerForm() {
            <div className="space-y-2">
             <Label htmlFor="trainer-wins">Победи</Label>
             <Input id="trainer-wins" type="number" placeholder="25" />
+          </div>
+           <div className="space-y-2">
+            <Label htmlFor="trainer-mounts">Брой участия</Label>
+            <Input id="trainer-mounts" type="number" placeholder="150" />
           </div>
            <div className="space-y-2">
             <Label htmlFor="trainer-horses-count">Брой коне</Label>
