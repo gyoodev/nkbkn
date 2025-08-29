@@ -17,6 +17,7 @@ import {
   Image as ImageIcon,
   Loader2,
   Building,
+  Mail,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -69,6 +70,7 @@ export default function AdminLayout({
 
   const mainNavItems = [
     { href: '/admin', label: 'Табло', icon: <Home className="h-5 w-5" /> },
+    { href: '/admin/submissions', label: 'Заявки', icon: <Mail className="h-5 w-5" /> },
     { href: '/admin/calendar', label: 'Календар', icon: <Calendar className="h-5 w-5" /> },
     { href: '/admin/news', label: 'Новини', icon: <Newspaper className="h-5 w-5" /> },
     { href: '/admin/results', label: 'Резултати', icon: <Trophy className="h-5 w-5" /> },

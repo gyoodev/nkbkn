@@ -116,3 +116,14 @@ export interface Comment {
   guest_name: string | null
   profiles: UserProfile | null
 }
+
+export interface Submission {
+    id: number;
+    created_at: string;
+    type: string;
+    name: string;
+    email: string;
+    phone: string;
+    message: string | null;
+    status: 'new' | 'read' | 'archived';
+}
