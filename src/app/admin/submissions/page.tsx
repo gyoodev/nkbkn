@@ -4,12 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { MoreHorizontal, Mail, Eye, CheckCircle, Archive } from 'lucide-react';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { Mail, Eye } from 'lucide-react';
 import { createServerClient } from '@/lib/supabase/server';
 import type { Submission } from '@/lib/types';
-import { DeleteButton } from './_components/delete-button';
-import { UpdateStatusButton } from './_components/update-status-button';
 import {
   Dialog,
   DialogContent,
@@ -49,10 +46,10 @@ function ViewSubmissionDialog({ submission }: { submission: Submission }) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                 <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <Button variant="outline" size="sm">
                     <Eye className="mr-2 h-4 w-4" />
-                    Преглед
-                </DropdownMenuItem>
+                    Детайли
+                </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-xl">
                 <DialogHeader>
@@ -155,9 +152,7 @@ export default async function AdminSubmissionsPage() {
                 <TableHead>Тип</TableHead>
                 <TableHead>Статус</TableHead>
                 <TableHead>Дата</TableHead>
-                <TableHead>
-                  <span className="sr-only">Действия</span>
-                </TableHead>
+                <TableHead className="text-right">Действия</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -169,34 +164,8 @@ export default async function AdminSubmissionsPage() {
                     <Badge variant={getStatusVariant(sub.status)}>{sub.status}</Badge>
                   </TableCell>
                   <TableCell>{formatDate(sub.created_at)}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Действия</DropdownMenuLabel>
-                         <ViewSubmissionDialog submission={sub} />
-                        <DropdownMenuSeparator />
-                        <UpdateStatusButton id={sub.id} status="read">
-                            <CheckCircle className="mr-2 h-4 w-4" />
-                            Маркирай като прочетена
-                        </UpdateStatusButton>
-                         <UpdateStatusButton id={sub.id} status="archived">
-                            <Archive className="mr-2 h-4 w-4" />
-                           Архивирай
-                        </UpdateStatusButton>
-                        <DropdownMenuSeparator />
-                        <DeleteButton id={sub.id} />
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                  <TableCell className="text-right">
+                    <ViewSubmissionDialog submission={sub} />
                   </TableCell>
                 </TableRow>
               ))}
