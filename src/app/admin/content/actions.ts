@@ -23,7 +23,7 @@ export async function updateContent(
   
   const { error } = await supabase
     .from('site_content')
-    .update({ content: content, updated_at: new Date().toISOString() })
+    .update({ content: content })
     .eq('key', key);
     
   if (error) {
