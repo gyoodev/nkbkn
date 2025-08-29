@@ -35,6 +35,7 @@ export async function addComment(prevState: CommentState, formData: FormData): P
   
   const { content, post_id, guest_name } = validatedFields.data;
 
+  // If user is not logged in, guest_name is required
   if (!user && (!guest_name || guest_name.trim() === '')) {
       return { success: false, error: 'Името за гост е задължително.' };
   }
@@ -105,4 +106,3 @@ export async function likePost(postId: number): Promise<LikeState> {
 
     return { success: true, newLikes };
 }
-
