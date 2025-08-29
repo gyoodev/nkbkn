@@ -41,26 +41,37 @@ export async function submitApplication(prevState: State, formData: FormData): P
     const supabase = createServerClient();
 
     const formType = formData.get('type');
-    let dataToValidate = {};
+    let dataToValidate: { [key: string]: any } = {
+        type: formType,
+        email: formData.get('email'),
+        phone: formData.get('phone'),
+    };
 
     switch(formType) {
         case 'Жокей':
-        case 'Собственик':
             dataToValidate = {
-                type: formType,
+                ...dataToValidate,
                 first_name: formData.get('first_name'),
                 last_name: formData.get('last_name'),
                 date_of_birth: formData.get('date_of_birth'),
                 egn: formData.get('egn'),
                 address: formData.get('address'),
                 wins: formData.get('wins'),
-                email: formData.get('email'),
-                phone: formData.get('phone'),
+            };
+            break;
+        case 'Собственик':
+            dataToValidate = {
+                ...dataToValidate,
+                first_name: formData.get('first_name'),
+                last_name: formData.get('last_name'),
+                date_of_birth: formData.get('date_of_birth'),
+                egn: formData.get('egn'),
+                address: formData.get('address'),
             };
             break;
         case 'Треньор':
              dataToValidate = {
-                type: formType,
+                ...dataToValidate,
                 first_name: formData.get('first_name'),
                 last_name: formData.get('last_name'),
                 date_of_birth: formData.get('date_of_birth'),
@@ -68,13 +79,11 @@ export async function submitApplication(prevState: State, formData: FormData): P
                 address: formData.get('address'),
                 wins: formData.get('wins'),
                 horse_count: formData.get('horse_count'),
-                email: formData.get('email'),
-                phone: formData.get('phone'),
             };
             break;
         case 'Кон':
              dataToValidate = {
-                type: formType,
+                ...dataToValidate,
                 horse_name: formData.get('horse_name'),
                 age: formData.get('age'),
                 sire: formData.get('sire'),
@@ -82,8 +91,6 @@ export async function submitApplication(prevState: State, formData: FormData): P
                 owner: formData.get('owner'),
                 mounts: formData.get('mounts'),
                 wins: formData.get('wins'),
-                email: formData.get('email'), // Contact email
-                phone: formData.get('phone'), // Contact phone
             };
             break;
         default:
@@ -97,8 +104,9 @@ export async function submitApplication(prevState: State, formData: FormData): P
         return { success: false, message: errorMessage || "Моля, поправете грешките във формата." };
     }
     
-    // Use first_name from form directly for the 'name' column in DB
-    const nameForDb = formType === 'Кон' ? validatedFields.data.horse_name : validatedFields.data.first_name;
+    const nameForDb = formType === 'Кон' 
+        ? validatedFields.data.horse_name 
+        : `${validatedFields.data.first_name} ${validatedFields.data.last_name}`;
 
     const { error } = await supabase
         .from('submissions')

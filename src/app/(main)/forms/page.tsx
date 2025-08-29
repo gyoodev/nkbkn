@@ -175,9 +175,9 @@ function OwnerForm() {
                   <div className="space-y-1.5"><Label htmlFor="last_name">Фамилия</Label><Input id="last_name" name="last_name" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="date_of_birth">Дата на раждане</Label><Input id="date_of_birth" name="date_of_birth" type="date" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="egn">ЕГН</Label><Input id="egn" name="egn" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="address">Адрес</Label><Input id="address" name="address" required /></div>
+                  <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="address">Адрес</Label><Input id="address" name="address" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="email">Имейл за контакт</Label><Input id="email" name="email" type="email" required /></div>
-                  <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="phone">Телефон за контакт</Label><Input id="phone" name="phone" required/></div>
+                  <div className="space-y-1.5"><Label htmlFor="phone">Телефон за контакт</Label><Input id="phone" name="phone" required/></div>
               </div>
               <SubmitButton />
             </div>
@@ -256,4 +256,3 @@ export default function FormsPage() {
         </div>
     );
 }
-
