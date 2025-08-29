@@ -15,7 +15,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [supabase] = useState(() => createBrowserClient());
+  const supabase = createBrowserClient();
   const [user, setUser] = useState<User | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -72,7 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isAdmin,
     loading,
     signOut
-  }), [user, isAdmin, loading, signOut]);
+  }), [user, isAdmin, loading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
