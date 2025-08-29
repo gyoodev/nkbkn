@@ -50,8 +50,7 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
             imageUrl,
             achievements: achievements.split(',').map(s => s.trim()).filter(Boolean),
             wins,
-            mounts,
-            user_id: user.id
+            mounts
         });
 
 
