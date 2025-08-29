@@ -105,3 +105,11 @@ body {
     border: none;
   }
 }
+
+@layer utilities {
+    @keyframes scroll {
+        to {
+            transform: translate(calc(-50% - 0.5rem * (var(--logo-count, 1) / 2)));
+        }
+    }
+}
