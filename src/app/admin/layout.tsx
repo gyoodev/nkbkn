@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -15,6 +16,7 @@ import {
   Trophy,
   Image as ImageIcon,
   Loader2,
+  Building,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
@@ -78,6 +80,7 @@ export default function AdminLayout({
      { href: '/admin/jockeys', label: 'Жокеи', icon: <Users className="h-5 w-5" /> },
      { href: '/admin/trainers', label: 'Треньори', icon: <Users className="h-5 w-5" /> },
      { href: '/admin/horses', label: 'Коне', icon: <HorseIcon className="h-5 w-5" /> },
+     { href: '/admin/partners', label: 'Партньори', icon: <Building className="h-5 w-5" /> },
   ];
   
   const settingsNavItems = [

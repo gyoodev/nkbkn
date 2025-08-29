@@ -1,5 +1,6 @@
 
-import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result } from '@/lib/types';
+
+import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner } from '@/lib/types';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -261,5 +262,27 @@ export async function getResult(id: number): Promise<Result | null> {
     return data;
 }
 
+export async function getPartners(): Promise<Partner[]> {
+    try {
+        const { data, error } = await supabase.from('partners').select('*').order('created_at', { ascending: true });
+        if (error) {
+            console.error('Error fetching partners:', error.message);
+            return [];
+        }
+        return data || [];
+    } catch(e: any) {
+        console.error('Error fetching partners:', e.message);
+        return [];
+    }
+}
 
-    
+export async function getPartner(id: number): Promise<Partner | null> {
+    const { data, error } = await supabase.from('partners').select('*').eq('id', id).single();
+    if (error || !data) {
+        if (error && error.code !== 'PGRST116') {
+            console.error(`Error fetching partner with id ${id}:`, error);
+        }
+        return null;
+    }
+    return data;
+}

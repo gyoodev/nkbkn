@@ -1,4 +1,5 @@
 
+
 export interface Jockey {
   id: number;
   name: string;
@@ -86,4 +87,11 @@ export interface Result {
     winner: string;
     jockey: string;
     time: string;
+}
+
+export interface Partner {
+    id: number;
+    name: string;
+    logo_url: string;
+    created_at: string;
 }
