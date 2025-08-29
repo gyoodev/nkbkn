@@ -36,7 +36,8 @@ import {
     SidebarTrigger,
     SidebarInset,
     SidebarGroup,
-    SidebarGroupLabel
+    SidebarGroupLabel,
+    SidebarGroupContent
 } from '@/components/ui/sidebar';
 import { HorseLogo } from '@/components/icons/horse-logo';
 
