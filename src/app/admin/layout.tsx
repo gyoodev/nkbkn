@@ -96,7 +96,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-      <>
+      <SidebarProvider>
         <Sidebar>
             <SidebarHeader>
                 <div className="flex items-center gap-2">
@@ -167,18 +167,24 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             </SidebarFooter>
         </Sidebar>
          <SidebarInset>
-            <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
-                <SidebarTrigger className="md:hidden" />
-                 <h1 className="text-xl font-semibold">
-                    {mainNavItems.find(item => isActive(item.href))?.label || 
-                     managementNavItems.find(item => isActive(item.href))?.label ||
-                     settingsNavItems.find(item => isActive(item.href))?.label ||
-                     'Табло'}
-                 </h1>
-            </header>
-            <main className="flex-1 p-4 sm:px-6 sm:py-4">{children}</main>
+            <div className="flex flex-col w-full">
+              <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
+                  <SidebarTrigger className="md:hidden" />
+                   <h1 className="text-xl font-semibold shrink-0">
+                      {mainNavItems.find(item => isActive(item.href))?.label || 
+                       managementNavItems.find(item => isActive(item.href))?.label ||
+                       settingsNavItems.find(item => isActive(item.href))?.label ||
+                       'Табло'}
+                   </h1>
+              </header>
+              <main className="flex-1 overflow-x-auto">
+                <div className="p-4 sm:px-6 sm:py-4">
+                  {children}
+                </div>
+              </main>
+            </div>
         </SidebarInset>
-      </>
+      </SidebarProvider>
   )
 }
 
@@ -189,8 +195,6 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider>
       <AdminLayoutContent>{children}</AdminLayoutContent>
-    </SidebarProvider>
   );
 }
