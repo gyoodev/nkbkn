@@ -18,9 +18,9 @@ function TrainerCard({ trainer, text }: { trainer: Trainer; text: any }) {
     return (
         <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-xl flex flex-col">
             <div className="relative h-56 w-full bg-secondary">
-                {trainer.imageUrl ? (
+                {trainer.image_url ? (
                     <Image
-                        src={trainer.imageUrl}
+                        src={trainer.image_url}
                         alt={trainer.name}
                         fill
                         className="object-cover"

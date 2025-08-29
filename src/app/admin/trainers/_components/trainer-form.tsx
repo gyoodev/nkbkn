@@ -56,9 +56,9 @@ export function TrainerForm({ trainer }: { trainer?: Trainer }) {
             {state.errors?.name && <p className="text-sm font-medium text-destructive">{state.errors.name}</p>}
           </div>
            <div className="space-y-1.5">
-            <Label htmlFor="imageUrl">URL на снимка</Label>
-            <Input id="imageUrl" name="imageUrl" defaultValue={trainer?.imageUrl} />
-             {state.errors?.imageUrl && <p className="text-sm font-medium text-destructive">{state.errors.imageUrl}</p>}
+            <Label htmlFor="image_url">URL на снимка</Label>
+            <Input id="image_url" name="image_url" defaultValue={trainer?.image_url} />
+             {state.errors?.image_url && <p className="text-sm font-medium text-destructive">{state.errors.image_url}</p>}
           </div>
            <div className="space-y-1.5">
             <Label htmlFor="wins">Победи</Label>

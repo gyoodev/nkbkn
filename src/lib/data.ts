@@ -26,7 +26,7 @@ export async function getJockeys(): Promise<Jockey[]> {
             return {
                 id: jockey.id,
                 name: jockey.name,
-                imageUrl: jockey.image_url,
+                image_url: jockey.image_url,
                 wins: wins,
                 mounts: mounts,
                 winRate: winRate,
@@ -52,7 +52,7 @@ export async function getJockey(id: number): Promise<Jockey | null> {
      return {
         id: data.id,
         name: data.name,
-        imageUrl: data.image_url,
+        image_url: data.image_url,
         wins: wins,
         mounts: mounts,
         winRate: winRate
@@ -69,7 +69,7 @@ export async function getTrainers(): Promise<Trainer[]> {
         return (data || []).map(trainer => ({
             id: trainer.id,
             name: trainer.name,
-            imageUrl: trainer.imageUrl,
+            image_url: trainer.image_url,
             achievements: Array.isArray(trainer.achievements) ? trainer.achievements : (typeof trainer.achievements === 'string' ? trainer.achievements.split(',').map((s: string) => s.trim()) : []),
             stats: {
                 wins: trainer.wins || 0,
@@ -94,7 +94,7 @@ export async function getTrainer(id: number): Promise<Trainer | null> {
      return {
         id: data.id,
         name: data.name,
-        imageUrl: data.imageUrl,
+        image_url: data.image_url,
         achievements: Array.isArray(data.achievements) ? data.achievements : (typeof data.achievements === 'string' ? data.achievements.split(',').map((s: string) => s.trim()) : []),
         stats: {
             wins: data.wins || 0,

@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation';
 const FormSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(1, 'Името е задължително'),
-  imageUrl: z.string().url('Въведете валиден URL адрес на изображение'),
+  image_url: z.string().url('Въведете валиден URL адрес на изображение'),
   achievements: z.string().min(1, 'Въведете поне едно постижение'),
   wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
   mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
@@ -27,7 +27,7 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
     const validatedFields = FormSchema.safeParse({
         id: formData.get('id'),
         name: formData.get('name'),
-        imageUrl: formData.get('imageUrl'),
+        image_url: formData.get('image_url'),
         achievements: formData.get('achievements'),
         wins: formData.get('wins'),
         mounts: formData.get('mounts'),
@@ -40,14 +40,14 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
         };
     }
     
-    const { id, name, imageUrl, achievements, wins, mounts } = validatedFields.data;
+    const { id, name, image_url, achievements, wins, mounts } = validatedFields.data;
     
     const { error } = await supabase
         .from('trainers')
         .upsert({
             id: id || undefined,
             name,
-            imageUrl,
+            image_url,
             achievements: achievements.split(',').map(s => s.trim()).filter(Boolean),
             wins,
             mounts
