@@ -46,13 +46,13 @@ export function PartnersSection() {
                         {text.ourTrustedPartners}
                     </h2>
                 </div>
-                 {loading ? <PartnersSkeleton /> : (
+                 {loading ? <PartnersSkeleton /> : partners.length > 0 ? (
                  <div
                   className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
                 >
                     <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-[scroll_40s_linear_infinite]" style={{'--logo-count': partners.length} as React.CSSProperties}>
                         {[...partners, ...partners].map((p, index) => (
-                            <li key={`${p.name}-${index}`} className="flex flex-col items-center gap-2">
+                            <li key={`${p.id}-${index}`} className="flex flex-col items-center gap-2">
                                 <Image
                                     src={p.logo_url}
                                     alt={p.name}
@@ -65,7 +65,7 @@ export function PartnersSection() {
                         ))}
                     </ul>
                 </div>
-                 )}
+                 ) : null}
             </div>
         </section>
     );
