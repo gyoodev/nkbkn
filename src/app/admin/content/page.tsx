@@ -7,11 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import RichTextEditor from '@/components/rich-text-editor';
-import { getSiteContent } from '@/lib/server/data';
 import { updateContent } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
+import { getSiteContent } from '@/lib/client/data'; // This should exist if we are to call it client side
 
 function ContentCard({
   contentKey,
@@ -29,6 +29,10 @@ function ContentCard({
   const [content, setContent] = useState(initialContent);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+
+  useEffect(() => {
+    setContent(initialContent);
+  }, [initialContent]);
 
   const handleSave = () => {
     startTransition(async () => {
@@ -90,18 +94,16 @@ export default function AdminContentPage() {
   useEffect(() => {
     async function fetchContent() {
       setLoading(true);
-      // This is a workaround to call server functions from a client component
-      const fetchActions = {
-          history: () => fetch('/api/get-site-content', { method: 'POST', body: JSON.stringify({ key: 'about_history' })}).then(res => res.json()),
-          mission: () => fetch('/api/get-site-content', { method: 'POST', body: JSON.stringify({ key: 'about_mission' })}).then(res => res.json()),
-          team: () => fetch('/api/get-site-content', { method: 'POST', body: JSON.stringify({ key: 'about_team_text' })}).then(res => res.json()),
-      }
       
+      // In a real app, you would fetch this from an API route.
+      // Since we can't create API routes, we'll call a client-side data fetching function.
+      // This assumes getSiteContent can be made to work on the client.
       const [history, mission, team] = await Promise.all([
         getSiteContent('about_history'),
         getSiteContent('about_mission'),
         getSiteContent('about_team_text'),
       ]);
+
       setContent({
         about_history: history,
         about_mission: mission,
@@ -109,12 +111,8 @@ export default function AdminContentPage() {
       });
       setLoading(false);
     }
-    // We can't call server functions directly, so we'll need an API route or another method.
-    // For now, let's keep it simple and assume we have the initial data or fetch it differently.
-    // This part of the code needs a proper API route to fetch server-side data from a client component.
-    // As a quick fix, we can load it on the server and pass it down, but let's assume client-side fetching for now.
-    setLoading(false); // Remove this once a proper fetching mechanism is in place.
-    setContent({ about_history: '', about_mission: '', about_team_text: '' }); // Placeholder
+    
+    fetchContent();
   }, []);
 
   if (loading) {
@@ -124,7 +122,16 @@ export default function AdminContentPage() {
                 title="Управление на съдържанието"
                 description="Редактирайте текстовете на страница 'За нас'."
             />
-             <p className="mt-8">Зареждане на съдържанието...</p>
+             <div className="mt-8 space-y-4">
+                <Card>
+                    <CardHeader><Skeleton className="h-6 w-1/4" /></CardHeader>
+                    <CardContent><Skeleton className="h-32 w-full" /></CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader><Skeleton className="h-6 w-1/4" /></CardHeader>
+                    <CardContent><Skeleton className="h-32 w-full" /></CardContent>
+                </Card>
+             </div>
           </div>
       )
   }

@@ -334,3 +334,26 @@ export async function getNewsPost(id: string): Promise<NewsPost | null> {
       comments: (data.comments as Comment[]) || [],
     };
 }
+
+
+export async function getSiteContent(key: string): Promise<string> {
+    const supabase = createBrowserClient();
+    try {
+        const { data, error } = await supabase
+            .from('site_content')
+            .select('content')
+            .eq('key', key)
+            .single();
+
+        if (error || !data) {
+            if (error && error.code !== 'PGRST116') { // 'PGRST116' means no rows found
+                console.error(`Error fetching site content for key "${key}":`, error.message);
+            }
+            return '';
+        }
+        return data.content || '';
+    } catch (e: any) {
+        console.error(`Error in getSiteContent for key "${key}":`, e.message);
+        return '';
+    }
+}
