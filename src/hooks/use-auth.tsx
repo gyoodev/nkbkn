@@ -23,42 +23,47 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const checkAdminRole = async (user: User | null, client: SupabaseClient) => {
     if (!user) {
         setIsAdmin(false);
-        return;
+        return false;
     }
     const { data: profile } = await client
       .from('profiles')
       .select('role')
       .eq('id', user.id)
       .single();
-    setIsAdmin(profile?.role === 'admin');
+      
+    const isAdminUser = profile?.role === 'admin';
+    setIsAdmin(isAdminUser);
+    return isAdminUser;
   };
 
   useEffect(() => {
+    async function getActiveSession() {
+      const { data: { session } } = await supabase.auth.getSession();
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      await checkAdminRole(currentUser, supabase);
+      setLoading(false);
+    }
+    
+    getActiveSession();
+
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event: AuthChangeEvent, session: Session | null) => {
-        setLoading(true);
         const currentUser = session?.user ?? null;
         setUser(currentUser);
         await checkAdminRole(currentUser, supabase);
-        setLoading(false);
+        // The loading state is only for the initial check, not subsequent changes
+        if (loading) {
+            setLoading(false);
+        }
       }
     );
-
-    // Initial check in case onAuthStateChange doesn't fire on initial load
-    const initialCheck = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
-        const currentUser = session?.user ?? null;
-        setUser(currentUser);
-        await checkAdminRole(currentUser, supabase);
-        setLoading(false);
-    };
-    initialCheck();
-
 
     return () => {
       authListener.subscription.unsubscribe();
     };
-  }, [supabase]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
 
   const signOut = async () => {
