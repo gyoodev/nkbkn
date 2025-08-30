@@ -77,8 +77,8 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
-        <Card className="lg:col-span-4">
+    <div className="grid grid-cols-1 gap-4">
+        <Card>
             <CardHeader>
                 <CardTitle>Месечна активност</CardTitle>
                  <CardDescription>
@@ -105,40 +105,6 @@ export default function AdminDashboardPage() {
                         <Bar dataKey="likes" name="Харесвания" fill="hsl(var(--chart-3))" radius={[4, 4, 0, 0]} />
                         <Bar dataKey="submissions" name="Заявки" fill="hsl(var(--chart-4))" radius={[4, 4, 0, 0]} />
                     </BarChart>
-                </ResponsiveContainer>
-            </CardContent>
-        </Card>
-        <Card className="lg:col-span-3">
-            <CardHeader>
-                <CardTitle>Разпределение на съдържание</CardTitle>
-                 <CardDescription>
-                    Разпределение на основните типове съдържание.
-                </CardDescription>
-            </CardHeader>
-            <CardContent className="h-80 flex items-center justify-center">
-                 <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                         <Tooltip
-                             contentStyle={{
-                                background: "hsl(var(--background))",
-                                border: "1px solid hsl(var(--border))",
-                                borderRadius: "var(--radius)",
-                            }}
-                        />
-                        <Legend />
-                        <Pie
-                            data={categoryData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            outerRadius={80}
-                            dataKey="value"
-                        >
-                            {categoryData.map((entry, index) => (
-                                <Cell key={`cell-${index}`} fill={entry.fill} />
-                            ))}
-                        </Pie>
-                    </PieChart>
                 </ResponsiveContainer>
             </CardContent>
         </Card>
