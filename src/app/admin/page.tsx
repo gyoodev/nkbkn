@@ -131,7 +131,6 @@ export default function AdminDashboardPage() {
                             cx="50%"
                             cy="50%"
                             labelLine={false}
-                            label={({ percent, name, value }) => `${name}: ${(percent * 100).toFixed(0)}% (${value})`}
                             outerRadius={80}
                             dataKey="value"
                         >
