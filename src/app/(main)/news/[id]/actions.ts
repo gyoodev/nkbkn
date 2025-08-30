@@ -58,7 +58,8 @@ export async function addComment(prevState: CommentState, formData: FormData): P
     .select(`
         *,
         profiles ( id, full_name, username, avatar_url )
-    `);
+    `)
+    .single();
 
 
   if (error || !newCommentData) {
@@ -69,7 +70,7 @@ export async function addComment(prevState: CommentState, formData: FormData): P
   revalidatePath(`/news/${post_id}`);
   
   // The insert operation returns an array, so we take the first element.
-  return { success: true, newComment: newCommentData[0] as Comment };
+  return { success: true, newComment: newCommentData as Comment };
 }
 
 type LikeState = {

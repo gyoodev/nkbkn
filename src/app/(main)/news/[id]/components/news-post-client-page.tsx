@@ -17,7 +17,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Youtube from '@tiptap/extension-youtube';
 import { useEditor, EditorContent } from '@tiptap/react';
 import { useAuth } from '@/hooks/use-auth';
-import { useActionState, useEffect, useState, useTransition } from 'react';
+import { useActionState, useEffect, useState, useTransition, useRef } from 'react';
 import { addComment, likePost } from '../actions';
 import { useToast } from '@/hooks/use-toast';
 
@@ -104,7 +104,7 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
   const { language, text } = useLanguage();
   const { user } = useAuth();
   const { toast } = useToast();
-  const [post, setPost] = useState(initialPost);
+  const formRef = useRef<HTMLFormElement>(null);
 
   // Separate state for comments to avoid re-rendering the whole page
   const [comments, setComments] = useState<CommentType[]>(initialPost.comments || []);
@@ -119,7 +119,7 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
         modestBranding: true,
       }),
     ],
-    content: post.content,
+    content: initialPost.content,
     editable: false,
     editorProps: {
         attributes: {
@@ -132,6 +132,7 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
       if (addCommentState.success) {
           if (addCommentState.newComment) {
               setComments(prev => [addCommentState.newComment!, ...prev]);
+              formRef.current?.reset();
           }
           toast({ title: 'Успех!', description: 'Коментарът е добавен успешно.' });
       } else if (addCommentState.error) {
@@ -151,18 +152,18 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <article>
         <header className="mb-8">
-          <Badge className="mb-4">{post.category}</Badge>
+          <Badge className="mb-4">{initialPost.category}</Badge>
           <h1 className="font-headline text-3xl font-bold tracking-tight text-primary md:text-5xl">
-            {post.title}
+            {initialPost.title}
           </h1>
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
              <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
-              <time dateTime={post.date}>{formattedDate(post.date)}</time>
+              <time dateTime={initialPost.date}>{formattedDate(initialPost.date)}</time>
             </div>
             <div className="flex items-center gap-1.5">
                 <Eye className="h-4 w-4" />
-                <span>{post.views} {text.views.toLowerCase()}</span>
+                <span>{initialPost.views} {text.views.toLowerCase()}</span>
             </div>
             <div className="flex items-center gap-1.5">
                 <MessageCircle className="h-4 w-4" />
@@ -173,8 +174,8 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
 
         <div className="relative mb-8 aspect-video w-full">
           <Image
-            src={post.image_url}
-            alt={post.title}
+            src={initialPost.image_url}
+            alt={initialPost.title}
             fill
             className="rounded-lg object-cover"
             priority
@@ -188,7 +189,7 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
 
         <div className="flex items-center justify-between">
             <h3 className="text-xl font-bold text-primary">{text.shareYourThoughts}</h3>
-            <LikeButton postId={post.id} initialLikes={post.likes} />
+            <LikeButton postId={initialPost.id} initialLikes={initialPost.likes} />
         </div>
       </article>
 
@@ -199,12 +200,8 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
             <CardDescription>Оставете вашия коментар по-долу.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <form action={(formData) => {
-                submitAddComment(formData);
-                const form = document.getElementById('comment-form') as HTMLFormElement;
-                form?.reset();
-            }} id="comment-form">
-                <input type="hidden" name="post_id" value={post.id} />
+            <form action={submitAddComment} ref={formRef}>
+                <input type="hidden" name="post_id" value={initialPost.id} />
                 <div className="space-y-4">
                     {!user && (
                         <div className="space-y-1.5">
