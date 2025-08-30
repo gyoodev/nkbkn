@@ -204,69 +204,6 @@ export async function getDashboardStats() {
     }
 }
 
-export async function getMonthlyActivityStats() {
-    const supabase = createBrowserClient();
-    const today = new Date();
-    const last12MonthsInterval = {
-        start: subMonths(startOfMonth(today), 11),
-        end: endOfMonth(today),
-    };
-
-    const monthStarts = eachMonthOfInterval(last12MonthsInterval);
-
-    try {
-        const [comments, likesData, submissions] = await Promise.all([
-            supabase.from('comments').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')),
-            supabase.from('news_posts').select('date, likes').gte('date', format(last12MonthsInterval.start, 'yyyy-MM-dd')),
-            supabase.from('submissions').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd'))
-        ]);
-        
-        if (comments.error) throw comments.error;
-        if (likesData.error) throw likesData.error;
-        if (submissions.error) throw submissions.error;
-        
-
-        const activityByMonth = monthStarts.map(monthStart => {
-            const monthEnd = endOfMonth(monthStart);
-
-            const getCountForMonth = (items: { created_at: string | null }[] | null) =>
-                items?.filter(item => {
-                    const dateValue = item.created_at;
-                    if (!dateValue) return false;
-                    const itemDate = new Date(dateValue);
-                    return itemDate >= monthStart && itemDate <= monthEnd;
-                }).length || 0;
-            
-            const getLikesForMonth = (items: { date: string | null, likes: number }[] | null) => 
-                 items?.filter(item => {
-                    if (!item.date) return false;
-                    const itemDate = new Date(item.date);
-                    return itemDate >= monthStart && itemDate <= monthEnd;
-                }).reduce((acc, item) => acc + (item.likes || 0), 0) || 0;
-
-
-            return {
-                month: format(monthStart, 'LLL', { locale: bg }).charAt(0).toUpperCase() + format(monthStart, 'LLL', { locale: bg }).slice(1).replace('.',''),
-                comments: getCountForMonth(comments.data),
-                likes: getLikesForMonth(likesData.data),
-                submissions: getCountForMonth(submissions.data),
-            };
-        });
-
-        return activityByMonth;
-    } catch (error: any) {
-        console.error('Error fetching monthly activity:', error);
-        // Return empty structure on error
-        return monthStarts.map(monthStart => ({
-            month: format(monthStart, 'LLL', { locale: bg }).charAt(0).toUpperCase() + format(monthStart, 'LLL', { locale: bg }).slice(1).replace('.',''),
-            comments: 0,
-            likes: 0,
-            submissions: 0,
-        }));
-    }
-}
-
-
 export async function getSocialLinks(): Promise<SocialLink[]> {
     const supabase = createBrowserClient();
     try {
