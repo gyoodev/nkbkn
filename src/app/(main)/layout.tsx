@@ -17,6 +17,7 @@ import {
   Info,
   FileText,
   Loader2,
+  Share2,
 } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
 import { Button } from '@/components/ui/button';
@@ -40,6 +41,10 @@ import Image from 'next/image';
 import { useAuth } from '@/hooks/use-auth';
 import { createBrowserClient } from '@/lib/supabase/client';
 import { PartnersSection } from '@/components/partners-section';
+import { useEffect, useState } from 'react';
+import { getSocialLinks } from '@/lib/data';
+import type { SocialLink } from '@/lib/types';
+
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -60,6 +65,16 @@ function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     )
 }
 
+function SocialIcon({ name, ...props }: { name: SocialLink['name'] } & React.SVGProps<SVGSVGElement>) {
+    switch (name) {
+        case 'TikTok': return <TiktokIcon {...props} />;
+        case 'Facebook': return <Facebook {...props} />;
+        case 'Instagram': return <Instagram {...props} />;
+        case 'Youtube': return <Youtube {...props} />;
+        default: return <Share2 {...props} />;
+    }
+}
+
 export default function MainLayout({
   children,
 }: {
@@ -68,14 +83,15 @@ export default function MainLayout({
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
   const { user, isAdmin, signOut, loading } = useAuth();
+  const [socials, setSocials] = useState<SocialLink[]>([]);
 
-
-  const socialLinks = [
-    { icon: <TiktokIcon className="h-4 w-4" />, href: '#' },
-    { icon: <Facebook className="h-4 w-4" />, href: '#' },
-    { icon: <Instagram className="h-4 w-4" />, href: '#' },
-    { icon: <Youtube className="h-4 w-4" />, href: '#' },
-  ];
+  useEffect(() => {
+    async function loadSocials() {
+        const data = await getSocialLinks();
+        setSocials(data);
+    }
+    loadSocials();
+  }, []);
 
   const leftNavItems = [
     { href: '/about', label: text.aboutCommissionShort, icon: <Info /> },
@@ -182,15 +198,15 @@ export default function MainLayout({
           <div className="container mx-auto flex h-10 items-center justify-between px-4">
             <div className="flex-1 flex justify-start items-center gap-4">
                 <div className="flex items-center gap-2">
-                {socialLinks.map((social, index) => (
+                {socials.map((social) => (
                     <a
-                    key={index}
-                    href={social.href}
+                    key={social.id}
+                    href={social.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="transition-opacity hover:opacity-80"
                     >
-                    {social.icon}
+                        <SocialIcon name={social.name} className="h-4 w-4" />
                     </a>
                 ))}
                 </div>

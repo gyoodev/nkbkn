@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
-import { Facebook, Instagram } from 'lucide-react';
+import { Facebook, Instagram, Share2 } from 'lucide-react';
+import type { SocialLink } from '@/lib/types';
+import { useEffect, useState } from 'react';
+import { getSocialLinks } from '@/lib/data';
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -28,14 +32,27 @@ function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     )
 }
 
+function SocialIcon({ name, ...props }: { name: SocialLink['name'] } & React.SVGProps<SVGSVGElement>) {
+    switch (name) {
+        case 'TikTok': return <TiktokIcon {...props} />;
+        case 'Facebook': return <Facebook {...props} />;
+        case 'Instagram': return <Instagram {...props} />;
+        default: return <Share2 {...props} />;
+    }
+}
+
+
 export default function ContactPage() {
   const { text } = useLanguage();
+  const [socials, setSocials] = useState<SocialLink[]>([]);
 
-  const socialLinks = [
-    { icon: <TiktokIcon className="h-6 w-6" />, href: '#' },
-    { icon: <Facebook className="h-6 w-6" />, href: '#' },
-    { icon: <Instagram className="h-6 w-6" />, href: '#' },
-  ];
+  useEffect(() => {
+    async function loadSocials() {
+        const data = await getSocialLinks();
+        setSocials(data);
+    }
+    loadSocials();
+  }, []);
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -87,10 +104,10 @@ export default function ContactPage() {
                 </CardHeader>
                 <CardContent>
                     <div className="flex space-x-4">
-                        {socialLinks.map((social, index) => (
-                        <Button key={index} variant="outline" size="icon" asChild>
-                            <a href={social.href} target="_blank" rel="noopener noreferrer">
-                                {social.icon}
+                        {socials.map((social) => (
+                        <Button key={social.id} variant="outline" size="icon" asChild>
+                            <a href={social.url} target="_blank" rel="noopener noreferrer">
+                                <SocialIcon name={social.name} className="h-6 w-6" />
                             </a>
                         </Button>
                         ))}

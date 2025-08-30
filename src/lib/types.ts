@@ -149,3 +149,10 @@ export interface Submission {
     mounts?: number | null;
     wins?: number | null;
 }
+
+export interface SocialLink {
+    id: number;
+    name: 'TikTok' | 'Facebook' | 'Instagram' | 'Youtube';
+    url: string;
+    created_at: string;
+}

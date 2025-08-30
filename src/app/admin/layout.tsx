@@ -19,6 +19,7 @@ import {
   ExternalLink,
   Search,
   Bell,
+  Share2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
@@ -96,6 +97,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   
   const settingsNavItems = [
       { href: '/admin/content', label: 'Съдържание', icon: <Settings /> },
+      { href: '/admin/socials', label: 'Социални мрежи', icon: <Share2 /> },
   ];
 
   const isActive = (href: string) => {

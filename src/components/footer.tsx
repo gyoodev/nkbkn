@@ -1,11 +1,15 @@
+
 'use client';
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Facebook, Instagram, Youtube, Code } from 'lucide-react';
+import { Facebook, Instagram, Youtube, Code, Share2 } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import type { SocialLink } from '@/lib/types';
+import { getSocialLinks } from '@/lib/data';
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -26,15 +30,29 @@ function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     )
 }
 
+function SocialIcon({ name, ...props }: { name: SocialLink['name'] } & React.SVGProps<SVGSVGElement>) {
+    switch (name) {
+        case 'TikTok': return <TiktokIcon {...props} />;
+        case 'Facebook': return <Facebook {...props} />;
+        case 'Instagram': return <Instagram {...props} />;
+        case 'Youtube': return <Youtube {...props} />;
+        default: return <Share2 {...props} />;
+    }
+}
+
+
 export function Footer() {
   const { text } = useLanguage();
+  const [socials, setSocials] = useState<SocialLink[]>([]);
 
-  const socialLinks = [
-    { name: 'TikTok', icon: <TiktokIcon className="h-5 w-5" />, href: '#' },
-    { name: 'Facebook', icon: <Facebook className="h-5 w-5" />, href: '#' },
-    { name: 'Instagram', icon: <Instagram className="h-5 w-5" />, href: '#' },
-    { name: 'Youtube', icon: <Youtube className="h-5 w-5" />, href: '#' },
-  ];
+  useEffect(() => {
+    async function loadSocials() {
+        const data = await getSocialLinks();
+        setSocials(data);
+    }
+    loadSocials();
+  }, []);
+
 
   const footerLinks = {
     [text.aboutUs]: [
@@ -71,10 +89,10 @@ export function Footer() {
                 {text.appNameFull}. {text.allRightsReserved}.
             </p>
             <div className="flex space-x-4">
-                {socialLinks.map((social) => (
-                    <a key={social.name} href={social.href} className="text-gray-500 hover:text-primary dark:hover:text-primary-foreground">
+                {socials.map((social) => (
+                    <a key={social.id} href={social.url} className="text-gray-500 hover:text-primary dark:hover:text-primary-foreground">
                         <span className="sr-only">{social.name}</span>
-                        {social.icon}
+                        <SocialIcon name={social.name} className="h-5 w-5" />
                     </a>
                 ))}
             </div>

@@ -1,6 +1,6 @@
 
 
-import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent, Comment, Submission } from '@/lib/types';
+import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent, Comment, Submission, SocialLink } from '@/lib/types';
 import { createClient } from '@supabase/supabase-js';
 import { format, subMonths, getYear, getMonth } from 'date-fns';
 import { bg } from 'date-fns/locale';
@@ -419,8 +419,12 @@ export async function getMonthlyActivityStats() {
 
         const activityByMonth: { [key: string]: any } = {};
         (data as any[]).forEach(item => {
+            // Ensure month is a number before creating a date
+             if (typeof item.month !== 'number' || item.month < 1 || item.month > 12) return;
+             
             const monthName = format(new Date(item.year, item.month - 1), 'LLL', { locale: bg });
             const key = `${item.year}-${monthName}`;
+
             if (!activityByMonth[key]) {
                 activityByMonth[key] = {
                     year: item.year,
@@ -440,7 +444,7 @@ export async function getMonthlyActivityStats() {
         const finalData = last12Months.map(m => {
              const key = `${m.year}-${m.name}`;
              return {
-                month: m.name.charAt(0).toUpperCase() + m.name.slice(1),
+                month: m.name.charAt(0).toUpperCase() + m.name.slice(1).replace('.', ''),
                 registrations: activityByMonth[key]?.registrations || 0,
                 comments: activityByMonth[key]?.comments || 0,
                 likes: activityByMonth[key]?.likes || 0,
@@ -452,6 +456,24 @@ export async function getMonthlyActivityStats() {
 
     } catch (e: any) {
         console.error('Error in getMonthlyActivityStats:', e.message);
-        return last12Months.map(m => ({ month: m.name, registrations: 0, comments: 0, likes: 0, submissions: 0 }));
+        return last12Months.map(m => ({ month: m.name.charAt(0).toUpperCase() + m.name.slice(1).replace('.', ''), registrations: 0, comments: 0, likes: 0, submissions: 0 }));
+    }
+}
+
+export async function getSocialLinks(): Promise<SocialLink[]> {
+    try {
+        const { data, error } = await supabase
+            .from('social_links')
+            .select('*')
+            .order('id', { ascending: true });
+        
+        if (error) {
+            console.error('Error fetching social links:', error.message);
+            return [];
+        }
+        return data || [];
+    } catch(e: any) {
+        console.error('Error in getSocialLinks:', e.message);
+        return [];
     }
 }
