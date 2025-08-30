@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getDashboardStats, getMonthlyActivityStats } from '@/lib/data';
+import { getDashboardStats, getMonthlyActivityStats } from '@/lib/client/data';
 import { Users, BarChart } from 'lucide-react';
 import { HorseIcon } from '@/components/icons/horse-icon';
 import { useAuth } from '@/hooks/use-auth';
