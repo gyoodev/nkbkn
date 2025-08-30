@@ -4,7 +4,6 @@
 import { createServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { getCommentsForPost } from "@/lib/data";
 import type { Comment } from "@/lib/types";
 
 const CommentSchema = z.object({
@@ -23,10 +22,12 @@ export async function addComment(prevState: CommentState, formData: FormData): P
   const supabase = createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  const guestName = formData.get('guest_name') as string;
+
   const validatedFields = CommentSchema.safeParse({
     content: formData.get('content'),
     post_id: formData.get('post_id'),
-    guest_name: formData.get('guest_name'),
+    guest_name: guestName,
   });
 
   if (!validatedFields.success) {
@@ -35,12 +36,18 @@ export async function addComment(prevState: CommentState, formData: FormData): P
   
   const { content, post_id, guest_name } = validatedFields.data;
 
-  // If user is not logged in, guest_name is required
-  if (!user && (!guest_name || guest_name.trim() === '')) {
-      return { success: false, error: 'Името за гост е задължително.' };
+  // If user is not logged in, guest_name is required and should be valid
+  if (!user) {
+      if (!guest_name || guest_name.trim() === '') {
+          return { success: false, error: 'Името за гост е задължително.' };
+      }
+      if (guest_name.trim().length < 3) {
+          return { success: false, error: 'Името за гост трябва да е поне 3 символа.' };
+      }
   }
 
-  const { data: newComment, error } = await supabase
+
+  const { data: newCommentData, error } = await supabase
     .from('comments')
     .insert({
       content,
@@ -51,18 +58,18 @@ export async function addComment(prevState: CommentState, formData: FormData): P
     .select(`
         *,
         profiles ( id, full_name, username, avatar_url )
-    `)
-    .single();
+    `);
 
 
-  if (error) {
+  if (error || !newCommentData) {
     console.error("Comment error:", error);
     return { success: false, error: "Неуспешно добавяне на коментар." };
   }
 
   revalidatePath(`/news/${post_id}`);
   
-  return { success: true, newComment: newComment as Comment };
+  // The insert operation returns an array, so we take the first element.
+  return { success: true, newComment: newCommentData[0] as Comment };
 }
 
 type LikeState = {

@@ -209,7 +209,7 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
                     {!user && (
                         <div className="space-y-1.5">
                             <Label htmlFor="guest_name">Име (като гост)</Label>
-                            <Input id="guest_name" name="guest_name" required />
+                            <Input id="guest_name" name="guest_name" required minLength={3} />
                         </div>
                     )}
                     <div className="space-y-1.5">
