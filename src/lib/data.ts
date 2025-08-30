@@ -2,6 +2,8 @@
 
 import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent, Comment, Submission } from '@/lib/types';
 import { createClient } from '@supabase/supabase-js';
+import { format, subMonths, getYear, getMonth } from 'date-fns';
+import { bg } from 'date-fns/locale';
 
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -391,5 +393,65 @@ export async function getDashboardStats() {
             news: 0,
             events: 0,
         };
+    }
+}
+
+export async function getMonthlyActivityStats() {
+    const today = new Date();
+    const last12Months: { year: number, month: number, name: string }[] = [];
+
+    for (let i = 11; i >= 0; i--) {
+        const date = subMonths(today, i);
+        last12Months.push({
+            year: getYear(date),
+            month: getMonth(date) + 1, // getMonth is 0-indexed
+            name: format(date, 'LLL', { locale: bg }),
+        });
+    }
+
+    try {
+        const { data, error } = await supabase.rpc('get_monthly_activity');
+
+        if (error) {
+            console.error('Error fetching monthly activity:', error);
+            return [];
+        }
+
+        const activityByMonth: { [key: string]: any } = {};
+        (data as any[]).forEach(item => {
+            const monthName = format(new Date(item.year, item.month - 1), 'LLL', { locale: bg });
+            const key = `${item.year}-${monthName}`;
+            if (!activityByMonth[key]) {
+                activityByMonth[key] = {
+                    year: item.year,
+                    month: monthName,
+                    registrations: 0,
+                    comments: 0,
+                    likes: 0,
+                    submissions: 0,
+                };
+            }
+            if (item.type === 'registration') activityByMonth[key].registrations = item.count;
+            if (item.type === 'comment') activityByMonth[key].comments = item.count;
+            if (item.type === 'like') activityByMonth[key].likes = item.count;
+            if (item.type === 'submission') activityByMonth[key].submissions = item.count;
+        });
+
+        const finalData = last12Months.map(m => {
+             const key = `${m.year}-${m.name}`;
+             return {
+                month: m.name.charAt(0).toUpperCase() + m.name.slice(1),
+                registrations: activityByMonth[key]?.registrations || 0,
+                comments: activityByMonth[key]?.comments || 0,
+                likes: activityByMonth[key]?.likes || 0,
+                submissions: activityByMonth[key]?.submissions || 0,
+             }
+        });
+
+        return finalData;
+
+    } catch (e: any) {
+        console.error('Error in getMonthlyActivityStats:', e.message);
+        return last12Months.map(m => ({ month: m.name, registrations: 0, comments: 0, likes: 0, submissions: 0 }));
     }
 }

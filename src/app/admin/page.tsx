@@ -3,29 +3,14 @@
 import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getJockeys, getTrainers, getHorses, getDashboardStats } from '@/lib/data';
-import { Users } from 'lucide-react';
+import { getDashboardStats, getMonthlyActivityStats } from '@/lib/data';
+import { Users, BarChart } from 'lucide-react';
 import { HorseIcon } from '@/components/icons/horse-icon';
 import { useAuth } from '@/hooks/use-auth';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
+import { ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell, CartesianGrid } from 'recharts';
 
 
 export const dynamic = 'force-dynamic';
-
-const salesData = [
-  { name: 'Jan', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'Feb', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'Mar', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'Apr', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'May', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'Jun', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'Jul', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'Aug', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'Sep', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'Oct', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'Nov', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-  { name: 'Dec', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
-];
 
 export default function AdminDashboardPage() {
     const { user } = useAuth();
@@ -36,13 +21,18 @@ export default function AdminDashboardPage() {
         news: 0,
         events: 0,
     });
+    const [activityData, setActivityData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCounts = async () => {
             setLoading(true);
-            const data = await getDashboardStats();
-            setStats(data);
+            const [dashboardStats, monthlyActivity] = await Promise.all([
+                getDashboardStats(),
+                getMonthlyActivityStats()
+            ]);
+            setStats(dashboardStats);
+            setActivityData(monthlyActivity);
             setLoading(false);
         }
         fetchCounts();
@@ -90,26 +80,30 @@ export default function AdminDashboardPage() {
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-7">
         <Card className="lg:col-span-4">
             <CardHeader>
-                <CardTitle>Активност</CardTitle>
+                <CardTitle>Месечна активност</CardTitle>
                  <CardDescription>
-                    Обща активност в системата за последните 12 месеца. (демо)
+                    Активност в системата за последните 12 месеца.
                 </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={salesData}>
-                        <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                        <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
+                    <BarChart data={activityData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis dataKey="month" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                        <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
                         <Tooltip
                              contentStyle={{
                                 background: "hsl(var(--background))",
                                 border: "1px solid hsl(var(--border))",
                                 borderRadius: "var(--radius)",
                             }}
+                             cursor={{ fill: 'hsl(var(--accent))', radius: 4 }}
                         />
                         <Legend iconType="circle" />
-                        <Bar dataKey="sales" name="Посещения" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                        <Bar dataKey="subs" name="Регистрации" fill="hsl(var(--primary) / 0.5)" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="registrations" name="Регистрации" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="comments" name="Коментари" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="likes" name="Харесвания" fill="hsl(var(--chart-3))" radius={[4, 4, 0, 0]} />
+                        <Bar dataKey="submissions" name="Заявки" fill="hsl(var(--chart-4))" radius={[4, 4, 0, 0]} />
                     </BarChart>
                 </ResponsiveContainer>
             </CardContent>
