@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Contact, Eye, Trash2, Check, Clock, Reply, MoreHorizontal } from 'lucide-react';
+import { Contact, Eye, Trash2, Check, Clock, Reply, MoreHorizontal, Send } from 'lucide-react';
 import type { ContactSubmission } from '@/lib/types';
 import {
   Dialog,
@@ -29,6 +29,9 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { getContactSubmissions } from '@/lib/client/data';
 import { deleteContactSubmission, updateContactStatus } from './actions';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
 
 
 function ViewSubmissionDialog({ submission }: { submission: ContactSubmission }) {
@@ -43,17 +46,29 @@ function ViewSubmissionDialog({ submission }: { submission: ContactSubmission })
                 <DialogHeader>
                     <DialogTitle>Запитване от {submission.name}</DialogTitle>
                     <DialogDescription>
-                       Получено на {new Date(submission.created_at).toLocaleString('bg-BG')}.
+                       Получено на {new Date(submission.created_at).toLocaleString('bg-BG')} | <a href={`mailto:${submission.email}`} className="text-primary hover:underline">{submission.email}</a>
                     </DialogDescription>
                 </DialogHeader>
-                <div className="py-4">
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">{submission.message}</p>
+                <div className="space-y-4 py-4">
+                    <div>
+                        <Label className="text-muted-foreground">Съобщение</Label>
+                        <p className="text-sm p-3 bg-muted rounded-md whitespace-pre-wrap">{submission.message}</p>
+                    </div>
+                    <Separator />
+                    <div>
+                        <Label htmlFor="reply-message">Отговор</Label>
+                         <Textarea id="reply-message" placeholder="Напишете вашия отговор тук..." rows={5} />
+                    </div>
                 </div>
-                <DialogFooter className="sm:justify-start">
-                     <Button asChild>
+                <DialogFooter className="sm:justify-start gap-2">
+                     <Button type="button" disabled>
+                        <Send className="mr-2 h-4 w-4" />
+                        Изпрати отговор
+                    </Button>
+                     <Button asChild variant="secondary">
                         <a href={`mailto:${submission.email}`}>
                             <Reply className="mr-2 h-4 w-4" />
-                            Отговори
+                            Отговори с имейл клиент
                         </a>
                     </Button>
                 </DialogFooter>
