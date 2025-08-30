@@ -46,15 +46,26 @@ export async function addComment(prevState: CommentState, formData: FormData): P
       }
   }
 
+  const dataToInsert: {
+    content: string;
+    post_id: number;
+    user_id?: string;
+    guest_name?: string;
+  } = {
+    content,
+    post_id,
+  };
+
+  if (user) {
+    dataToInsert.user_id = user.id;
+  } else {
+    dataToInsert.guest_name = guest_name;
+  }
+
 
   const { data: newCommentData, error } = await supabase
     .from('comments')
-    .insert({
-      content,
-      post_id,
-      user_id: user?.id || null,
-      guest_name: user ? null : guest_name,
-    })
+    .insert(dataToInsert)
     .select(`
         *,
         profiles ( id, full_name, username, avatar_url )
@@ -69,7 +80,6 @@ export async function addComment(prevState: CommentState, formData: FormData): P
 
   revalidatePath(`/news/${post_id}`);
   
-  // The insert operation returns an array, so we take the first element.
   return { success: true, newComment: newCommentData as Comment };
 }
 
@@ -82,10 +92,6 @@ type LikeState = {
 export async function likePost(postId: number): Promise<LikeState> {
     const supabase = createServerClient();
 
-    // In a real app, you'd want to use a more robust RPC call that checks
-    // if the user has already liked the post to prevent multiple likes.
-    // For this demo, we'll do a simple increment.
-    
     // 1. Get current likes
     const { data: post, error: fetchError } = await supabase
         .from('news_posts')
@@ -113,4 +119,38 @@ export async function likePost(postId: number): Promise<LikeState> {
     revalidatePath('/news');
 
     return { success: true, newLikes };
+}
+
+
+export async function incrementViews(postId: number) {
+    const supabase = createServerClient();
+    
+    // In a real-world scenario, you might want to prevent spamming views.
+    // For this app, a simple increment is sufficient.
+    const { data, error: fetchError } = await supabase
+      .from('news_posts')
+      .select('views')
+      .eq('id', postId)
+      .single();
+
+    if (fetchError || !data) {
+        // Don't return an error to the client, just log it.
+        // Failing to increment views shouldn't break the page.
+        console.error(`Error fetching views for post ${postId}:`, fetchError);
+        return;
+    }
+
+    const newViews = (data.views || 0) + 1;
+
+    const { error: updateError } = await supabase
+        .from('news_posts')
+        .update({ views: newViews })
+        .eq('id', postId);
+
+    if (updateError) {
+        console.error(`Error incrementing views for post ${postId}:`, updateError);
+    } else {
+        // Revalidate the path to show the new view count on next navigation.
+        revalidatePath(`/news/${postId}`);
+    }
 }

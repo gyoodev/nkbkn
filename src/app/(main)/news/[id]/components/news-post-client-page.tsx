@@ -18,7 +18,7 @@ import Youtube from '@tiptap/extension-youtube';
 import { useEditor, EditorContent } from '@tiptap/react';
 import { useAuth } from '@/hooks/use-auth';
 import { useActionState, useEffect, useState, useTransition, useRef } from 'react';
-import { addComment, likePost } from '../actions';
+import { addComment, likePost, incrementViews } from '../actions';
 import { useToast } from '@/hooks/use-toast';
 
 
@@ -108,6 +108,7 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
 
   // Separate state for comments to avoid re-rendering the whole page
   const [comments, setComments] = useState<CommentType[]>(initialPost.comments || []);
+  const [viewCount, setViewCount] = useState(initialPost.views);
 
   const [addCommentState, submitAddComment, isAddCommentPending] = useActionState(addComment, { success: false });
 
@@ -127,6 +128,22 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
         }
     }
   });
+  
+  useEffect(() => {
+    // This effect runs only on the client after hydration
+    // to increment the view count.
+    const incrementView = async () => {
+        try {
+            await incrementViews(initialPost.id);
+            // Optimistically update the view count on the client
+            setViewCount(prev => prev + 1);
+        } catch (error) {
+            console.error("Failed to increment views:", error);
+        }
+    };
+    incrementView();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialPost.id]);
 
   useEffect(() => {
       if (addCommentState.success) {
@@ -163,7 +180,7 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
             </div>
             <div className="flex items-center gap-1.5">
                 <Eye className="h-4 w-4" />
-                <span>{initialPost.views} {text.views.toLowerCase()}</span>
+                <span>{viewCount} {text.views.toLowerCase()}</span>
             </div>
             <div className="flex items-center gap-1.5">
                 <MessageCircle className="h-4 w-4" />
