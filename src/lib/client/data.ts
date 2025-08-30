@@ -229,9 +229,9 @@ export async function getMonthlyActivityStats() {
         const activityByMonth = monthStarts.map(monthStart => {
             const monthEnd = endOfMonth(monthStart);
 
-            const getCountForMonth = (items: { created_at: string | null }[] | null, dateKey: 'created_at' | 'date' = 'created_at') =>
+            const getCountForMonth = (items: { created_at: string | null }[] | null) =>
                 items?.filter(item => {
-                    const dateValue = item[dateKey];
+                    const dateValue = item.created_at;
                     if (!dateValue) return false;
                     const itemDate = new Date(dateValue);
                     return itemDate >= monthStart && itemDate <= monthEnd;
@@ -247,9 +247,9 @@ export async function getMonthlyActivityStats() {
 
             return {
                 month: format(monthStart, 'LLL', { locale: bg }).charAt(0).toUpperCase() + format(monthStart, 'LLL', { locale: bg }).slice(1).replace('.',''),
-                comments: getCountForMonth(comments.data, 'created_at'),
+                comments: getCountForMonth(comments.data),
                 likes: getLikesForMonth(likesData.data),
-                submissions: getCountForMonth(submissions.data, 'created_at'),
+                submissions: getCountForMonth(submissions.data),
             };
         });
 
@@ -356,3 +356,5 @@ export async function getSiteContent(key: string): Promise<string> {
         return '';
     }
 }
+
+    
