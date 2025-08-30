@@ -3,13 +3,11 @@
 import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { getRaceEvents, getHorses, getJockeys, getTrainers } from '@/lib/data';
-import { Users, Calendar as CalendarIcon, ArrowUpRight } from 'lucide-react';
-import Link from 'next/link';
+import { getJockeys, getTrainers, getHorses, getDashboardStats } from '@/lib/data';
+import { Users } from 'lucide-react';
 import { HorseIcon } from '@/components/icons/horse-icon';
 import { useAuth } from '@/hooks/use-auth';
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Donut, PieChart, Pie } from 'recharts';
+import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
 
 
 export const dynamic = 'force-dynamic';
@@ -29,42 +27,41 @@ const salesData = [
   { name: 'Dec', sales: Math.floor(Math.random() * 5000) + 1000, subs: Math.floor(Math.random() * 2000) + 500 },
 ];
 
-const categoryData = [
-    { name: "Новини", value: 45, fill: "hsl(var(--primary))" },
-    { name: "Събития", value: 28, fill: "hsl(var(--primary) / 0.8)" },
-    { name: "Регистрации", value: 27, fill: "hsl(var(--primary) / 0.6)" },
-]
-
-
 export default function AdminDashboardPage() {
     const { user } = useAuth();
-    const [jockeysCount, setJockeysCount] = useState(0);
-    const [trainersCount, setTrainersCount] = useState(0);
-    const [horsesCount, setHorsesCount] = useState(0);
-    const [eventsCount, setEventsCount] = useState(0);
-
+    const [stats, setStats] = useState({
+        horses: 0,
+        jockeys: 0,
+        trainers: 0,
+        news: 0,
+        events: 0,
+    });
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCounts = async () => {
-            const jockeys = await getJockeys();
-            setJockeysCount(jockeys.length);
-            const trainers = await getTrainers();
-            setTrainersCount(trainers.length);
-            const horses = await getHorses();
-            setHorsesCount(horses.length);
-            const events = await getRaceEvents();
-            setEventsCount(events.length);
+            setLoading(true);
+            const data = await getDashboardStats();
+            setStats(data);
+            setLoading(false);
         }
         fetchCounts();
-    },[])
-    
-    const totalCount = jockeysCount + trainersCount + horsesCount;
+    },[]);
 
-    const stats = [
-        { title: 'Общо коне', value: horsesCount, icon: <HorseIcon className="h-6 w-6 text-muted-foreground" />, change: 12.5, changeType: 'increase' },
-        { title: 'Жокеи', value: jockeysCount, icon: <Users className="h-6 w-6 text-muted-foreground" />, change: 5.2, changeType: 'increase' },
-        { title: 'Треньoри', value: trainersCount, icon: <Users className="h-6 w-6 text-muted-foreground" />, change: 2.1, changeType: 'decrease' },
-    ]
+    const summaryStats = [
+        { title: 'Общо коне', value: stats.horses, icon: <HorseIcon className="h-6 w-6 text-muted-foreground" /> },
+        { title: 'Жокеи', value: stats.jockeys, icon: <Users className="h-6 w-6 text-muted-foreground" /> },
+        { title: 'Треньoри', value: stats.trainers, icon: <Users className="h-6 w-6 text-muted-foreground" /> },
+    ];
+    
+    const categoryData = [
+        { name: "Новини", value: stats.news, fill: "hsl(var(--primary))" },
+        { name: "Събития", value: stats.events, fill: "hsl(var(--primary) / 0.8)" },
+        { name: "Коне", value: stats.horses, fill: "hsl(var(--primary) / 0.6)" },
+        { name: "Жокеи", value: stats.jockeys, fill: "hsl(var(--primary) / 0.4)" },
+        { name: "Треньoри", value: stats.trainers, fill: "hsl(var(--primary) / 0.2)" },
+    ].filter(item => item.value > 0);
+
 
   return (
     <div className="flex flex-col gap-8">
@@ -74,7 +71,7 @@ export default function AdminDashboardPage() {
        </div>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {stats.map((stat, index) => (
+        {summaryStats.map((stat, index) => (
             <Card key={index} className={index === 0 ? 'bg-foreground text-background' : 'bg-card'}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
@@ -83,7 +80,7 @@ export default function AdminDashboardPage() {
                 <CardContent>
                     <div className="text-2xl font-bold">{stat.value}</div>
                      <p className="text-xs text-muted-foreground">
-                        +{stat.change}% от миналата седмица
+                        Общо в системата
                     </p>
                 </CardContent>
             </Card>
@@ -95,7 +92,7 @@ export default function AdminDashboardPage() {
             <CardHeader>
                 <CardTitle>Активност</CardTitle>
                  <CardDescription>
-                    Обща активност в системата за последните 12 месеца.
+                    Обща активност в системата за последните 12 месеца. (демо)
                 </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
@@ -140,10 +137,14 @@ export default function AdminDashboardPage() {
                             cx="50%"
                             cy="50%"
                             labelLine={false}
-                            label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
-                            outerRadius={100}
+                            label={({ percent, name, value }) => `${name}: ${(percent * 100).toFixed(0)}% (${value})`}
+                            outerRadius={80}
                             dataKey="value"
-                        />
+                        >
+                            {categoryData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.fill} />
+                            ))}
+                        </Pie>
                     </PieChart>
                 </ResponsiveContainer>
             </CardContent>

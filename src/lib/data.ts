@@ -358,3 +358,38 @@ export async function getCommentsForPost(postId: number): Promise<Comment[]> {
     }
     return data;
 }
+
+export async function getDashboardStats() {
+    try {
+        const [
+            { count: horses },
+            { count: jockeys },
+            { count: trainers },
+            { count: news },
+            { count: events },
+        ] = await Promise.all([
+            supabase.from('horses').select('*', { count: 'exact', head: true }),
+            supabase.from('jockeys').select('*', { count: 'exact', head: true }),
+            supabase.from('trainers').select('*', { count: 'exact', head: true }),
+            supabase.from('news_posts').select('*', { count: 'exact', head: true }),
+            supabase.from('race_events').select('*', { count: 'exact', head: true }),
+        ]);
+
+        return {
+            horses: horses ?? 0,
+            jockeys: jockeys ?? 0,
+            trainers: trainers ?? 0,
+            news: news ?? 0,
+            events: events ?? 0,
+        }
+    } catch (error: any) {
+        console.error('Error fetching dashboard stats:', error.message);
+        return {
+            horses: 0,
+            jockeys: 0,
+            trainers: 0,
+            news: 0,
+            events: 0,
+        };
+    }
+}
