@@ -1,8 +1,8 @@
 
 import { notFound } from 'next/navigation';
-import { getPartner } from '@/lib/data';
 import { PageHeader } from '@/components/page-header';
 import { PartnerForm } from '../../_components/partner-form';
+import { getPartner } from '@/lib/server/data';
 
 export default async function EditPartnerPage({ params }: { params: { id: string } }) {
   const partner = await getPartner(Number(params.id));

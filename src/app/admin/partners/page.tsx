@@ -8,12 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { MoreHorizontal, PlusCircle, Building } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { getPartners } from '@/lib/data';
 import Link from 'next/link';
 import type { Partner } from '@/lib/types';
 import Image from 'next/image';
 import { DeletePartnerButton } from './_components/delete-partner-button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getPartners } from '@/lib/client/data';
 
 function PartnersTableSkeleton() {
     return (

@@ -1,8 +1,8 @@
 
 import { notFound } from 'next/navigation';
-import { getJockey } from '@/lib/data';
 import { PageHeader } from '@/components/page-header';
 import { JockeyForm } from '../../_components/jockey-form';
+import { getJockey } from '@/lib/server/data';
 
 export default async function EditJockeyPage({ params }: { params: { id: string } }) {
   const jockey = await getJockey(Number(params.id));

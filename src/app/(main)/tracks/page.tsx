@@ -1,7 +1,8 @@
+
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { tracks } from '@/lib/data';
+import { tracks } from '@/lib/client/data';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import Image from 'next/image';

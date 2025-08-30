@@ -1,8 +1,8 @@
 
 import { notFound } from 'next/navigation';
-import { getTrainer } from '@/lib/data';
 import { PageHeader } from '@/components/page-header';
 import { TrainerForm } from '../../_components/trainer-form';
+import { getTrainer } from '@/lib/server/data';
 
 export default async function EditTrainerPage({ params }: { params: { id: string } }) {
   const trainer = await getTrainer(Number(params.id));

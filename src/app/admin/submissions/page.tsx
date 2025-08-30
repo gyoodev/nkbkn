@@ -18,8 +18,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Separator } from '@/components/ui/separator';
-import { getSubmissions } from '@/lib/data';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getSubmissions } from '@/lib/client/data';
 
 
 function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {

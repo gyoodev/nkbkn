@@ -11,10 +11,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { format } from 'date-fns';
 import { bg } from 'date-fns/locale';
 import type { Result } from '@/lib/types';
-import { getResults } from '@/lib/data';
 import Link from 'next/link';
 import { DeleteResultButton } from './_components/delete-result-button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getResults } from '@/lib/client/data';
 
 function ResultsTableSkeleton() {
     return (

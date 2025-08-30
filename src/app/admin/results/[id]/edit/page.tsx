@@ -1,8 +1,8 @@
 
 import { notFound } from 'next/navigation';
-import { getResult } from '@/lib/data';
 import { PageHeader } from '@/components/page-header';
 import { ResultsForm } from '../../_components/results-form';
+import { getResult } from '@/lib/server/data';
 
 export default async function EditResultPage({ params }: { params: { id: string } }) {
   const result = await getResult(Number(params.id));

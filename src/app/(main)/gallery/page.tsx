@@ -3,11 +3,11 @@
 
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-import { galleryImages } from '@/lib/data';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { ImageOff } from 'lucide-react';
+import { galleryImages } from '@/lib/client/data';
 
 export default function GalleryPage() {
   const { text } = useLanguage();

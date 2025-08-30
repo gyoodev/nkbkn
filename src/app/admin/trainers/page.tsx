@@ -9,10 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { MoreHorizontal, PlusCircle, Users } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
-import { getTrainers } from '@/lib/data';
 import type { Trainer } from '@/lib/types';
 import { DeleteTrainerButton } from './_components/delete-trainer-button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getTrainers } from '@/lib/client/data';
 
 function TrainersTableSkeleton() {
     return (

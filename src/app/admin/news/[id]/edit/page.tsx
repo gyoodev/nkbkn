@@ -1,8 +1,8 @@
 
 import { notFound } from 'next/navigation';
-import { getNewsPost } from '@/lib/data';
 import { PageHeader } from '@/components/page-header';
 import { NewsPostForm } from '../../_components/news-form';
+import { getNewsPost } from '@/lib/server/data';
 
 export default async function EditNewsPostPage({ params }: { params: { id: string } }) {
   const post = await getNewsPost(params.id);

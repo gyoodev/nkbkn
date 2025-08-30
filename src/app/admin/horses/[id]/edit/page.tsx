@@ -1,8 +1,8 @@
 
 import { notFound } from 'next/navigation';
-import { getHorse } from '@/lib/data';
 import { PageHeader } from '@/components/page-header';
 import { HorseForm } from '../../_components/horse-form';
+import { getHorse } from '@/lib/server/data';
 
 export default async function EditHorsePage({ params }: { params: { id: string } }) {
   const horse = await getHorse(Number(params.id));

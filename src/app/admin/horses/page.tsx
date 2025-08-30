@@ -6,7 +6,6 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { getHorses } from '@/lib/data';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { HorseIcon } from '@/components/icons/horse-icon';
@@ -14,6 +13,7 @@ import Link from 'next/link';
 import { DeleteHorseButton } from './_components/delete-horse-button';
 import type { Horse } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getHorses } from '@/lib/client/data';
 
 function HorsesTableSkeleton() {
     return (

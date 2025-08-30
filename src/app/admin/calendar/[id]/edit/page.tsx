@@ -1,8 +1,9 @@
 
 import { notFound } from 'next/navigation';
-import { getRaceEvent, tracks } from '@/lib/data';
 import { PageHeader } from '@/components/page-header';
 import { EventForm } from '../../_components/event-form';
+import { getRaceEvent } from '@/lib/server/data';
+import { tracks } from '@/lib/client/data';
 
 export default async function EditEventPage({ params }: { params: { id: string } }) {
   const event = await getRaceEvent(Number(params.id));
