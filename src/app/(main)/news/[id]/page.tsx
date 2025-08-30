@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getNewsPost } from '@/lib/client/data';
+import { getNewsPost } from '@/lib/server/data';
 import { NewsPostClientPage } from './components/news-post-client-page';
 
 export const dynamic = 'force-dynamic';

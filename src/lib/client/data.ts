@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent, Comment, Submission, SocialLink } from '@/lib/types';
@@ -237,39 +238,7 @@ export async function getSubmissions(): Promise<Submission[]> {
     return data;
 }
 
-export async function getNewsPost(id: string): Promise<NewsPost | null> {
-    const supabase = createBrowserClient();
-    const { error: incrementError } = await supabase.rpc('increment_views', { post_id_arg: parseInt(id, 10) });
-    if (incrementError) {
-        console.error(`Error incrementing view count for post ${id}:`, incrementError);
-    }
-    
-    const { data, error } = await supabase
-        .from('news_posts')
-        .select(`
-            *,
-            comments (
-                *,
-                profiles ( id, full_name, username, avatar_url )
-            )
-        `)
-        .eq('id', id)
-        .order('created_at', { foreignTable: 'comments', ascending: false })
-        .single();
-    
-    if (error || !data) {
-        if (error && error.code !== 'PGRST116') {
-            console.error(`Error fetching news post with id ${id}:`, error);
-        }
-        return null;
-    }
 
-    return {
-      ...data,
-      href: `/news/${data.id}`,
-      comments: (data.comments as Comment[]) || [],
-    };
-}
 
 
 export async function getSiteContent(key: string): Promise<string> {
@@ -294,4 +263,63 @@ export async function getSiteContent(key: string): Promise<string> {
     }
 }
 
+async function getLikesForMonth(year: number, month: number, supabase: any): Promise<number> {
+    const startDate = format(new Date(year, month, 1), 'yyyy-MM-dd');
+    const endDate = format(new Date(year, month + 1, 0), 'yyyy-MM-dd');
     
+    const { data, error } = await supabase
+        .from('news_posts')
+        .select('likes')
+        .gte('date', startDate)
+        .lte('date', endDate);
+
+    if (error) {
+        console.error(`Error fetching likes for ${year}-${month + 1}:`, error);
+        return 0;
+    }
+    
+    return data.reduce((acc: number, item: { likes: number | null }) => acc + (item.likes || 0), 0);
+}
+
+
+export async function getMonthlyActivityStats() {
+    const supabase = createBrowserClient();
+    const today = new Date();
+    const last12Months = eachMonthOfInterval({
+        start: subMonths(today, 11),
+        end: today
+    });
+
+    const stats = await Promise.all(
+        last12Months.map(async (monthDate) => {
+            const year = getYear(monthDate);
+            const month = getMonth(monthDate);
+            const monthName = format(monthDate, 'LLL', { locale: bg });
+
+            const { count: comments } = await supabase
+                .from('comments')
+                .select('*', { count: 'exact', head: true })
+                .gte('created_at', format(startOfMonth(monthDate), 'yyyy-MM-dd HH:mm:ss'))
+                .lte('created_at', format(endOfMonth(monthDate), 'yyyy-MM-dd HH:mm:ss'));
+            
+            const { count: submissions } = await supabase
+                .from('submissions')
+                .select('*', { count: 'exact', head: true })
+                .gte('created_at', format(startOfMonth(monthDate), 'yyyy-MM-dd HH:mm:ss'))
+                .lte('created_at', format(endOfMonth(monthDate), 'yyyy-MM-dd HH:mm:ss'));
+
+             const likes = await getLikesForMonth(year, month, supabase);
+
+            return {
+                name: monthName,
+                Коментари: comments ?? 0,
+                Харесвания: likes,
+                Заявки: submissions ?? 0,
+            };
+        })
+    );
+
+    return stats;
+}
+    
+
