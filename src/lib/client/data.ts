@@ -215,14 +215,12 @@ export async function getMonthlyActivityStats() {
     const monthStarts = eachMonthOfInterval(last12MonthsInterval);
 
     try {
-        const [profiles, comments, likesData, submissions] = await Promise.all([
-            supabase.from('profiles').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')).select('created_at'),
-            supabase.from('comments').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')).select('created_at'),
+        const [comments, likesData, submissions] = await Promise.all([
+            supabase.from('comments').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')),
             supabase.from('news_posts').select('created_at, likes').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')),
-            supabase.from('submissions').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')).select('created_at')
+            supabase.from('submissions').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd'))
         ]);
         
-        if (profiles.error) throw profiles.error;
         if (comments.error) throw comments.error;
         if (likesData.error) throw likesData.error;
         if (submissions.error) throw submissions.error;
@@ -230,7 +228,6 @@ export async function getMonthlyActivityStats() {
 
         const activityByMonth = monthStarts.map(monthStart => {
             const monthEnd = endOfMonth(monthStart);
-            const monthKey = format(monthStart, 'yyyy-MM');
 
             const getCountForMonth = (items: { created_at: string | null }[] | null) =>
                 items?.filter(item => {
@@ -249,7 +246,6 @@ export async function getMonthlyActivityStats() {
 
             return {
                 month: format(monthStart, 'LLL', { locale: bg }).charAt(0).toUpperCase() + format(monthStart, 'LLL', { locale: bg }).slice(1).replace('.',''),
-                registrations: getCountForMonth(profiles.data),
                 comments: getCountForMonth(comments.data),
                 likes: getLikesForMonth(likesData.data),
                 submissions: getCountForMonth(submissions.data),
@@ -258,11 +254,10 @@ export async function getMonthlyActivityStats() {
 
         return activityByMonth;
     } catch (error: any) {
-        console.error('Error fetching monthly activity:', error.message);
+        console.error('Error fetching monthly activity:', error);
         // Return empty structure on error
         return monthStarts.map(monthStart => ({
             month: format(monthStart, 'LLL', { locale: bg }).charAt(0).toUpperCase() + format(monthStart, 'LLL', { locale: bg }).slice(1).replace('.',''),
-            registrations: 0,
             comments: 0,
             likes: 0,
             submissions: 0,

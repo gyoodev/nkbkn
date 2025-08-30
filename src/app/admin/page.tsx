@@ -1,4 +1,3 @@
-
 'use client';
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -99,7 +98,6 @@ function DashboardContent({ stats, activityData }: { stats: Stats, activityData:
                                     cursor={{ fill: 'hsl(var(--accent))', radius: 4 }}
                                 />
                                 <Legend iconType="circle" />
-                                <Bar dataKey="registrations" name="Регистрации" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
                                 <Bar dataKey="comments" name="Коментари" fill="hsl(var(--chart-2))" radius={[4, 4, 0, 0]} />
                                 <Bar dataKey="likes" name="Харесвания" fill="hsl(var(--chart-3))" radius={[4, 4, 0, 0]} />
                                 <Bar dataKey="submissions" name="Заявки" fill="hsl(var(--chart-4))" radius={[4, 4, 0, 0]} />
