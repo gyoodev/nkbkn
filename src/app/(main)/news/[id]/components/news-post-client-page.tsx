@@ -18,39 +18,9 @@ import Youtube from '@tiptap/extension-youtube';
 import { useEditor, EditorContent } from '@tiptap/react';
 import { useAuth } from '@/hooks/use-auth';
 import { useActionState, useEffect, useState, useTransition, useRef } from 'react';
-import { addComment, likePost, incrementViews } from '../actions';
+import { likePost, incrementViews } from '../actions';
 import { useToast } from '@/hooks/use-toast';
 
-
-function CommentCard({ comment, language }: { comment: CommentType, language: string }) {
-    const authorName = comment.profiles?.full_name || comment.profiles?.username || comment.guest_name || 'Анонимен';
-    const avatarUrl = comment.profiles?.avatar_url || '';
-    const avatarFallback = authorName.charAt(0).toUpperCase();
-
-    return (
-        <div className="flex space-x-4">
-            <Avatar>
-                <AvatarImage src={avatarUrl} alt={authorName} />
-                <AvatarFallback>{avatarFallback}</AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-                <div className="flex items-center justify-between">
-                    <p className="font-semibold">{authorName}</p>
-                    <p className="text-xs text-muted-foreground">
-                        {new Date(comment.created_at).toLocaleDateString(language, {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                        })}
-                    </p>
-                </div>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{comment.content}</p>
-            </div>
-        </div>
-    )
-}
 
 function LikeButton({ postId, initialLikes }: { postId: number, initialLikes: number }) {
     const [isPending, startTransition] = useTransition();
@@ -102,15 +72,7 @@ function LikeButton({ postId, initialLikes }: { postId: number, initialLikes: nu
 
 export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
   const { language, text } = useLanguage();
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const formRef = useRef<HTMLFormElement>(null);
-
-  // Separate state for comments to avoid re-rendering the whole page
-  const [comments, setComments] = useState<CommentType[]>(initialPost.comments || []);
   const [viewCount, setViewCount] = useState(initialPost.views);
-
-  const [addCommentState, submitAddComment, isAddCommentPending] = useActionState(addComment, { success: false });
 
   const editor = useEditor({
     extensions: [
@@ -145,18 +107,6 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialPost.id]);
 
-  useEffect(() => {
-      if (addCommentState.success) {
-          if (addCommentState.newComment) {
-              setComments(prev => [addCommentState.newComment!, ...prev]);
-              formRef.current?.reset();
-          }
-          toast({ title: 'Успех!', description: 'Коментарът е добавен успешно.' });
-      } else if (addCommentState.error) {
-          toast({ variant: 'destructive', title: 'Грешка', description: addCommentState.error });
-      }
-  }, [addCommentState, toast]);
-
   const formattedDate = (date: string) => {
     return new Date(date).toLocaleDateString(language, {
       year: 'numeric',
@@ -182,9 +132,9 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
                 <Eye className="h-4 w-4" />
                 <span>{viewCount} {text.views.toLowerCase()}</span>
             </div>
-            <div className="flex items-center gap-1.5">
-                <MessageCircle className="h-4 w-4" />
-                <span>{comments.length} {text.comments.toLowerCase()}</span>
+             <div className="flex items-center gap-1.5">
+                <Heart className="h-4 w-4" />
+                <span>{initialPost.likes} {text.likes.toLowerCase()}</span>
             </div>
           </div>
         </header>
@@ -204,47 +154,11 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
         
         <Separator className="my-8" />
 
-        <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-primary">{text.shareYourThoughts}</h3>
+        <div className="flex items-center justify-end">
             <LikeButton postId={initialPost.id} initialLikes={initialPost.likes} />
         </div>
       </article>
 
-      <section className="mt-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>{text.comments}</CardTitle>
-            <CardDescription>Оставете вашия коментар по-долу.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <form action={submitAddComment} ref={formRef}>
-                <input type="hidden" name="post_id" value={initialPost.id} />
-                <div className="space-y-4">
-                    {!user && (
-                        <div className="space-y-1.5">
-                            <Label htmlFor="guest_name">Име (като гост)</Label>
-                            <Input id="guest_name" name="guest_name" required minLength={3} />
-                        </div>
-                    )}
-                    <div className="space-y-1.5">
-                         <Label htmlFor="content">Вашият коментар</Label>
-                        <Textarea name="content" placeholder={text.writeCommentPlaceholder} className="mb-4" required minLength={3} />
-                    </div>
-                    <Button type="submit" disabled={isAddCommentPending}>
-                         {isAddCommentPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
-                        {text.postComment}
-                    </Button>
-                </div>
-            </form>
-            <Separator />
-            <div className="space-y-4">
-              {comments.length > 0 ? comments.map((comment) => (
-                <CommentCard key={comment.id} comment={comment} language={language} />
-              )) : <p className="text-sm text-muted-foreground">Все още няма коментари. Бъдете първи!</p>}
-            </div>
-          </CardContent>
-        </Card>
-      </section>
     </div>
   );
 }
