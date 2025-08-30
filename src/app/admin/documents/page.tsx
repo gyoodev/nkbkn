@@ -1,4 +1,7 @@
 
+'use client';
+
+import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,12 +9,53 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { getDocuments } from '@/lib/data';
+import { getDocuments } from '@/lib/client/data';
 import Link from 'next/link';
 import { DeleteButton } from './_components/delete-button';
+import type { Document } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export default async function AdminDocumentsPage() {
-  const documents = await getDocuments();
+
+function DocumentsSkeleton() {
+    return (
+        <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Име на документа</TableHead>
+                <TableHead>Тип</TableHead>
+                <TableHead>Дата на качване</TableHead>
+                <TableHead>
+                  <span className="sr-only">Действия</span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+                {Array.from({length: 5}).map((_, i) => (
+                     <TableRow key={i}>
+                        <TableCell><Skeleton className="h-4 w-48" /></TableCell>
+                        <TableCell><Skeleton className="h-6 w-24 rounded-full" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                        <TableCell><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    );
+}
+
+export default function AdminDocumentsPage() {
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+        setLoading(true);
+        const data = await getDocuments();
+        setDocuments(data);
+        setLoading(false);
+    }
+    loadData();
+  }, [])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('bg-BG', {
@@ -45,51 +89,53 @@ export default async function AdminDocumentsPage() {
            </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Име на документа</TableHead>
-                <TableHead>Тип</TableHead>
-                <TableHead>Дата на качване</TableHead>
-                <TableHead>
-                  <span className="sr-only">Действия</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {documents.map((doc) => (
-                <TableRow key={doc.id}>
-                  <TableCell className="font-medium">{doc.name}</TableCell>
-                  <TableCell>
-                    <Badge variant={doc.type === 'Правилник' ? 'default' : 'secondary'}>{doc.type}</Badge>
-                  </TableCell>
-                  <TableCell>{formatDate(doc.created_at)}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Действия</DropdownMenuLabel>
-                         <DropdownMenuItem asChild>
-                           <a href={doc.href} target="_blank" download>Изтегли</a>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DeleteButton id={doc.id} />
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+          {loading ? <DocumentsSkeleton /> : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Име на документа</TableHead>
+                  <TableHead>Тип</TableHead>
+                  <TableHead>Дата на качване</TableHead>
+                  <TableHead>
+                    <span className="sr-only">Действия</span>
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {documents.map((doc) => (
+                  <TableRow key={doc.id}>
+                    <TableCell className="font-medium">{doc.name}</TableCell>
+                    <TableCell>
+                      <Badge variant={doc.type === 'Правилник' ? 'default' : 'secondary'}>{doc.type}</Badge>
+                    </TableCell>
+                    <TableCell>{formatDate(doc.created_at)}</TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Действия</DropdownMenuLabel>
+                          <DropdownMenuItem asChild>
+                            <a href={doc.href} target="_blank" download>Изтегли</a>
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DeleteButton id={doc.id} />
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

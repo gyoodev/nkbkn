@@ -1,4 +1,4 @@
-import { getNewsPosts } from '@/lib/data';
+import { getNewsPosts } from '@/lib/server/data';
 import { NewsClientPage } from './components/news-client-page';
 
 

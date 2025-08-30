@@ -1,6 +1,6 @@
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getSiteContent } from '@/lib/data';
+import { getSiteContent } from '@/lib/server/data';
 import { Users, Goal, History } from 'lucide-react';
 
 // Make the component async to fetch data on the server

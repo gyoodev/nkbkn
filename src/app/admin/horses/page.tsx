@@ -1,4 +1,7 @@
 
+'use client';
+
+import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,10 +13,52 @@ import { HorseIcon } from '@/components/icons/horse-icon';
 import Link from 'next/link';
 import { DeleteHorseButton } from './_components/delete-horse-button';
 import type { Horse } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
+function HorsesTableSkeleton() {
+    return (
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Име</TableHead>
+                    <TableHead>Собственик</TableHead>
+                    <TableHead>Възраст</TableHead>
+                    <TableHead>Участия</TableHead>
+                    <TableHead>Победи</TableHead>
+                    <TableHead>Най-добро време</TableHead>
+                    <TableHead><span className="sr-only">Действия</span></TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {Array.from({ length: 5 }).map((_, i) => (
+                    <TableRow key={i}>
+                        <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-10" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-10" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-10" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                        <TableCell><Skeleton className="h-8 w-8" /></TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    );
+}
 
-export default async function AdminHorsesPage() {
-    const horses: Horse[] = await getHorses();
+export default function AdminHorsesPage() {
+    const [horses, setHorses] = useState<Horse[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function loadData() {
+            setLoading(true);
+            const data = await getHorses();
+            setHorses(data);
+            setLoading(false);
+        }
+        loadData();
+    }, [])
 
   return (
     <div>
@@ -40,55 +85,57 @@ export default async function AdminHorsesPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Име</TableHead>
-                <TableHead>Собственик</TableHead>
-                <TableHead>Възраст</TableHead>
-                <TableHead>Участия</TableHead>
-                <TableHead>Победи</TableHead>
-                <TableHead>Най-добро време</TableHead>
-                <TableHead>
-                  <span className="sr-only">Действия</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {horses.map((horse) => (
-                <TableRow key={horse.id}>
-                  <TableCell className="font-medium">{horse.name}</TableCell>
-                  <TableCell>{horse.owner}</TableCell>
-                  <TableCell>{horse.age}</TableCell>
-                  <TableCell>{horse.mounts}</TableCell>
-                  <TableCell>{horse.wins}</TableCell>
-                  <TableCell>{horse.bestTime || 'N/A'}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Действия</DropdownMenuLabel>
-                          <DropdownMenuItem asChild>
-                            <Link href={`/admin/horses/${horse.id}/edit`}>Редактирай</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DeleteHorseButton id={horse.id} />
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+          {loading ? <HorsesTableSkeleton /> : (
+            <Table>
+                <TableHeader>
+                <TableRow>
+                    <TableHead>Име</TableHead>
+                    <TableHead>Собственик</TableHead>
+                    <TableHead>Възраст</TableHead>
+                    <TableHead>Участия</TableHead>
+                    <TableHead>Победи</TableHead>
+                    <TableHead>Най-добро време</TableHead>
+                    <TableHead>
+                    <span className="sr-only">Действия</span>
+                    </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                </TableHeader>
+                <TableBody>
+                {horses.map((horse) => (
+                    <TableRow key={horse.id}>
+                    <TableCell className="font-medium">{horse.name}</TableCell>
+                    <TableCell>{horse.owner}</TableCell>
+                    <TableCell>{horse.age}</TableCell>
+                    <TableCell>{horse.mounts}</TableCell>
+                    <TableCell>{horse.wins}</TableCell>
+                    <TableCell>{horse.bestTime || 'N/A'}</TableCell>
+                    <TableCell>
+                        <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                            aria-haspopup="true"
+                            size="icon"
+                            variant="ghost"
+                            >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Действия</DropdownMenuLabel>
+                            <DropdownMenuItem asChild>
+                                <Link href={`/admin/horses/${horse.id}/edit`}>Редактирай</Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DeleteHorseButton id={horse.id} />
+                        </DropdownMenuContent>
+                        </DropdownMenu>
+                    </TableCell>
+                    </TableRow>
+                ))}
+                </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

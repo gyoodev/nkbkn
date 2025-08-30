@@ -42,7 +42,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { createBrowserClient } from '@/lib/supabase/client';
 import { PartnersSection } from '@/components/partners-section';
 import { useEffect, useState } from 'react';
-import { getSocialLinks } from '@/lib/data';
+import { getSocialLinks } from '@/lib/client/data';
 import type { SocialLink } from '@/lib/types';
 
 

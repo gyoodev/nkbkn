@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getJockeys } from '@/lib/data';
+import { getJockeys } from '@/lib/client/data';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import type { Jockey } from '@/lib/types';

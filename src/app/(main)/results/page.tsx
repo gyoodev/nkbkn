@@ -16,7 +16,7 @@ import { Trophy } from 'lucide-react';
 import { format } from 'date-fns';
 import { bg, enUS } from 'date-fns/locale';
 import { useEffect, useState } from 'react';
-import { getResults } from '@/lib/data';
+import { getResults } from '@/lib/client/data';
 import type { Result } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 

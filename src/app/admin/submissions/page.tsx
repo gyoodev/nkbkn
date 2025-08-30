@@ -1,11 +1,13 @@
 
+'use client';
+
+import { useEffect, useState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Mail, Eye } from 'lucide-react';
-import { createServerClient } from '@/lib/supabase/server';
 import type { Submission } from '@/lib/types';
 import {
   Dialog,
@@ -16,21 +18,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Separator } from '@/components/ui/separator';
+import { getSubmissions } from '@/lib/data';
+import { Skeleton } from '@/components/ui/skeleton';
 
-
-async function getSubmissions(): Promise<Submission[]> {
-    const supabase = createServerClient();
-    const { data, error } = await supabase
-        .from('submissions')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        console.error("Error fetching submissions:", error);
-        return [];
-    }
-    return data;
-}
 
 function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {
     if (value === null || value === undefined || value === '') return null;
@@ -105,9 +95,47 @@ function ViewSubmissionDialog({ submission }: { submission: Submission }) {
     )
 }
 
+function SubmissionsTableSkeleton() {
+    return (
+         <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Име</TableHead>
+                <TableHead>Тип</TableHead>
+                <TableHead>Статус</TableHead>
+                <TableHead>Дата</TableHead>
+                <TableHead className="text-right">Действия</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({length: 5}).map((_, i) => (
+                <TableRow key={i}>
+                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-24" /></TableCell>
+                  <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                  <TableCell className="text-right"><Skeleton className="h-8 w-24" /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+    )
+}
 
-export default async function AdminSubmissionsPage() {
-  const submissions = await getSubmissions();
+
+export default function AdminSubmissionsPage() {
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadData() {
+        setLoading(true);
+        const data = await getSubmissions();
+        setSubmissions(data);
+        setLoading(false);
+    }
+    loadData();
+  }, []);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('bg-BG', {
@@ -145,32 +173,34 @@ export default async function AdminSubmissionsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Име</TableHead>
-                <TableHead>Тип</TableHead>
-                <TableHead>Статус</TableHead>
-                <TableHead>Дата</TableHead>
-                <TableHead className="text-right">Действия</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {submissions.map((sub) => (
-                <TableRow key={sub.id}>
-                  <TableCell className="font-medium">{sub.name}</TableCell>
-                  <TableCell>{sub.type}</TableCell>
-                   <TableCell>
-                    <Badge variant={getStatusVariant(sub.status)}>{sub.status}</Badge>
-                  </TableCell>
-                  <TableCell>{formatDate(sub.created_at)}</TableCell>
-                  <TableCell className="text-right">
-                    <ViewSubmissionDialog submission={sub} />
-                  </TableCell>
+          {loading ? <SubmissionsTableSkeleton /> : (
+            <Table>
+                <TableHeader>
+                <TableRow>
+                    <TableHead>Име</TableHead>
+                    <TableHead>Тип</TableHead>
+                    <TableHead>Статус</TableHead>
+                    <TableHead>Дата</TableHead>
+                    <TableHead className="text-right">Действия</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                </TableHeader>
+                <TableBody>
+                {submissions.map((sub) => (
+                    <TableRow key={sub.id}>
+                    <TableCell className="font-medium">{sub.name}</TableCell>
+                    <TableCell>{sub.type}</TableCell>
+                    <TableCell>
+                        <Badge variant={getStatusVariant(sub.status)}>{sub.status}</Badge>
+                    </TableCell>
+                    <TableCell>{formatDate(sub.created_at)}</TableCell>
+                    <TableCell className="text-right">
+                        <ViewSubmissionDialog submission={sub} />
+                    </TableCell>
+                    </TableRow>
+                ))}
+                </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
     </div>

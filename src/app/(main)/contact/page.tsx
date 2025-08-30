@@ -11,7 +11,7 @@ import { PageHeader } from '@/components/page-header';
 import { Facebook, Instagram, Share2 } from 'lucide-react';
 import type { SocialLink } from '@/lib/types';
 import { useEffect, useState } from 'react';
-import { getSocialLinks } from '@/lib/data';
+import { getSocialLinks } from '@/lib/client/data';
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (

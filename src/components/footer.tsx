@@ -9,7 +9,7 @@ import { useLanguage } from '@/hooks/use-language';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import type { SocialLink } from '@/lib/types';
-import { getSocialLinks } from '@/lib/data';
+import { getSocialLinks } from '@/lib/client/data';
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (

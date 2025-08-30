@@ -1,10 +1,13 @@
 
+'use client';
+
 import { PageHeader } from '@/components/page-header';
 import { EventForm } from '../_components/event-form';
-import { tracks } from '@/lib/data';
+import { tracks } from '@/lib/client/data';
+import { useMemo } from 'react';
 
 export default function NewEventPage() {
-  const trackNames = tracks.map(t => t.name);
+  const trackNames = useMemo(() => tracks.map(t => t.name), []);
 
   return (
     <div>

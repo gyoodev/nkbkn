@@ -3,7 +3,7 @@
 
 import { useLanguage } from "@/hooks/use-language";
 import Image from "next/image";
-import { getPartners } from "@/lib/data";
+import { getPartners } from "@/lib/client/data";
 import type { Partner } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";

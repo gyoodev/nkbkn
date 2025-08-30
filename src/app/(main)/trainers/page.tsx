@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getTrainers } from '@/lib/data';
+import { getTrainers } from '@/lib/client/data';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import { Badge } from '@/components/ui/badge';

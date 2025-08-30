@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { getHorses } from '@/lib/data';
+import { getHorses } from '@/lib/client/data';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent } from '@/components/ui/card';

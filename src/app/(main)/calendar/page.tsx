@@ -6,7 +6,7 @@ import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getRaceEvents } from '@/lib/data';
+import { getRaceEvents } from '@/lib/client/data';
 import type { RaceEvent } from '@/lib/types';
 import { format } from 'date-fns';
 import { bg, enUS } from 'date-fns/locale';
