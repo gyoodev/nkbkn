@@ -217,7 +217,7 @@ export async function getMonthlyActivityStats() {
     try {
         const [comments, likesData, submissions] = await Promise.all([
             supabase.from('comments').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')),
-            supabase.from('news_posts').select('created_at, likes').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')),
+            supabase.from('news_posts').select('date, likes').gte('date', format(last12MonthsInterval.start, 'yyyy-MM-dd')),
             supabase.from('submissions').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd'))
         ]);
         
@@ -229,26 +229,27 @@ export async function getMonthlyActivityStats() {
         const activityByMonth = monthStarts.map(monthStart => {
             const monthEnd = endOfMonth(monthStart);
 
-            const getCountForMonth = (items: { created_at: string | null }[] | null) =>
+            const getCountForMonth = (items: { created_at: string | null }[] | null, dateKey: 'created_at' | 'date' = 'created_at') =>
                 items?.filter(item => {
-                    if (!item.created_at) return false;
-                    const itemDate = new Date(item.created_at);
+                    const dateValue = item[dateKey];
+                    if (!dateValue) return false;
+                    const itemDate = new Date(dateValue);
                     return itemDate >= monthStart && itemDate <= monthEnd;
                 }).length || 0;
             
-            const getLikesForMonth = (items: { created_at: string | null, likes: number }[] | null) => 
+            const getLikesForMonth = (items: { date: string | null, likes: number }[] | null) => 
                  items?.filter(item => {
-                    if (!item.created_at) return false;
-                    const itemDate = new Date(item.created_at);
+                    if (!item.date) return false;
+                    const itemDate = new Date(item.date);
                     return itemDate >= monthStart && itemDate <= monthEnd;
                 }).reduce((acc, item) => acc + (item.likes || 0), 0) || 0;
 
 
             return {
                 month: format(monthStart, 'LLL', { locale: bg }).charAt(0).toUpperCase() + format(monthStart, 'LLL', { locale: bg }).slice(1).replace('.',''),
-                comments: getCountForMonth(comments.data),
+                comments: getCountForMonth(comments.data, 'created_at'),
                 likes: getLikesForMonth(likesData.data),
-                submissions: getCountForMonth(submissions.data),
+                submissions: getCountForMonth(submissions.data, 'created_at'),
             };
         });
 

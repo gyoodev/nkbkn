@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { getDashboardStats, getMonthlyActivityStats } from '@/lib/client/data';
-import { Users, BarChart } from 'lucide-react';
+import { Users, BarChart, FileText } from 'lucide-react';
 import { HorseIcon } from '@/components/icons/horse-icon';
 import { useAuth } from '@/hooks/use-auth';
 import { ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, Bar, CartesianGrid } from 'recharts';
@@ -51,6 +51,7 @@ function DashboardContent({ stats, activityData }: { stats: Stats, activityData:
         { title: 'Общо коне', value: stats.horses, icon: <HorseIcon className="h-6 w-6 text-muted-foreground" /> },
         { title: 'Жокеи', value: stats.jockeys, icon: <Users className="h-6 w-6 text-muted-foreground" /> },
         { title: 'Треньoри', value: stats.trainers, icon: <Users className="h-6 w-6 text-muted-foreground" /> },
+        { title: 'Новини', value: stats.news, icon: <FileText className="h-6 w-6 text-muted-foreground" /> },
     ];
 
     return (
@@ -59,16 +60,16 @@ function DashboardContent({ stats, activityData }: { stats: Stats, activityData:
                 <h1 className="text-3xl font-bold tracking-tight">Добре дошли, {user?.user_metadata.full_name || user?.email}!</h1>
                 <p className="text-muted-foreground">Това е вашата статистика за днес.</p>
             </div>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {summaryStats.map((stat, index) => (
-                    <Card key={index} className={index === 0 ? 'bg-foreground text-background' : 'bg-card'}>
+                    <Card key={index} className={index === 0 ? 'bg-primary text-primary-foreground' : 'bg-card'}>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
                             {stat.icon}
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{stat.value}</div>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs text-muted-foreground opacity-70">
                                 Общо в системата
                             </p>
                         </CardContent>
