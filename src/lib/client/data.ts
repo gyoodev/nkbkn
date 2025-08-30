@@ -3,7 +3,7 @@
 
 import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent, Comment, Submission, SocialLink } from '@/lib/types';
 import { createBrowserClient } from '../supabase/client';
-import { format, subMonths, getYear, getMonth } from 'date-fns';
+import { format, subMonths, getYear, getMonth, startOfMonth, endOfMonth, eachMonthOfInterval } from 'date-fns';
 import { bg } from 'date-fns/locale';
 
 
@@ -207,66 +207,69 @@ export async function getDashboardStats() {
 export async function getMonthlyActivityStats() {
     const supabase = createBrowserClient();
     const today = new Date();
-    const last12Months: { year: number, month: number, name: string }[] = [];
+    const last12MonthsInterval = {
+        start: subMonths(startOfMonth(today), 11),
+        end: endOfMonth(today),
+    };
 
-    for (let i = 11; i >= 0; i--) {
-        const date = subMonths(today, i);
-        last12Months.push({
-            year: getYear(date),
-            month: getMonth(date) + 1, // getMonth is 0-indexed
-            name: format(date, 'LLL', { locale: bg }),
-        });
-    }
+    const monthStarts = eachMonthOfInterval(last12MonthsInterval);
 
     try {
-        const { data, error } = await supabase.rpc('get_monthly_activity');
+        const [profiles, comments, likesData, submissions] = await Promise.all([
+            supabase.from('profiles').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')).select('created_at'),
+            supabase.from('comments').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')).select('created_at'),
+            supabase.from('news_posts').select('created_at, likes').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')),
+            supabase.from('submissions').select('created_at').gte('created_at', format(last12MonthsInterval.start, 'yyyy-MM-dd')).select('created_at')
+        ]);
+        
+        if (profiles.error) throw profiles.error;
+        if (comments.error) throw comments.error;
+        if (likesData.error) throw likesData.error;
+        if (submissions.error) throw submissions.error;
+        
 
-        if (error) {
-            console.error('Error fetching monthly activity:', error);
-            return [];
-        }
+        const activityByMonth = monthStarts.map(monthStart => {
+            const monthEnd = endOfMonth(monthStart);
+            const monthKey = format(monthStart, 'yyyy-MM');
 
-        const activityByMonth: { [key: string]: any } = {};
-        (data as any[]).forEach(item => {
-             if (typeof item.month !== 'number' || item.month < 1 || item.month > 12) return;
-             
-            const monthName = format(new Date(item.year, item.month - 1), 'LLL', { locale: bg });
-            const key = `${item.year}-${monthName}`;
+            const getCountForMonth = (items: { created_at: string | null }[] | null) =>
+                items?.filter(item => {
+                    if (!item.created_at) return false;
+                    const itemDate = new Date(item.created_at);
+                    return itemDate >= monthStart && itemDate <= monthEnd;
+                }).length || 0;
+            
+            const getLikesForMonth = (items: { created_at: string | null, likes: number }[] | null) => 
+                 items?.filter(item => {
+                    if (!item.created_at) return false;
+                    const itemDate = new Date(item.created_at);
+                    return itemDate >= monthStart && itemDate <= monthEnd;
+                }).reduce((acc, item) => acc + (item.likes || 0), 0) || 0;
 
-            if (!activityByMonth[key]) {
-                activityByMonth[key] = {
-                    year: item.year,
-                    month: monthName,
-                    registrations: 0,
-                    comments: 0,
-                    likes: 0,
-                    submissions: 0,
-                };
-            }
-            if (item.type === 'registration') activityByMonth[key].registrations = item.count;
-            if (item.type === 'comment') activityByMonth[key].comments = item.count;
-            if (item.type === 'like') activityByMonth[key].likes = item.count;
-            if (item.type === 'submission') activityByMonth[key].submissions = item.count;
+
+            return {
+                month: format(monthStart, 'LLL', { locale: bg }).charAt(0).toUpperCase() + format(monthStart, 'LLL', { locale: bg }).slice(1).replace('.',''),
+                registrations: getCountForMonth(profiles.data),
+                comments: getCountForMonth(comments.data),
+                likes: getLikesForMonth(likesData.data),
+                submissions: getCountForMonth(submissions.data),
+            };
         });
 
-        const finalData = last12Months.map(m => {
-             const key = `${m.year}-${m.name}`;
-             return {
-                month: m.name.charAt(0).toUpperCase() + m.name.slice(1).replace('.', ''),
-                registrations: activityByMonth[key]?.registrations || 0,
-                comments: activityByMonth[key]?.comments || 0,
-                likes: activityByMonth[key]?.likes || 0,
-                submissions: activityByMonth[key]?.submissions || 0,
-             }
-        });
-
-        return finalData;
-
-    } catch (e: any) {
-        console.error('Error in getMonthlyActivityStats:', e.message);
-        return last12Months.map(m => ({ month: m.name.charAt(0).toUpperCase() + m.name.slice(1).replace('.', ''), registrations: 0, comments: 0, likes: 0, submissions: 0 }));
+        return activityByMonth;
+    } catch (error: any) {
+        console.error('Error fetching monthly activity:', error.message);
+        // Return empty structure on error
+        return monthStarts.map(monthStart => ({
+            month: format(monthStart, 'LLL', { locale: bg }).charAt(0).toUpperCase() + format(monthStart, 'LLL', { locale: bg }).slice(1).replace('.',''),
+            registrations: 0,
+            comments: 0,
+            likes: 0,
+            submissions: 0,
+        }));
     }
 }
+
 
 export async function getSocialLinks(): Promise<SocialLink[]> {
     const supabase = createBrowserClient();
