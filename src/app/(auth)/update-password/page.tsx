@@ -4,7 +4,6 @@
 import { updatePassword } from './actions';
 import { useLanguage } from '@/hooks/use-language';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useFormStatus } from 'react-dom';
@@ -27,22 +26,22 @@ export default function UpdatePasswordPage() {
   const [state, dispatch] = useActionState(updatePassword, undefined);
 
   return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">Нова парола</CardTitle>
-        <CardDescription>
-          Въведете новата си парола по-долу.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form action={dispatch} className="space-y-4">
+     <div className="w-full max-w-md space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Нова парола</h1>
+          <p className="mt-2 text-muted-foreground">
+            Въведете новата си парола по-долу.
+          </p>
+        </div>
+
+        <form action={dispatch} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="password">Нова парола</Label>
-            <Input id="password" name="password" type="password" required />
+            <Input id="password" name="password" type="password" required className="h-12 rounded-xl"/>
           </div>
            <div className="space-y-2">
             <Label htmlFor="confirmPassword">Потвърди новата парола</Label>
-            <Input id="confirmPassword" name="confirmPassword" type="password" required />
+            <Input id="confirmPassword" name="confirmPassword" type="password" required className="h-12 rounded-xl"/>
           </div>
           {state?.error && (
             <Alert variant="destructive">
@@ -63,7 +62,6 @@ export default function UpdatePasswordPage() {
           )}
           <SubmitButton />
         </form>
-      </CardContent>
-    </Card>
+      </div>
   );
 }

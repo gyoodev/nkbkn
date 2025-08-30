@@ -4,7 +4,6 @@
 import { signup } from './actions';
 import { useLanguage } from '@/hooks/use-language';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useFormStatus } from 'react-dom';
@@ -28,15 +27,15 @@ export default function SignupPage() {
   const [state, dispatch] = useActionState(signup, undefined);
 
   return (
-    <Card className="mx-auto max-w-sm">
-    <CardHeader>
-        <CardTitle className="text-xl">{text.signUp}</CardTitle>
-        <CardDescription>
-            {text.signUpPrompt}
-        </CardDescription>
-    </CardHeader>
-    <CardContent>
-        <form action={dispatch} className="space-y-4">
+    <div className="w-full max-w-md space-y-8">
+        <div>
+            <h1 className="text-3xl font-bold tracking-tight">{text.signUp}</h1>
+            <p className="mt-2 text-muted-foreground">
+                {text.signUpPrompt}
+            </p>
+        </div>
+    
+        <form action={dispatch} className="space-y-6">
             <div className="space-y-2">
                 <Label htmlFor="email">{text.email}</Label>
                 <Input
@@ -45,35 +44,35 @@ export default function SignupPage() {
                     type="email"
                     placeholder="m@example.com"
                     required
+                    className="h-12 rounded-xl"
                 />
             </div>
             <div className="space-y-2">
                 <Label htmlFor="password">{text.password}</Label>
-                <Input id="password" name="password" type="password" required />
+                <Input id="password" name="password" type="password" required className="h-12 rounded-xl" />
             </div>
              {state?.error && (
                 <Alert variant="destructive">
                     <Terminal className="h-4 w-4" />
-                    <AlertTitle>Error</AlertTitle>
+                    <AlertTitle>Грешка</AlertTitle>
                     <AlertDescription>{state.error}</AlertDescription>
                 </Alert>
             )}
              {state?.message && (
                 <Alert>
                     <Terminal className="h-4 w-4" />
-                    <AlertTitle>Heads up!</AlertTitle>
+                    <AlertTitle>Успех!</AlertTitle>
                     <AlertDescription>{state.message}</AlertDescription>
                 </Alert>
             )}
             <SubmitButton />
         </form>
-        <div className="mt-4 text-center text-sm">
+        <div className="text-center text-sm">
             {text.alreadyHaveAccount}{' '}
-            <Link href="/login" className="underline">
+            <Link href="/login" className="font-medium text-primary hover:underline">
                 {text.login}
             </Link>
         </div>
-    </CardContent>
-    </Card>
+    </div>
   );
 }

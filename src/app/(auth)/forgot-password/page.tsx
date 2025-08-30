@@ -4,7 +4,6 @@
 import { forgotPassword } from './actions';
 import { useLanguage } from '@/hooks/use-language';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useFormStatus } from 'react-dom';
@@ -28,15 +27,14 @@ export default function ForgotPasswordPage() {
   const [state, dispatch] = useActionState(forgotPassword, undefined);
 
   return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">Забравена парола</CardTitle>
-        <CardDescription>
-          Въведете своя имейл и ние ще ви изпратим линк за възстановяване на паролата.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form action={dispatch} className="space-y-4">
+      <div className="w-full max-w-md space-y-8">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Забравена парола</h1>
+          <p className="mt-2 text-muted-foreground">
+            Въведете своя имейл и ние ще ви изпратим линк за възстановяване на паролата.
+          </p>
+        </div>
+        <form action={dispatch} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="email">{text.email}</Label>
             <Input
@@ -45,6 +43,7 @@ export default function ForgotPasswordPage() {
               type="email"
               placeholder="m@example.com"
               required
+              className="h-12 rounded-xl"
             />
           </div>
           {state?.error && (
@@ -63,13 +62,12 @@ export default function ForgotPasswordPage() {
           )}
           <SubmitButton />
         </form>
-         <div className="mt-4 text-center text-sm">
+         <div className="text-center text-sm">
             Спомнихте си паролата?{' '}
-            <Link href="/login" className="underline">
+            <Link href="/login" className="font-medium text-primary hover:underline">
                 {text.login}
             </Link>
         </div>
-      </CardContent>
-    </Card>
+      </div>
   );
 }

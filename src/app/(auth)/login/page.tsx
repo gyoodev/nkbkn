@@ -4,7 +4,6 @@
 import { login } from './actions';
 import { useLanguage } from '@/hooks/use-language';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useFormStatus } from 'react-dom';
@@ -12,6 +11,7 @@ import { useActionState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Terminal } from 'lucide-react';
 import Link from 'next/link';
+import { Checkbox } from '@/components/ui/checkbox';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -28,15 +28,15 @@ export default function LoginPage() {
   const [state, dispatch] = useActionState(login, undefined);
 
   return (
-    <Card className="mx-auto max-w-sm">
-    <CardHeader>
-        <CardTitle className="text-2xl">{text.login}</CardTitle>
-        <CardDescription>
-        {text.loginPrompt}
-        </CardDescription>
-    </CardHeader>
-    <CardContent>
-        <form action={dispatch} className="space-y-4">
+    <div className="w-full max-w-md space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">{text.login}</h1>
+        <p className="mt-2 text-muted-foreground">
+          {text.loginPrompt}
+        </p>
+      </div>
+
+      <form action={dispatch} className="space-y-6">
         <div className="space-y-2">
             <Label htmlFor="email">{text.email}</Label>
             <Input
@@ -45,36 +45,44 @@ export default function LoginPage() {
             type="email"
             placeholder="m@example.com"
             required
+            className="h-12 rounded-xl"
             />
         </div>
         <div className="space-y-2">
-            <div className="flex items-center">
-                <Label htmlFor="password">{text.password}</Label>
-                <Link
-                    href="/forgot-password"
-                    className="ml-auto inline-block text-sm underline"
-                >
-                    Забравена парола?
-                </Link>
-            </div>
-            <Input id="password" name="password" type="password" required />
+            <Label htmlFor="password">{text.password}</Label>
+            <Input id="password" name="password" type="password" required className="h-12 rounded-xl"/>
         </div>
+        
+        <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+                <Checkbox id="remember-me" name="rememberMe" />
+                <Label htmlFor="remember-me" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    Запомни ме
+                </Label>
+            </div>
+            <Link
+                href="/forgot-password"
+                className="text-sm font-medium text-primary hover:underline"
+            >
+                Забравена парола?
+            </Link>
+        </div>
+
         {state?.error && (
             <Alert variant="destructive">
                 <Terminal className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
+                <AlertTitle>Грешка</AlertTitle>
                 <AlertDescription>{state.error}</AlertDescription>
             </Alert>
         )}
         <SubmitButton />
-        </form>
-        <div className="mt-4 text-center text-sm">
+      </form>
+      <div className="text-center text-sm">
         {text.noAccount}{' '}
-        <Link href="/signup" className="underline">
+        <Link href="/signup" className="font-medium text-primary hover:underline">
             {text.signUp}
         </Link>
-        </div>
-    </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
