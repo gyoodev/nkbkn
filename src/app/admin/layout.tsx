@@ -17,13 +17,11 @@ import {
   Settings,
   LogOut,
   ExternalLink,
+  Search,
+  Bell,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/hooks/use-language';
-import { Separator } from '@/components/ui/separator';
-import { HorseIcon } from '@/components/icons/horse-icon';
 import { useAuth } from '@/hooks/use-auth';
-import { useEffect } from 'react';
 import {
     Sidebar,
     SidebarContent,
@@ -40,6 +38,9 @@ import {
     SidebarGroupContent
 } from '@/components/ui/sidebar';
 import { HorseLogo } from '@/components/icons/horse-logo';
+import { Input } from '@/components/ui/input';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 function AdminLayoutSkeleton() {
   return (
@@ -54,7 +55,7 @@ function AdminLayoutSkeleton() {
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { isAdmin, loading } = useAuth();
+  const { user, isAdmin, loading, signOut } = useAuth();
 
   useEffect(() => {
     if (!loading && !isAdmin) {
@@ -69,6 +70,11 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   if (!isAdmin) {
       return null;
   }
+  
+  const handleLogout = async () => {
+    await signOut();
+    window.location.href = '/';
+  };
 
   const mainNavItems = [
     { href: '/admin', label: 'Табло', icon: <Home /> },
@@ -83,7 +89,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const managementNavItems = [
      { href: '/admin/jockeys', label: 'Жокеи', icon: <Users /> },
      { href: '/admin/trainers', label: 'Треньори', icon: <Users /> },
-     { href: '/admin/horses', label: 'Коне', icon: <HorseIcon /> },
+     { href: '/admin/horses', label: 'Коне', icon: <HorseLogo /> },
      { href: '/admin/partners', label: 'Партньори', icon: <Building /> },
   ];
   
@@ -101,7 +107,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             <SidebarHeader>
                 <div className="flex items-center gap-2">
                     <HorseLogo className="h-8 w-8 text-primary" />
-                    <span className="text-lg font-semibold">Админ</span>
+                    <span className="text-lg font-semibold">НКБКН Админ</span>
                 </div>
             </SidebarHeader>
             <SidebarContent>
@@ -166,24 +172,49 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 </SidebarMenu>
             </SidebarFooter>
         </Sidebar>
-         <SidebarInset>
-            <div className="flex flex-col w-full min-h-screen">
-              <header className="sticky top-0 z-10 flex h-14 items-center justify-between gap-4 border-b bg-background px-4 sm:justify-end sm:px-6">
-                  <SidebarTrigger className="md:hidden" />
-                   <h1 className="text-xl font-semibold shrink-0 md:hidden">
-                      {mainNavItems.find(item => isActive(item.href))?.label || 
-                       managementNavItems.find(item => isActive(item.href))?.label ||
-                       settingsNavItems.find(item => isActive(item.href))?.label ||
-                       'Табло'}
-                   </h1>
-              </header>
-              <main className="flex-1 overflow-x-auto">
-                <div className="p-4 sm:px-6 sm:py-4">
-                  {children}
+         <div className="flex flex-col w-full min-h-screen">
+            <header className="sticky top-0 z-10 flex h-16 items-center justify-between gap-4 border-b bg-background px-4 sm:px-6">
+                <div className="flex items-center gap-4">
+                    <SidebarTrigger className="md:hidden" />
+                    <div className="relative w-full max-w-sm">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="search"
+                            placeholder="Търсене..."
+                            className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px] bg-muted/50"
+                        />
+                    </div>
                 </div>
-              </main>
-            </div>
-        </SidebarInset>
+
+                <div className="flex items-center gap-4">
+                     <Button variant="ghost" size="icon" className="rounded-full">
+                        <Bell className="h-5 w-5" />
+                        <span className="sr-only">Известия</span>
+                    </Button>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                                <Avatar className="h-9 w-9">
+                                    <AvatarImage src={user?.user_metadata.avatar_url} alt={user?.email} />
+                                    <AvatarFallback>{user?.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>{user?.email}</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem asChild><Link href="/profile">Профил</Link></DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleLogout}>Изход</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            </header>
+            <main className="flex-1 overflow-x-auto bg-muted/40">
+                <div className="p-4 sm:p-6 lg:p-8">
+                {children}
+                </div>
+            </main>
+        </div>
       </SidebarProvider>
   )
 }
