@@ -14,48 +14,38 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
+export const AuthProvider = ({ children, session }: { children: ReactNode; session: Session | null }) => {
   const supabase = createBrowserClient();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(session?.user ?? null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-  
-  const checkAdminRole = async (user: User | null, client: SupabaseClient) => {
-    if (!user) {
-        setIsAdmin(false);
-        return false;
+
+  const checkAdminRole = async (userToCheck: User | null, client: SupabaseClient) => {
+    if (!userToCheck) {
+      setIsAdmin(false);
+      return false;
     }
     const { data: profile } = await client
       .from('profiles')
       .select('role')
-      .eq('id', user.id)
+      .eq('id', userToCheck.id)
       .single();
       
     const isAdminUser = profile?.role === 'admin';
     setIsAdmin(isAdminUser);
     return isAdminUser;
   };
-
+  
   useEffect(() => {
-    async function getActiveSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      await checkAdminRole(currentUser, supabase);
-      setLoading(false);
-    }
-    
-    getActiveSession();
+    // We run this only on the client, after the initial server render
+    // to check the admin role for the initial user.
+    checkAdminRole(session?.user ?? null, supabase).finally(() => setLoading(false));
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (event: AuthChangeEvent, session: Session | null) => {
-        const currentUser = session?.user ?? null;
+      async (event: AuthChangeEvent, newSession: Session | null) => {
+        const currentUser = newSession?.user ?? null;
         setUser(currentUser);
         await checkAdminRole(currentUser, supabase);
-        // The loading state is only for the initial check, not subsequent changes
-        if (loading) {
-            setLoading(false);
-        }
       }
     );
 
@@ -77,7 +67,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     isAdmin,
     loading,
     signOut
-  }), [user, isAdmin, loading]);
+  }), [user, isAdmin, loading, signOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
