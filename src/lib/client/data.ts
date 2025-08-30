@@ -1,8 +1,7 @@
 
-
 'use client';
 
-import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent, Comment, Submission, SocialLink } from '@/lib/types';
+import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent, Submission, SocialLink, ContactSubmission } from '@/lib/types';
 import { createBrowserClient } from '../supabase/client';
 import { format, subMonths, getYear, getMonth, startOfMonth, endOfMonth, eachMonthOfInterval } from 'date-fns';
 import { bg } from 'date-fns/locale';
@@ -295,12 +294,6 @@ export async function getMonthlyActivityStats() {
             const year = getYear(monthDate);
             const month = getMonth(monthDate);
             const monthName = format(monthDate, 'LLL', { locale: bg });
-
-            const { count: comments } = await supabase
-                .from('comments')
-                .select('*', { count: 'exact', head: true })
-                .gte('created_at', format(startOfMonth(monthDate), 'yyyy-MM-dd HH:mm:ss'))
-                .lte('created_at', format(endOfMonth(monthDate), 'yyyy-MM-dd HH:mm:ss'));
             
             const { count: submissions } = await supabase
                 .from('submissions')
@@ -312,7 +305,6 @@ export async function getMonthlyActivityStats() {
 
             return {
                 name: monthName,
-                Коментари: comments ?? 0,
                 Харесвания: likes,
                 Заявки: submissions ?? 0,
             };
@@ -321,5 +313,18 @@ export async function getMonthlyActivityStats() {
 
     return stats;
 }
-    
 
+export async function getContactSubmissions(): Promise<ContactSubmission[]> {
+    const supabase = createBrowserClient();
+    const { data, error } = await supabase
+        .from('contact_submissions')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error("Error fetching contact submissions:", error);
+        return [];
+    }
+    return data;
+}
+    

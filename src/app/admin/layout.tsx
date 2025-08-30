@@ -20,6 +20,7 @@ import {
   Search,
   Bell,
   Share2,
+  Contact,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/use-auth';
@@ -81,6 +82,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const mainNavItems = [
     { href: '/admin', label: 'Табло', icon: <Home /> },
     { href: '/admin/submissions', label: 'Заявки', icon: <Mail /> },
+    { href: '/admin/contacts', label: 'Контакти', icon: <Contact /> },
     { href: '/admin/calendar', label: 'Календар', icon: <Calendar /> },
     { href: '/admin/news', label: 'Новини', icon: <Newspaper /> },
     { href: '/admin/results', label: 'Резултати', icon: <Trophy /> },

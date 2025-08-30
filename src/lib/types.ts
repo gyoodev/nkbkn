@@ -50,7 +50,6 @@ export interface NewsPost {
     href: string;
     views: number;
     likes: number;
-    comments: Comment[];
 }
 
 export interface Race {
@@ -107,16 +106,6 @@ export type UserProfile = {
   avatar_url: string | null
 }
 
-export interface Comment {
-  id: number
-  created_at: string
-  content: string
-  post_id: number
-  user_id: string | null
-  guest_name: string | null
-  profiles: UserProfile | null
-}
-
 export interface Submission {
     id: number;
     created_at: string;
@@ -155,4 +144,13 @@ export interface SocialLink {
     name: 'TikTok' | 'Facebook' | 'Instagram' | 'Youtube';
     url: string;
     created_at: string;
+}
+
+export interface ContactSubmission {
+    id: number;
+    created_at: string;
+    name: string;
+    email: string;
+    message: string;
+    status: 'pending' | 'answered';
 }

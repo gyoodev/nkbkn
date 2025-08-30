@@ -1,17 +1,21 @@
 
 'use client';
 
+import { useActionState, useEffect, useRef } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
-import { Facebook, Instagram, Share2 } from 'lucide-react';
+import { Facebook, Instagram, Share2, Loader2 } from 'lucide-react';
 import type { SocialLink } from '@/lib/types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getSocialLinks } from '@/lib/client/data';
+import { submitContactForm } from './actions';
+import { useToast } from '@/hooks/use-toast';
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -41,10 +45,24 @@ function SocialIcon({ name, ...props }: { name: SocialLink['name'] } & React.SVG
     }
 }
 
+function SubmitButton() {
+    const { pending } = useFormStatus();
+    const { text } = useLanguage();
+    return (
+         <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={pending}>
+            {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {pending ? 'Изпращане...' : text.submit}
+        </Button>
+    )
+}
 
 export default function ContactPage() {
   const { text } = useLanguage();
+  const { toast } = useToast();
   const [socials, setSocials] = useState<SocialLink[]>([]);
+  const formRef = useRef<HTMLFormElement>(null);
+  const initialState = { success: false, message: '' };
+  const [state, dispatch] = useActionState(submitContactForm, initialState);
 
   useEffect(() => {
     async function loadSocials() {
@@ -53,6 +71,19 @@ export default function ContactPage() {
     }
     loadSocials();
   }, []);
+
+  useEffect(() => {
+      if(state.message) {
+          toast({
+              variant: state.success ? 'default' : 'destructive',
+              title: state.success ? 'Успех!' : 'Грешка',
+              description: state.message,
+          });
+          if(state.success) {
+              formRef.current?.reset();
+          }
+      }
+  }, [state, toast])
 
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
@@ -66,22 +97,20 @@ export default function ContactPage() {
             <CardTitle>{text.sendMessage}</CardTitle>
           </CardHeader>
           <CardContent>
-            <form className="space-y-4">
+            <form ref={formRef} action={dispatch} className="space-y-4">
               <div className="grid w-full items-center gap-1.5">
                 <Label htmlFor="name">{text.name}</Label>
-                <Input type="text" id="name" placeholder={text.name} />
+                <Input type="text" id="name" name="name" placeholder={text.name} required />
               </div>
               <div className="grid w-full items-center gap-1.5">
                 <Label htmlFor="email">{text.email}</Label>
-                <Input type="email" id="email" placeholder={text.email} />
+                <Input type="email" id="email" name="email" placeholder={text.email} required />
               </div>
               <div className="grid w-full items-center gap-1.5">
                 <Label htmlFor="message">{text.message}</Label>
-                <Textarea id="message" placeholder={text.message} />
+                <Textarea id="message" name="message" placeholder={text.message} required />
               </div>
-              <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
-                {text.submit}
-              </Button>
+              <SubmitButton />
             </form>
           </CardContent>
         </Card>
