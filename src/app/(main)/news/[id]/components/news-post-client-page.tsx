@@ -228,7 +228,7 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
                     )}
                     <div className="space-y-1.5">
                          <Label htmlFor="content">Вашият коментар</Label>
-                        <Textarea name="content" placeholder={text.writeCommentPlaceholder} className="mb-4" required />
+                        <Textarea name="content" placeholder={text.writeCommentPlaceholder} className="mb-4" required minLength={3} />
                     </div>
                     <Button type="submit" disabled={isAddCommentPending}>
                          {isAddCommentPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}

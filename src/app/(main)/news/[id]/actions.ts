@@ -6,11 +6,19 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { Comment } from "@/lib/types";
 
-const CommentSchema = z.object({
+// Schema for guest comments
+const GuestCommentSchema = z.object({
   content: z.string().min(3, "Коментарът трябва да е поне 3 символа."),
   post_id: z.coerce.number(),
-  guest_name: z.string().optional(),
+  guest_name: z.string().min(3, "Името за гост трябва да е поне 3 символа."),
 });
+
+// Schema for user comments
+const UserCommentSchema = z.object({
+  content: z.string().min(3, "Коментарът трябва да е поне 3 символа."),
+  post_id: z.coerce.number(),
+});
+
 
 type CommentState = {
   success: boolean;
@@ -21,45 +29,50 @@ type CommentState = {
 export async function addComment(prevState: CommentState, formData: FormData): Promise<CommentState> {
   const supabase = createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
-
+  const content = formData.get('content') as string;
+  const postId = formData.get('post_id') as string;
   const guestName = formData.get('guest_name') as string;
 
-  const validatedFields = CommentSchema.safeParse({
-    content: formData.get('content'),
-    post_id: formData.get('post_id'),
-    guest_name: guestName,
-  });
 
-  if (!validatedFields.success) {
-    return { success: false, error: validatedFields.error.flatten().fieldErrors.content?.[0] };
-  }
-  
-  const { content, post_id, guest_name } = validatedFields.data;
-
-  // If user is not logged in, guest_name is required and should be valid
-  if (!user) {
-      if (!guest_name || guest_name.trim() === '') {
-          return { success: false, error: 'Името за гост е задължително.' };
-      }
-      if (guest_name.trim().length < 3) {
-          return { success: false, error: 'Името за гост трябва да е поне 3 символа.' };
-      }
-  }
-
-  const dataToInsert: {
+  let dataToInsert: {
     content: string;
     post_id: number;
     user_id?: string;
     guest_name?: string;
-  } = {
-    content,
-    post_id,
   };
-
+  
   if (user) {
-    dataToInsert.user_id = user.id;
+     // Handle registered user
+    const validatedFields = UserCommentSchema.safeParse({
+        content: content,
+        post_id: postId
+    });
+
+    if (!validatedFields.success) {
+        return { success: false, error: validatedFields.error.flatten().fieldErrors.content?.[0] };
+    }
+
+    dataToInsert = {
+        ...validatedFields.data,
+        user_id: user.id
+    };
   } else {
-    dataToInsert.guest_name = guest_name;
+    // Handle guest user
+    const validatedFields = GuestCommentSchema.safeParse({
+        content: content,
+        post_id: postId,
+        guest_name: guestName
+    });
+
+    if (!validatedFields.success) {
+        const fieldErrors = validatedFields.error.flatten().fieldErrors;
+        const errorMessage = fieldErrors.content?.[0] || fieldErrors.guest_name?.[0] || 'Моля, попълнете формата коректно.';
+        return { success: false, error: errorMessage };
+    }
+    
+    dataToInsert = {
+        ...validatedFields.data,
+    };
   }
 
 
@@ -78,7 +91,7 @@ export async function addComment(prevState: CommentState, formData: FormData): P
     return { success: false, error: "Неуспешно добавяне на коментар." };
   }
 
-  revalidatePath(`/news/${post_id}`);
+  revalidatePath(`/news/${postId}`);
   
   return { success: true, newComment: newCommentData as Comment };
 }
