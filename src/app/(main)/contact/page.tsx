@@ -98,17 +98,29 @@ export default function ContactPage() {
           </CardHeader>
           <CardContent>
             <form ref={formRef} action={dispatch} className="space-y-4">
-              <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="name">{text.name}</Label>
-                <Input type="text" id="name" name="name" placeholder={text.name} required />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid w-full items-center gap-1.5">
+                  <Label htmlFor="name">Име</Label>
+                  <Input type="text" id="name" name="name" placeholder="Вашето име" required />
+                </div>
+                <div className="grid w-full items-center gap-1.5">
+                  <Label htmlFor="email">Имейл</Label>
+                  <Input type="email" id="email" name="email" placeholder="email@example.com" required />
+                </div>
+              </div>
+               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid w-full items-center gap-1.5">
+                  <Label htmlFor="topic">Тема</Label>
+                  <Input type="text" id="topic" name="topic" placeholder="Относно..." />
+                </div>
+                <div className="grid w-full items-center gap-1.5">
+                  <Label htmlFor="phone">Телефон (по избор)</Label>
+                  <Input type="tel" id="phone" name="phone" placeholder="+359..." />
+                </div>
               </div>
               <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="email">{text.email}</Label>
-                <Input type="email" id="email" name="email" placeholder={text.email} required />
-              </div>
-              <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="message">{text.message}</Label>
-                <Textarea id="message" name="message" placeholder={text.message} required />
+                <Label htmlFor="message">Съобщение</Label>
+                <Textarea id="message" name="message" placeholder="Вашето съобщение тук..." required rows={5} />
               </div>
               <SubmitButton />
             </form>

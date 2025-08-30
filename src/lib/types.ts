@@ -151,6 +151,8 @@ export interface ContactSubmission {
     created_at: string;
     name: string;
     email: string;
+    topic: string | null;
+    phone: string | null;
     message: string;
     status: 'pending' | 'answered';
 }

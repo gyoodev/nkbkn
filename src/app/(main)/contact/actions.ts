@@ -8,6 +8,8 @@ import { z } from "zod";
 const ContactSchema = z.object({
   name: z.string().min(2, "Името трябва да е поне 2 символа."),
   email: z.string().email("Моля, въведете валиден имейл."),
+  topic: z.string().optional(),
+  phone: z.string().optional(),
   message: z.string().min(10, "Съобщението трябва да е поне 10 символа."),
 });
 
@@ -22,6 +24,8 @@ export async function submitContactForm(prevState: State, formData: FormData): P
     const validatedFields = ContactSchema.safeParse({
         name: formData.get('name'),
         email: formData.get('email'),
+        topic: formData.get('topic'),
+        phone: formData.get('phone'),
         message: formData.get('message'),
     });
 
@@ -30,11 +34,11 @@ export async function submitContactForm(prevState: State, formData: FormData): P
         return { success: false, message: errorMessage || "Моля, поправете грешките във формата." };
     }
     
-    const { name, email, message } = validatedFields.data;
+    const { name, email, topic, phone, message } = validatedFields.data;
 
     const { error } = await supabase
         .from('contact_submissions')
-        .insert({ name, email, message, status: 'pending' });
+        .insert({ name, email, topic, phone, message, status: 'pending' });
 
     if (error) {
         console.error("Contact form submission error:", error);

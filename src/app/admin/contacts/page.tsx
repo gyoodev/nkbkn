@@ -34,6 +34,17 @@ import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 
 
+function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {
+    if (value === null || value === undefined || value === '') return null;
+    return (
+         <div className="grid grid-cols-3 items-center gap-4">
+            <span className="text-sm font-semibold text-right text-muted-foreground">{label}:</span>
+            <span className="col-span-2 text-sm">{value}</span>
+        </div>
+    )
+}
+
+
 function ViewSubmissionDialog({ submission }: { submission: ContactSubmission }) {
     return (
         <Dialog>
@@ -50,11 +61,21 @@ function ViewSubmissionDialog({ submission }: { submission: ContactSubmission })
                     </DialogDescription>
                 </DialogHeader>
                 <div className="space-y-4 py-4">
-                    <div>
-                        <Label className="text-muted-foreground">Съобщение</Label>
-                        <p className="text-sm p-3 bg-muted rounded-md whitespace-pre-wrap">{submission.message}</p>
+                    <div className="space-y-2 rounded-md border p-4">
+                        <h4 className="font-semibold text-md">Детайли на запитването</h4>
+                        <Separator />
+                        <SubmissionDetail label="Име" value={submission.name} />
+                        <SubmissionDetail label="Имейл" value={submission.email} />
+                        <SubmissionDetail label="Телефон" value={submission.phone} />
+                        <SubmissionDetail label="Тема" value={submission.topic} />
+                        <div>
+                            <p className="text-sm font-semibold text-muted-foreground mt-2">Съобщение:</p>
+                            <p className="text-sm p-3 bg-muted rounded-md whitespace-pre-wrap mt-1">{submission.message}</p>
+                        </div>
                     </div>
+                    
                     <Separator />
+                    
                     <div>
                         <Label htmlFor="reply-message">Отговор</Label>
                          <Textarea id="reply-message" placeholder="Напишете вашия отговор тук..." rows={5} />
