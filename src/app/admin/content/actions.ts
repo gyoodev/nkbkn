@@ -61,21 +61,35 @@ export async function updateDevBannerStatus(
   } catch (error: any) {
     return { error: error.message };
   }
-  
-  const settingsPath = path.join(process.cwd(), 'src', 'config', 'settings.json');
+
+  const configDir = path.join(process.cwd(), 'src', 'config');
+  const settingsPath = path.join(configDir, 'settings.json');
 
   try {
-    const fileContent = await fs.readFile(settingsPath, 'utf-8');
-    const settings = JSON.parse(fileContent);
-    settings.dev_banner_visible = isVisible;
-    await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2), 'utf-8');
+    // Ensure the directory exists
+    await fs.mkdir(configDir, { recursive: true });
+
+    let settings = {};
+    try {
+      const fileContent = await fs.readFile(settingsPath, 'utf-8');
+      settings = JSON.parse(fileContent);
+    } catch (readError: any) {
+      // If the file doesn't exist, we'll create it.
+      // We only ignore the ENOENT error.
+      if (readError.code !== 'ENOENT') {
+        throw readError;
+      }
+    }
+    
+    const newSettings = { ...settings, dev_banner_visible: isVisible };
+    await fs.writeFile(settingsPath, JSON.stringify(newSettings, null, 2), 'utf-8');
 
     revalidatePath('/'); // Revalidate root layout to show/hide banner
     revalidatePath('/admin/content');
 
     return { error: null };
-  } catch(error: any) {
-     console.error('Failed to update settings.json:', error);
-     return { error: `Грешка при запис на файла: ${error.message}` };
+  } catch (error: any) {
+    console.error('Failed to update settings.json:', error);
+    return { error: `Грешка при запис на файла: ${error.message}` };
   }
 }
