@@ -1,15 +1,15 @@
+
 'use client';
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Users, FileText, PlusCircle, Mail, CalendarPlus, Activity } from 'lucide-react';
 import { HorseIcon } from '@/components/icons/horse-icon';
-import { useAuth } from '@/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import type { Stats } from '@/lib/types';
+import type { User } from '@supabase/supabase-js';
 
 
-export function DashboardContent({ stats }: { stats: Stats }) {
-    const { user } = useAuth();
+export function DashboardContent({ stats, user }: { stats: Stats, user: User | null }) {
     
     const summaryStats = [
         { title: 'Общо коне', value: stats.horses, icon: <HorseIcon className="h-6 w-6 text-muted-foreground" /> },

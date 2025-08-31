@@ -37,14 +37,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Footer } from '@/components/footer';
 import Image from 'next/image';
-import { AuthProvider, useAuth } from '@/hooks/use-auth';
-import { createServerClient } from '@/lib/supabase/server';
 import { PartnersSection } from '@/components/partners-section';
 import type { Partner, SocialLink } from '@/lib/types';
-import { unstable_noStore as noStore } from 'next/cache';
-import { useEffect, useState } from 'react';
-import { getPartners, getSocialLinks } from '@/lib/client/data';
-import type { Session } from '@supabase/supabase-js';
+import type { Session, User as SupabaseUser } from '@supabase/supabase-js';
+import { createServerClient } from '@/lib/supabase/server';
+import { createBrowserClient } from '@/lib/supabase/client';
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -75,12 +72,12 @@ function SocialIcon({ name, ...props }: { name: SocialLink['name'] } & React.SVG
     }
 }
 
-function AuthButton() {
-    const { user, isAdmin, signOut } = useAuth();
+function AuthButton({ user, isAdmin }: { user: SupabaseUser | null, isAdmin: boolean }) {
     const { text } = useLanguage();
 
     const handleLogout = async () => {
-      await signOut();
+      const supabase = createBrowserClient();
+      await supabase.auth.signOut();
       window.location.href = '/';
     };
 
@@ -128,10 +125,14 @@ function MainLayoutClient({
   children,
   partners,
   socials,
+  session,
+  isAdmin
 }: {
   children: React.ReactNode;
   partners: Partner[];
   socials: SocialLink[];
+  session: Session | null;
+  isAdmin: boolean;
 }) {
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
@@ -214,7 +215,7 @@ function MainLayoutClient({
             </div>
             <div className="flex-1 flex justify-end items-center gap-4">
                 <LanguageSelector />
-                 <AuthButton />
+                 <AuthButton user={session?.user ?? null} isAdmin={isAdmin} />
             </div>
           </div>
         </div>
@@ -293,7 +294,6 @@ export default async function MainLayout({
 }: {
   children: React.ReactNode;
 }) {
-  noStore();
   const supabase = createServerClient();
   
   const { data: { session } } = await supabase.auth.getSession();
@@ -312,10 +312,13 @@ export default async function MainLayout({
   const { data: partnerData } = await supabase.from('partners').select('*').order('created_at');
 
   return (
-      <AuthProvider session={session} initialIsAdmin={isAdmin}>
-        <MainLayoutClient socials={socialData || []} partners={partnerData || []}>
-            {children}
-        </MainLayoutClient>
-      </AuthProvider>
+      <MainLayoutClient 
+        socials={socialData || []} 
+        partners={partnerData || []}
+        session={session}
+        isAdmin={isAdmin}
+      >
+          {children}
+      </MainLayoutClient>
   )
 }
