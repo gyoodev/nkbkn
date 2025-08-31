@@ -38,12 +38,50 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Footer } from '@/components/footer';
 import Image from 'next/image';
-import { useAuth } from '@/hooks/use-auth';
-import { createBrowserClient } from '@/lib/supabase/client';
+import { AuthProvider, useAuth } from '@/hooks/use-auth';
+import { createServerClient } from '@/lib/supabase/server';
 import { PartnersSection } from '@/components/partners-section';
-import { useEffect, useState } from 'react';
-import { getSocialLinks } from '@/lib/client/data';
-import type { SocialLink } from '@/lib/types';
+import type { Partner, SocialLink } from '@/lib/types';
+import { unstable_noStore as noStore } from 'next/cache';
+
+// This is a separate SERVER component that fetches all the data.
+async function MainLayoutDataWrapper({ children }: { children: React.ReactNode }) {
+  noStore();
+  const supabase = createServerClient();
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', session?.user?.id || '')
+    .single();
+    
+  const isAdmin = profile?.role === 'admin';
+
+  const { data: socialLinks } = await supabase
+    .from('social_links')
+    .select('*')
+    .order('id', { ascending: true });
+
+  const { data: partners } = await supabase
+    .from('partners')
+    .select('*')
+    .order('created_at', { ascending: true });
+
+  return (
+    <AuthProvider session={session} initialIsAdmin={isAdmin}>
+      <MainLayoutClient 
+        socials={socialLinks || []}
+        partners={partners || []}
+      >
+        {children}
+      </MainLayoutClient>
+    </AuthProvider>
+  );
+}
 
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -75,24 +113,67 @@ function SocialIcon({ name, ...props }: { name: SocialLink['name'] } & React.SVG
     }
 }
 
-export default function MainLayout({
+function AuthButton() {
+    const { user, isAdmin, signOut } = useAuth();
+    const { text } = useLanguage();
+
+    const handleLogout = async () => {
+      await signOut();
+      window.location.href = '/';
+    };
+
+    if (user) {
+        return (
+           <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
+                      <User className="mr-1.5 h-4 w-4" />
+                      {text.profile}
+                  </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                      <Link href="/profile"><User className="mr-2 h-4 w-4" />{text.profile}</Link>
+                  </DropdownMenuItem>
+                  {isAdmin && (
+                      <DropdownMenuItem asChild>
+                      <Link href="/admin"><LayoutGrid className="mr-2 h-4 w-4" />{text.adminPanel}</Link>
+                      </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      {text.logout}
+                  </DropdownMenuItem>
+              </DropdownMenuContent>
+          </DropdownMenu>
+        )
+    }
+    return (
+       <Button asChild variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
+          <Link href="/login">
+              <LogIn className="mr-1.5 h-4 w-4" />
+              {text.login}
+          </Link>
+      </Button>
+    )
+}
+
+
+function MainLayoutClient({
   children,
+  socials,
+  partners
 }: {
   children: React.ReactNode;
+  socials: SocialLink[];
+  partners: Partner[];
 }) {
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
-  const { user, isAdmin, signOut, loading } = useAuth();
-  const [socials, setSocials] = useState<SocialLink[]>([]);
-
-  useEffect(() => {
-    async function loadSocials() {
-        const data = await getSocialLinks();
-        setSocials(data);
-    }
-    loadSocials();
-  }, []);
-
+  
   const leftNavItems = [
     { href: '/about', label: text.aboutCommissionShort, icon: <Info /> },
     { href: '/jockeys', label: text.jockeys },
@@ -138,58 +219,6 @@ export default function MainLayout({
         </DropdownMenuContent>
     </DropdownMenu>
   );
-
-  const handleLogout = async () => {
-    await signOut();
-    window.location.href = '/';
-  };
-  
-  const AuthButton = () => {
-      if (loading) {
-        return (
-             <div className="flex items-center justify-center h-full w-[86px]">
-                <Loader2 className="h-5 w-5 animate-spin text-white" />
-            </div>
-        )
-      }
-      if (user) {
-          return (
-             <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
-                        <User className="mr-1.5 h-4 w-4" />
-                        {text.profile}
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                        <Link href="/profile"><User className="mr-2 h-4 w-4" />{text.profile}</Link>
-                    </DropdownMenuItem>
-                    {isAdmin && (
-                        <DropdownMenuItem asChild>
-                        <Link href="/admin"><LayoutGrid className="mr-2 h-4 w-4" />{text.adminPanel}</Link>
-                        </DropdownMenuItem>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
-                        <LogOut className="mr-2 h-4 w-4" />
-                        {text.logout}
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-          )
-      }
-      return (
-         <Button asChild variant="ghost" size="sm" className="text-xs uppercase hover:bg-primary/20 p-1 h-auto text-white hover:text-white">
-            <Link href="/login">
-                <LogIn className="mr-1.5 h-4 w-4" />
-                {text.login}
-            </Link>
-        </Button>
-      )
-  }
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -289,8 +318,20 @@ export default function MainLayout({
       <main className="flex-1">
         {children}
       </main>
-      <PartnersSection />
-      <Footer />
+      <PartnersSection partners={partners} />
+      <Footer socials={socials} />
     </div>
   );
+}
+
+
+// Server Component Wrapper that renders the client component
+export default function MainLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+      <MainLayoutDataWrapper>{children}</MainLayoutDataWrapper>
+  )
 }

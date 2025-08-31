@@ -3,26 +3,19 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { LanguageProvider } from '@/hooks/use-language';
-import { AuthProvider } from '@/hooks/use-auth';
 import { DevBanner } from '@/components/dev-banner';
 import { CookieBanner } from '@/components/cookie-banner';
-import { createServerClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = {
   title: 'НКБКН - Национална комисия за Български конни надбягвания',
   description: 'Official website of the National Commission for Bulgarian Horse Racing.',
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = createServerClient();
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -36,11 +29,9 @@ export default async function RootLayout({
       <body className={cn('font-body antialiased min-h-screen bg-background')}>
         <DevBanner />
         <LanguageProvider>
-          <AuthProvider session={session}>
             {children}
             <Toaster />
             <CookieBanner />
-          </AuthProvider>
         </LanguageProvider>
       </body>
     </html>

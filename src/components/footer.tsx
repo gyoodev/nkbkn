@@ -7,9 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Facebook, Instagram, Youtube, Code, Share2 } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
 import type { SocialLink } from '@/lib/types';
-import { getSocialLinks } from '@/lib/client/data';
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -41,18 +39,8 @@ function SocialIcon({ name, ...props }: { name: SocialLink['name'] } & React.SVG
 }
 
 
-export function Footer() {
+export function Footer({ socials }: { socials: SocialLink[] }) {
   const { text } = useLanguage();
-  const [socials, setSocials] = useState<SocialLink[]>([]);
-
-  useEffect(() => {
-    async function loadSocials() {
-        const data = await getSocialLinks();
-        setSocials(data);
-    }
-    loadSocials();
-  }, []);
-
 
   const footerLinks = {
     [text.aboutUs]: [

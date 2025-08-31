@@ -5,22 +5,16 @@ import Image from 'next/image';
 import { useLanguage } from '@/hooks/use-language';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Heart, MessageCircle, Eye, Calendar, Loader2, User, Send } from 'lucide-react';
-import type { NewsPost, Comment as CommentType } from '@/lib/types';
+import { Heart, Eye, Calendar, Loader2, User, Send } from 'lucide-react';
+import type { NewsPost } from '@/lib/types';
 import StarterKit from '@tiptap/starter-kit';
 import Youtube from '@tiptap/extension-youtube';
 import { useEditor, EditorContent } from '@tiptap/react';
-import { useAuth } from '@/hooks/use-auth';
-import { useActionState, useEffect, useState, useTransition, useRef } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { likePost, incrementViews } from '../actions';
 import { useToast } from '@/hooks/use-toast';
-
 
 function LikeButton({ postId, initialLikes }: { postId: number, initialLikes: number }) {
     const [isPending, startTransition] = useTransition();
@@ -70,9 +64,9 @@ function LikeButton({ postId, initialLikes }: { postId: number, initialLikes: nu
 }
 
 
-export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
+export function NewsPostClientPage({ post }: { post: NewsPost }) {
   const { language, text } = useLanguage();
-  const [viewCount, setViewCount] = useState(initialPost.views);
+  const [viewCount, setViewCount] = useState(post.views);
 
   const editor = useEditor({
     extensions: [
@@ -82,7 +76,7 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
         modestBranding: true,
       }),
     ],
-    content: initialPost.content,
+    content: post.content,
     editable: false,
     editorProps: {
         attributes: {
@@ -90,13 +84,13 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
         }
     }
   });
-  
+
   useEffect(() => {
     // This effect runs only on the client after hydration
     // to increment the view count.
     const incrementView = async () => {
         try {
-            await incrementViews(initialPost.id);
+            await incrementViews(post.id);
             // Optimistically update the view count on the client
             setViewCount(prev => prev + 1);
         } catch (error) {
@@ -105,8 +99,8 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
     };
     incrementView();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialPost.id]);
-
+  }, [post.id]);
+  
   const formattedDate = (date: string) => {
     return new Date(date).toLocaleDateString(language, {
       year: 'numeric',
@@ -115,18 +109,26 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
     });
   };
   
+  if (!post) {
+      return (
+          <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+              <p>Зареждане...</p>
+          </div>
+      )
+  }
+
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <article>
         <header className="mb-8">
-          <Badge className="mb-4">{initialPost.category}</Badge>
+          <Badge className="mb-4">{post.category}</Badge>
           <h1 className="font-headline text-3xl font-bold tracking-tight text-primary md:text-5xl">
-            {initialPost.title}
+            {post.title}
           </h1>
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
              <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
-              <time dateTime={initialPost.date}>{formattedDate(initialPost.date)}</time>
+              <time dateTime={post.date}>{formattedDate(post.date)}</time>
             </div>
             <div className="flex items-center gap-1.5">
                 <Eye className="h-4 w-4" />
@@ -134,15 +136,15 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
             </div>
              <div className="flex items-center gap-1.5">
                 <Heart className="h-4 w-4" />
-                <span>{initialPost.likes} {text.likes.toLowerCase()}</span>
+                <span>{post.likes} {text.likes.toLowerCase()}</span>
             </div>
           </div>
         </header>
 
         <div className="relative mb-8 aspect-video w-full">
           <Image
-            src={initialPost.image_url}
-            alt={initialPost.title}
+            src={post.image_url}
+            alt={post.title}
             fill
             className="rounded-lg object-cover"
             priority
@@ -154,11 +156,10 @@ export function NewsPostClientPage({ post: initialPost }: { post: NewsPost }) {
         
         <Separator className="my-8" />
 
-        <div className="flex items-center justify-end">
-            <LikeButton postId={initialPost.id} initialLikes={initialPost.likes} />
+        <div className="flex items-center justify-between">
+           <LikeButton postId={post.id} initialLikes={post.likes} />
         </div>
       </article>
-
     </div>
   );
 }

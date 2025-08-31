@@ -3,7 +3,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode, useMemo } from 'react';
 import { createBrowserClient } from '@/lib/supabase/client';
-import type { User, AuthChangeEvent, Session, SupabaseClient } from '@supabase/supabase-js';
+import type { User, AuthChangeEvent, Session } from '@supabase/supabase-js';
 
 type AuthContextType = {
   user: User | null;
@@ -14,38 +14,33 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children, session }: { children: ReactNode; session: Session | null }) => {
+export const AuthProvider = ({ children, session, initialIsAdmin }: { children: ReactNode; session: Session | null; initialIsAdmin: boolean }) => {
   const supabase = createBrowserClient();
   const [user, setUser] = useState<User | null>(session?.user ?? null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(initialIsAdmin);
   const [loading, setLoading] = useState(true);
 
-  const checkAdminRole = async (userToCheck: User | null, client: SupabaseClient) => {
-    if (!userToCheck) {
-      setIsAdmin(false);
-      return false;
-    }
-    const { data: profile } = await client
-      .from('profiles')
-      .select('role')
-      .eq('id', userToCheck.id)
-      .single();
-      
-    const isAdminUser = profile?.role === 'admin';
-    setIsAdmin(isAdminUser);
-    return isAdminUser;
-  };
-  
   useEffect(() => {
-    // We run this only on the client, after the initial server render
-    // to check the admin role for the initial user.
-    checkAdminRole(session?.user ?? null, supabase).finally(() => setLoading(false));
+    setUser(session?.user ?? null);
+    setIsAdmin(initialIsAdmin);
+    setLoading(false);
+  }, [session, initialIsAdmin]);
 
+  useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event: AuthChangeEvent, newSession: Session | null) => {
-        const currentUser = newSession?.user ?? null;
-        setUser(currentUser);
-        await checkAdminRole(currentUser, supabase);
+        setUser(newSession?.user ?? null);
+        if (event === 'SIGNED_IN' || event === 'USER_UPDATED' || event === 'INITIAL_SESSION') {
+             const { data: profile } = await supabase
+              .from('profiles')
+              .select('role')
+              .eq('id', newSession?.user?.id || '')
+              .single();
+            setIsAdmin(profile?.role === 'admin');
+        } else if (event === 'SIGNED_OUT') {
+            setIsAdmin(false);
+        }
+        setLoading(false);
       }
     );
 
@@ -58,16 +53,15 @@ export const AuthProvider = ({ children, session }: { children: ReactNode; sessi
 
   const signOut = async () => {
     await supabase.auth.signOut();
-    setUser(null);
-    setIsAdmin(false);
-  }
+  };
 
   const value = useMemo(() => ({
     user,
     isAdmin,
     loading,
     signOut
-  }), [user, isAdmin, loading, signOut]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [user, isAdmin, loading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
