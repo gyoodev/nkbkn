@@ -1,3 +1,4 @@
+
 'use client';
 
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
@@ -8,20 +9,19 @@ import { useTransition } from 'react';
 export function UpdateStatusButton({ id, status, children }: { id: number, status: Submission['status'], children: React.ReactNode }) {
     const [isPending, startTransition] = useTransition();
 
-    const handleClick = () => {
-        startTransition(async () => {
-            await updateSubmissionStatus(id, status);
+    const handleSubmit = () => {
+        startTransition(() => {
+            updateSubmissionStatus(id, status);
         });
     };
 
     return (
-        <DropdownMenuItem
-            onSelect={(e) => e.preventDefault()}
-            onClick={handleClick}
-            disabled={isPending}
-            className="w-full"
-        >
-            {children}
-        </DropdownMenuItem>
+        <form action={handleSubmit} className="w-full">
+            <button type="submit" className="w-full text-left" disabled={isPending}>
+                <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                    {children}
+                </DropdownMenuItem>
+            </button>
+        </form>
     );
 }

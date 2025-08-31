@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Eye } from 'lucide-react';
+import { Mail, Eye, MoreHorizontal, Check, Archive, Trash2, FolderSync } from 'lucide-react';
 import type { Submission } from '@/lib/types';
 import {
   Dialog,
@@ -17,9 +17,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getSubmissions } from '@/lib/client/data';
+import { DeleteButton } from './_components/delete-button';
+import { UpdateStatusButton } from './_components/update-status-button';
 
 
 function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {
@@ -122,6 +132,35 @@ function SubmissionsTableSkeleton() {
     )
 }
 
+function ActionsMenu({ submission }: { submission: Submission }) {
+    return (
+         <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                    <MoreHorizontal className="h-4 w-4" />
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+                <DropdownMenuLabel>Действия</DropdownMenuLabel>
+                <UpdateStatusButton id={submission.id} status="read">
+                    <Check className="mr-2 h-4 w-4" />
+                    Маркирай като прочетено
+                </UpdateStatusButton>
+                <UpdateStatusButton id={submission.id} status="archived">
+                     <Archive className="mr-2 h-4 w-4" />
+                    Архивирай
+                </UpdateStatusButton>
+                <UpdateStatusButton id={submission.id} status="new">
+                     <FolderSync className="mr-2 h-4 w-4" />
+                    Върни в нови
+                </UpdateStatusButton>
+                <DropdownMenuSeparator />
+                <DeleteButton id={submission.id} />
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
+
 
 export default function AdminSubmissionsPage() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
@@ -154,6 +193,12 @@ export default function AdminSubmissionsPage() {
           case 'archived': return 'outline';
           default: return 'secondary';
       }
+  }
+
+  const statusTranslations: Record<Submission['status'], string> = {
+      new: 'Нова',
+      read: 'Прочетена',
+      archived: 'Архивирана'
   }
 
   return (
@@ -190,11 +235,12 @@ export default function AdminSubmissionsPage() {
                     <TableCell className="font-medium">{sub.name}</TableCell>
                     <TableCell>{sub.type}</TableCell>
                     <TableCell>
-                        <Badge variant={getStatusVariant(sub.status)}>{sub.status}</Badge>
+                        <Badge variant={getStatusVariant(sub.status)}>{statusTranslations[sub.status]}</Badge>
                     </TableCell>
                     <TableCell>{formatDate(sub.created_at)}</TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right flex items-center justify-end">
                         <ViewSubmissionDialog submission={sub} />
+                        <ActionsMenu submission={sub} />
                     </TableCell>
                     </TableRow>
                 ))}

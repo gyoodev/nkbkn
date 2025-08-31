@@ -18,22 +18,19 @@ function ContentCard({
   contentKey,
   title,
   description,
-  initialContent,
+  content,
+  onContentChange,
   useRichText = true,
 }: {
   contentKey: string;
   title: string;
   description: string;
-  initialContent: string;
+  content: string;
+  onContentChange: (newContent: string) => void;
   useRichText?: boolean;
 }) {
-  const [content, setContent] = useState(initialContent);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
-
-  useEffect(() => {
-    setContent(initialContent);
-  }, [initialContent]);
 
   const handleSave = () => {
     startTransition(async () => {
@@ -63,12 +60,12 @@ function ContentCard({
         <div>
           <Label htmlFor={`${contentKey}-editor`}>Съдържание</Label>
            {useRichText ? (
-            <RichTextEditor value={content} onChange={setContent} />
+            <RichTextEditor value={content} onChange={onContentChange} />
           ) : (
              <Textarea
                 id={`${contentKey}-editor`}
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
+                onChange={(e) => onContentChange(e.target.value)}
                 rows={5}
              />
           )}
@@ -143,25 +140,28 @@ export default function AdminContentPage() {
       {content && (
         <div className="mt-8 grid gap-8">
             <ContentCard
-            contentKey="about_history"
-            title="История"
-            description="Редактирайте съдържанието на секция 'Нашата история' в страница 'За нас'."
-            initialContent={content.about_history}
+              contentKey="about_history"
+              title="История"
+              description="Редактирайте съдържанието на секция 'Нашата история' в страница 'За нас'."
+              content={content.about_history}
+              onContentChange={(newContent) => setContent(c => c ? {...c, about_history: newContent} : null)}
             />
             
             <ContentCard
-            contentKey="about_mission"
-            title="Мисия"
-            description="Редактирайте съдържанието на секция 'Нашата мисия' в страница 'За нас'."
-            initialContent={content.about_mission}
+              contentKey="about_mission"
+              title="Мисия"
+              description="Редактирайте съдържанието на секция 'Нашата мисия' в страница 'За нас'."
+              content={content.about_mission}
+               onContentChange={(newContent) => setContent(c => c ? {...c, about_mission: newContent} : null)}
             />
 
             <ContentCard
-            contentKey="about_team_text"
-            title="Екип"
-            description="Текстът, който се показва в секция 'Екип' на страница 'За нас'."
-            initialContent={content.about_team_text}
-            useRichText={false}
+              contentKey="about_team_text"
+              title="Екип"
+              description="Текстът, който се показва в секция 'Екип' на страница 'За нас'."
+              content={content.about_team_text}
+              onContentChange={(newContent) => setContent(c => c ? {...c, about_team_text: newContent} : null)}
+              useRichText={false}
             />
         </div>
       )}
