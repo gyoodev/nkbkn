@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
@@ -113,7 +114,6 @@ function ContentCard({
         </Button>
       </CardContent>
     </Card>
-  </change>
   );
 }
 
