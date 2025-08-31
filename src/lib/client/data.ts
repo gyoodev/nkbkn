@@ -1,10 +1,8 @@
 
 'use client';
 
-import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, SiteContent, Submission, SocialLink, ContactSubmission } from '@/lib/types';
+import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, Submission, SocialLink, ContactSubmission } from '@/lib/types';
 import { createBrowserClient } from '../supabase/client';
-import { format, subMonths, getYear, getMonth, startOfMonth, endOfMonth, eachMonthOfInterval } from 'date-fns';
-import { bg } from 'date-fns/locale';
 
 
 export async function getJockeys(): Promise<Jockey[]> {
@@ -257,58 +255,6 @@ export async function getSiteContent(key: string): Promise<string> {
         console.error(`Error in getSiteContent for key "${key}":`, e.message);
         return '';
     }
-}
-
-async function getLikesForMonth(year: number, month: number, supabase: any): Promise<number> {
-    const startDate = format(new Date(year, month, 1), 'yyyy-MM-dd');
-    const endDate = format(new Date(year, month + 1, 0), 'yyyy-MM-dd');
-    
-    const { data, error } = await supabase
-        .from('news_posts')
-        .select('likes')
-        .gte('date', startDate)
-        .lte('date', endDate);
-
-    if (error) {
-        console.error(`Error fetching likes for ${year}-${month + 1}:`, error);
-        return 0;
-    }
-    
-    return data.reduce((acc: number, item: { likes: number | null }) => acc + (item.likes || 0), 0);
-}
-
-
-export async function getMonthlyActivityStats() {
-    const supabase = createBrowserClient();
-    const today = new Date();
-    const last12Months = eachMonthOfInterval({
-        start: subMonths(today, 11),
-        end: today
-    });
-
-    const stats = await Promise.all(
-        last12Months.map(async (monthDate) => {
-            const year = getYear(monthDate);
-            const month = getMonth(monthDate);
-            const monthName = format(monthDate, 'LLL', { locale: bg });
-            
-            const { count: submissions } = await supabase
-                .from('submissions')
-                .select('*', { count: 'exact', head: true })
-                .gte('created_at', format(startOfMonth(monthDate), 'yyyy-MM-dd HH:mm:ss'))
-                .lte('created_at', format(endOfMonth(monthDate), 'yyyy-MM-dd HH:mm:ss'));
-
-             const likes = await getLikesForMonth(year, month, supabase);
-
-            return {
-                name: monthName,
-                Харесвания: likes,
-                Заявки: submissions ?? 0,
-            };
-        })
-    );
-
-    return stats;
 }
 
 export async function getContactSubmissions(): Promise<ContactSubmission[]> {
