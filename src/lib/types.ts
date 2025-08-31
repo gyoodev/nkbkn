@@ -156,3 +156,11 @@ export interface ContactSubmission {
     message: string;
     status: 'pending' | 'answered';
 }
+
+export type Stats = {
+    horses: number;
+    jockeys: number;
+    trainers: number;
+    news: number;
+    events: number;
+};
