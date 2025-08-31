@@ -5,20 +5,33 @@ import { Toaster } from '@/components/ui/toaster';
 import { LanguageProvider } from '@/hooks/use-language';
 import { DevBanner } from '@/components/dev-banner';
 import { CookieBanner } from '@/components/cookie-banner';
-import { getSiteContent } from '@/lib/server/data';
+import fs from 'fs/promises';
+import path from 'path';
 
 export const metadata: Metadata = {
   title: 'НКБКН - Национална комисия за Български конни надбягвания',
   description: 'Official website of the National Commission for Bulgarian Horse Racing.',
 };
 
+async function getBannerVisibility() {
+    try {
+        const filePath = path.join(process.cwd(), 'src', 'config', 'settings.json');
+        const fileContent = await fs.readFile(filePath, 'utf-8');
+        const settings = JSON.parse(fileContent);
+        return settings.dev_banner_visible === true;
+    } catch (error) {
+        console.error("Could not read settings.json, defaulting to false", error);
+        return false;
+    }
+}
+
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const devBannerVisible = await getSiteContent('dev_banner_visible');
-  const showDevBanner = devBannerVisible === 'true';
+  const showDevBanner = await getBannerVisibility();
 
   return (
     <html lang="en" suppressHydrationWarning>

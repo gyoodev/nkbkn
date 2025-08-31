@@ -3,6 +3,8 @@
 
 import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import fs from 'fs/promises';
+import path from 'path';
 
 async function checkAdmin() {
   const supabase = createServerClient();
@@ -59,38 +61,21 @@ export async function updateDevBannerStatus(
   } catch (error: any) {
     return { error: error.message };
   }
-  const supabase = createServerClient();
   
-  const record = { 
-    key: 'dev_banner_visible',
-    content: String(isVisible)
-  };
+  const settingsPath = path.join(process.cwd(), 'src', 'config', 'settings.json');
 
-  const { data, error } = await supabase
-    .from('site_content')
-    .update(record)
-    .eq('key', record.key)
-    .select();
+  try {
+    const fileContent = await fs.readFile(settingsPath, 'utf-8');
+    const settings = JSON.parse(fileContent);
+    settings.dev_banner_visible = isVisible;
+    await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2), 'utf-8');
 
-  if (error) {
-    console.error('Error updating dev banner status:', error);
-    return { error: `Грешка при обновяване на статуса: ${error.message}` };
+    revalidatePath('/'); // Revalidate root layout to show/hide banner
+    revalidatePath('/admin/content');
+
+    return { error: null };
+  } catch(error: any) {
+     console.error('Failed to update settings.json:', error);
+     return { error: `Грешка при запис на файла: ${error.message}` };
   }
-
-  if (!data || data.length === 0) {
-    // Row doesn't exist, insert it
-    const { error: insertError } = await supabase
-      .from('site_content')
-      .insert(record);
-      
-    if (insertError) {
-      console.error('Error inserting dev banner status:', insertError);
-      return { error: `Грешка при създаване на настройката: ${insertError.message}` };
-    }
-  }
-    
-  revalidatePath('/'); // Revalidate root layout
-  revalidatePath('/admin/content');
-
-  return { error: null };
 }

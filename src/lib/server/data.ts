@@ -2,7 +2,7 @@
 
 import 'server-only';
 
-import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, SiteContent, NewsPost } from '@/lib/types';
+import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, NewsPost } from '@/lib/types';
 import { createServerClient } from '../supabase/server';
 
 export async function getJockey(id: number): Promise<Jockey | null> {
