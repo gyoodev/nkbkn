@@ -2,7 +2,7 @@
 'use client';
 
 import * as React from 'react';
-import { useActionState, useEffect, useTransition } from 'react';
+import { useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { PageHeader } from '@/components/page-header';
 import {
@@ -16,13 +16,11 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { updateSocialLinks, updateDevBannerStatus } from './actions';
+import { updateSocialLinks } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import type { SocialLink } from '@/lib/types';
-import { getSocialLinks, getSiteContent } from '@/lib/client/data';
-import { Switch } from '@/components/ui/switch';
-import { Separator } from '@/components/ui/separator';
+import { getSocialLinks } from '@/lib/client/data';
 
 function SubmitButton() {
     const { pending } = useFormStatus();
@@ -34,44 +32,8 @@ function SubmitButton() {
     );
 }
 
-function DevBannerSwitch({ initialIsOn }: { initialIsOn: boolean }) {
-  const [isPending, startTransition] = useTransition();
-  const { toast } = useToast();
-
-  const handleCheckedChange = (checked: boolean) => {
-    startTransition(async () => {
-      const { error } = await updateDevBannerStatus(checked);
-       if (error) {
-        toast({
-          variant: 'destructive',
-          title: 'Грешка!',
-          description: error,
-        });
-      } else {
-        toast({
-          title: 'Успех!',
-          description: `Банерът за разработка е ${checked ? 'включен' : 'изключен'}.`,
-        });
-      }
-    })
-  }
-
-  return (
-      <div className="flex items-center space-x-2">
-        <Switch 
-          id="dev-banner-switch" 
-          defaultChecked={initialIsOn}
-          onCheckedChange={handleCheckedChange}
-          disabled={isPending}
-        />
-        <Label htmlFor="dev-banner-switch">Покажи банер за разработка</Label>
-      </div>
-  )
-}
-
 export default function AdminSocialsPage() {
     const [socials, setSocials] = React.useState<SocialLink[]>([]);
-    const [devBannerVisible, setDevBannerVisible] = React.useState(false);
     const [loading, setLoading] = React.useState(true);
     const { toast } = useToast();
 
@@ -81,12 +43,8 @@ export default function AdminSocialsPage() {
     useEffect(() => {
         async function loadData() {
             setLoading(true);
-            const [socialsData, bannerStatus] = await Promise.all([
-              getSocialLinks(),
-              getSiteContent('dev_banner_visible')
-            ]);
+            const socialsData = await getSocialLinks();
             setSocials(socialsData);
-            setDevBannerVisible(bannerStatus === 'true');
             setLoading(false);
         }
         loadData();
@@ -106,20 +64,9 @@ export default function AdminSocialsPage() {
   return (
     <div className="space-y-8">
       <PageHeader
-        title="Общи настройки"
-        description="Управлявайте линковете към социалните мрежи и други общи настройки за сайта."
+        title="Социални мрежи"
+        description="Управлявайте линковете към социалните мрежи, които се показват на сайта."
       />
-      <Card>
-        <CardHeader>
-          <CardTitle>Банер за разработка</CardTitle>
-          <CardDescription>
-            Включете или изключете банера, който информира потребителите, че сайтът е в процес на разработка.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {loading ? <div className="h-6 w-32 animate-pulse rounded-md bg-muted" /> : <DevBannerSwitch initialIsOn={devBannerVisible} />}
-        </CardContent>
-      </Card>
        <form action={dispatch}>
         <Card>
             <CardHeader>
@@ -129,7 +76,10 @@ export default function AdminSocialsPage() {
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-               {socials.map((social) => (
+               {loading ? (
+                 <p>Зареждане...</p>
+               ) : (
+                socials.map((social) => (
                     <div key={social.id} className="space-y-1.5">
                         <Label htmlFor={`social-${social.id}`}>{social.name}</Label>
                         <Input
@@ -139,7 +89,8 @@ export default function AdminSocialsPage() {
                             placeholder="https://..."
                         />
                     </div>
-                ))}
+                ))
+               )}
             </CardContent>
             <CardFooter>
                 <SubmitButton />
