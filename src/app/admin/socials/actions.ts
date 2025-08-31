@@ -74,3 +74,33 @@ export async function updateSocialLinks(
 
   return { success: true, message: 'Социалните мрежи бяха актуализирани успешно!' };
 }
+
+export async function updateDevBannerStatus(
+  isVisible: boolean
+): Promise<{ error: string | null }> {
+  try {
+    await checkAdmin();
+  } catch (error: any) {
+    return { error: error.message };
+  }
+  const supabase = createServerClient();
+  
+  const { error } = await supabase
+    .from('site_content')
+    .upsert({ 
+        key: 'dev_banner_visible',
+        content: String(isVisible)
+     }, {
+         onConflict: 'key'
+     });
+    
+  if (error) {
+    console.error('Error updating dev banner status:', error);
+    return { error: `Грешка при обновяване на статуса: ${error.message}` };
+  }
+
+  revalidatePath('/'); // Revalidate root layout
+  revalidatePath('/admin/socials');
+
+  return { error: null };
+}

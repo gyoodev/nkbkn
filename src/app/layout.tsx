@@ -5,17 +5,21 @@ import { Toaster } from '@/components/ui/toaster';
 import { LanguageProvider } from '@/hooks/use-language';
 import { DevBanner } from '@/components/dev-banner';
 import { CookieBanner } from '@/components/cookie-banner';
+import { getSiteContent } from '@/lib/server/data';
 
 export const metadata: Metadata = {
   title: 'НКБКН - Национална комисия за Български конни надбягвания',
   description: 'Official website of the National Commission for Bulgarian Horse Racing.',
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const devBannerVisible = await getSiteContent('dev_banner_visible');
+  const showDevBanner = devBannerVisible === 'true';
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -27,7 +31,7 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('font-body antialiased min-h-screen bg-background')}>
-        <DevBanner />
+        {showDevBanner && <DevBanner />}
         <LanguageProvider>
             {children}
             <Toaster />
