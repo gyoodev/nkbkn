@@ -61,20 +61,34 @@ export async function updateDevBannerStatus(
   }
   const supabase = createServerClient();
   
-  const { error } = await supabase
+  const record = { 
+    key: 'dev_banner_visible',
+    content: String(isVisible)
+  };
+
+  const { data, error } = await supabase
     .from('site_content')
-    .upsert({ 
-        key: 'dev_banner_visible',
-        content: String(isVisible)
-     }, {
-         onConflict: 'key'
-     });
-    
+    .update(record)
+    .eq('key', record.key)
+    .select();
+
   if (error) {
     console.error('Error updating dev banner status:', error);
     return { error: `Грешка при обновяване на статуса: ${error.message}` };
   }
 
+  if (!data || data.length === 0) {
+    // Row doesn't exist, insert it
+    const { error: insertError } = await supabase
+      .from('site_content')
+      .insert(record);
+      
+    if (insertError) {
+      console.error('Error inserting dev banner status:', insertError);
+      return { error: `Грешка при създаване на настройката: ${insertError.message}` };
+    }
+  }
+    
   revalidatePath('/'); // Revalidate root layout
   revalidatePath('/admin/content');
 
