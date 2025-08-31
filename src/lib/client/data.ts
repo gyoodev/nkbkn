@@ -237,9 +237,6 @@ export async function getSubmissions(): Promise<Submission[]> {
     return data;
 }
 
-
-
-
 export async function getSiteContent(key: string): Promise<string> {
     const supabase = createBrowserClient();
     try {
@@ -327,4 +324,22 @@ export async function getContactSubmissions(): Promise<ContactSubmission[]> {
     }
     return data;
 }
-    
+
+export async function getNewsPosts(): Promise<NewsPost[]> {
+    const supabase = createBrowserClient();
+    try {
+        const { data, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
+        if (error) {
+            console.error('Error fetching news posts:', error.message);
+            return [];
+        }
+        return (data || []).map(post => ({
+            ...post,
+            href: `/news/${post.id}`,
+            comments: [], // Comments are not fetched in the list view
+        }));
+    } catch(e: any) {
+        console.error('Error fetching news posts:', e.message);
+        return [];
+    }
+}

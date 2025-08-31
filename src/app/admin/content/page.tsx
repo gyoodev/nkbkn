@@ -11,7 +11,8 @@ import { updateContent } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
-import { getSiteContent } from '@/lib/client/data'; // This should exist if we are to call it client side
+import { getSiteContent } from '@/lib/client/data'; 
+import { Skeleton } from '@/components/ui/skeleton';
 
 function ContentCard({
   contentKey,
@@ -95,9 +96,6 @@ export default function AdminContentPage() {
     async function fetchContent() {
       setLoading(true);
       
-      // In a real app, you would fetch this from an API route.
-      // Since we can't create API routes, we'll call a client-side data fetching function.
-      // This assumes getSiteContent can be made to work on the client.
       const [history, mission, team] = await Promise.all([
         getSiteContent('about_history'),
         getSiteContent('about_mission'),

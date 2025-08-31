@@ -1,3 +1,4 @@
+
 import { getNewsPosts } from '@/lib/server/data';
 import type { NewsPost } from '@/lib/types';
 import { HomeClientPage } from './components/home-client-page';

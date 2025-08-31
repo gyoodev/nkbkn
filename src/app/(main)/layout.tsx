@@ -16,7 +16,6 @@ import {
   LogOut,
   Info,
   FileText,
-  Loader2,
   Share2,
 } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
@@ -43,46 +42,9 @@ import { createServerClient } from '@/lib/supabase/server';
 import { PartnersSection } from '@/components/partners-section';
 import type { Partner, SocialLink } from '@/lib/types';
 import { unstable_noStore as noStore } from 'next/cache';
-
-// This is a separate SERVER component that fetches all the data.
-async function MainLayoutDataWrapper({ children }: { children: React.ReactNode }) {
-  noStore();
-  const supabase = createServerClient();
-
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', session?.user?.id || '')
-    .single();
-    
-  const isAdmin = profile?.role === 'admin';
-
-  const { data: socialLinks } = await supabase
-    .from('social_links')
-    .select('*')
-    .order('id', { ascending: true });
-
-  const { data: partners } = await supabase
-    .from('partners')
-    .select('*')
-    .order('created_at', { ascending: true });
-
-  return (
-    <AuthProvider session={session} initialIsAdmin={isAdmin}>
-      <MainLayoutClient 
-        socials={socialLinks || []}
-        partners={partners || []}
-      >
-        {children}
-      </MainLayoutClient>
-    </AuthProvider>
-  );
-}
-
+import { useEffect, useState } from 'react';
+import { getPartners, getSocialLinks } from '@/lib/client/data';
+import type { Session } from '@supabase/supabase-js';
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -164,12 +126,12 @@ function AuthButton() {
 
 function MainLayoutClient({
   children,
+  partners,
   socials,
-  partners
 }: {
   children: React.ReactNode;
-  socials: SocialLink[];
   partners: Partner[];
+  socials: SocialLink[];
 }) {
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
@@ -325,13 +287,35 @@ function MainLayoutClient({
 }
 
 
-// Server Component Wrapper that renders the client component
-export default function MainLayout({
+// Server Component Wrapper that fetches data and renders the client component
+export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  noStore();
+  const supabase = createServerClient();
+  
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  let isAdmin = false;
+  if (session?.user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', session.user.id)
+      .single();
+    isAdmin = profile?.role === 'admin';
+  }
+
+  const { data: socialData } = await supabase.from('social_links').select('*').order('id');
+  const { data: partnerData } = await supabase.from('partners').select('*').order('created_at');
+
   return (
-      <MainLayoutDataWrapper>{children}</MainLayoutDataWrapper>
+      <AuthProvider session={session} initialIsAdmin={isAdmin}>
+        <MainLayoutClient socials={socialData || []} partners={partnerData || []}>
+            {children}
+        </MainLayoutClient>
+      </AuthProvider>
   )
 }

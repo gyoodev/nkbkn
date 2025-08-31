@@ -2,7 +2,7 @@
 
 import 'server-only';
 
-import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, SiteContent, NewsPost, Comment } from '@/lib/types';
+import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, SiteContent, NewsPost } from '@/lib/types';
 import { createServerClient } from '../supabase/server';
 
 export async function getJockey(id: number): Promise<Jockey | null> {
@@ -78,10 +78,10 @@ export async function getRaceEvent(id: number): Promise<RaceEvent | null> {
     return data as RaceEvent;
 }
 
-export async function getNewsPosts(): Promise<Omit<NewsPost, 'comments' | 'content'>[]> {
+export async function getNewsPosts(): Promise<NewsPost[]> {
     const supabase = createServerClient();
     try {
-        const { data, error } = await supabase.from('news_posts').select('id, title, date, category, excerpt, image_url, href, views, likes').order('date', { ascending: false });
+        const { data, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
         if (error) {
             console.error('Error fetching news posts:', error.message);
             return [];
@@ -89,6 +89,7 @@ export async function getNewsPosts(): Promise<Omit<NewsPost, 'comments' | 'conte
         return (data || []).map(post => ({
             ...post,
             href: `/news/${post.id}`,
+            comments: [], // Comments are not fetched in list view
         }));
     } catch(e: any) {
         console.error('Error fetching news posts:', e.message);
@@ -98,23 +99,11 @@ export async function getNewsPosts(): Promise<Omit<NewsPost, 'comments' | 'conte
 
 export async function getNewsPost(id: string): Promise<NewsPost | null> {
     const supabase = createServerClient();
-    // This RPC call should only be done on client to not increment view count for server renders
-    // const { error: incrementError } = await supabase.rpc('increment_views', { post_id_arg: parseInt(id, 10) });
-    // if (incrementError) {
-    //     console.error(`Error incrementing view count for post ${id}:`, incrementError);
-    // }
     
     const { data, error } = await supabase
         .from('news_posts')
-        .select(`
-            *,
-            comments (
-                *,
-                profiles ( id, full_name, username, avatar_url )
-            )
-        `)
+        .select('*')
         .eq('id', id)
-        .order('created_at', { foreignTable: 'comments', ascending: false })
         .single();
     
     if (error || !data) {
@@ -127,7 +116,7 @@ export async function getNewsPost(id: string): Promise<NewsPost | null> {
     return {
       ...data,
       href: `/news/${data.id}`,
-      comments: (data.comments as Comment[]) || [],
+      comments: [],
     };
 }
 
@@ -177,4 +166,3 @@ export async function getSiteContent(key: string): Promise<string> {
         return '';
     }
 }
-
