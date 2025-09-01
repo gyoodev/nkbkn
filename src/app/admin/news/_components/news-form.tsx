@@ -13,6 +13,7 @@ import type { NewsPost } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 import RichTextEditor from '@/components/rich-text-editor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Image from 'next/image';
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -76,10 +77,15 @@ export function NewsPostForm({ post }: { post?: NewsPost }) {
           
           <div className="space-y-1">
             <Label htmlFor="image_file">Изображение</Label>
+            {isEditing && post?.image_url && (
+                <div className="mt-2 relative aspect-video w-full max-w-md rounded-md overflow-hidden bg-muted">
+                    <Image src={post.image_url} alt="Текущо изображение" fill className="object-contain" />
+                </div>
+            )}
             <Input id="image_file" name="image_file" type="file" accept="image/*" />
             {isEditing && post?.image_url && (
                 <p className="text-sm text-muted-foreground">
-                    Текущо изображение: <a href={post.image_url} target="_blank" rel="noopener noreferrer" className="underline">преглед</a>. Оставете полето празно, за да го запазите.
+                    Оставете полето празно, за да запазите текущото изображение.
                 </p>
             )}
              {state.errors?.image_file && <p className="text-sm font-medium text-destructive">{state.errors.image_file}</p>}
