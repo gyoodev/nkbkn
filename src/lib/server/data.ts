@@ -13,26 +13,24 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
         .order('created_at', { ascending: false });
 
     if (error) {
-        console.error('Error fetching profiles:', error);
-        // Re-throw the error to be caught by Next.js error boundaries
+        console.error('Error fetching user profiles:', error.message);
         throw new Error(`Failed to fetch user profiles: ${error.message}`);
     }
-    
-    if (!data) {
+
+    if (!data || data.length === 0) {
         return [];
     }
-
-    // Safely map the data, providing default values for potentially null fields
+    
     return data.map(profile => ({
         id: profile.id,
-        email: profile.email || 'не е наличен',
-        created_at: profile.created_at || new Date().toISOString(),
-        role: profile.role || 'user',
-        full_name: profile.full_name || null,
-        username: profile.username || null,
-        avatar_url: profile.avatar_url || null,
-        deletion_requested: profile.deletion_requested || false,
-        phone: profile.phone || null,
+        email: profile.email ?? 'няма имейл',
+        created_at: profile.created_at ?? new Date().toISOString(),
+        role: profile.role ?? 'user',
+        full_name: profile.full_name ?? null,
+        username: profile.username ?? null,
+        avatar_url: profile.avatar_url ?? null,
+        deletion_requested: profile.deletion_requested ?? false,
+        phone: profile.phone ?? null,
     }));
 }
 
