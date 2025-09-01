@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, useTransition } from 'react';
@@ -123,36 +124,6 @@ function RoleChanger({ user, onRoleChanged }: { user: UserProfile, onRoleChanged
     )
 }
 
-function UsersTableSkeleton() {
-    return (
-         <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Имейл</TableHead>
-                <TableHead>Име</TableHead>
-                <TableHead>Роля</TableHead>
-                <TableHead>Регистриран на</TableHead>
-                <TableHead className="text-right">Действия</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {Array.from({length: 5}).map((_, i) => (
-                <TableRow key={i}>
-                  <TableCell><Skeleton className="h-4 w-48" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                  <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
-                  <TableCell><Skeleton className="h-4 w-40" /></TableCell>
-                  <TableCell className="text-right flex items-center justify-end gap-2">
-                    <Skeleton className="h-8 w-24" />
-                    <Skeleton className="h-8 w-8" />
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-    )
-}
-
 
 export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] }) {
   const [users, setUsers] = useState<UserProfile[]>(initialUsers);
@@ -165,15 +136,9 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
     });
   };
 
-  // The onRoleChanged function will be passed to RoleChanger, but since data is fetched server-side,
-  // a full page refresh would be the simplest way to see the change, or we can update the state manually.
-  // For now, we assume the user will refresh or we can enhance this later if needed.
-  // A simple state update is better.
   const handleRoleChanged = () => {
-    // A simple refresh could work, but let's just indicate a change happened.
-    // The parent page will need to re-fetch users. For now, let's just log it.
-    // In a real app you might trigger a re-fetch.
-    // window.location.reload();
+    // This function can be used to manually refetch or update the user list in the future
+    // For now, the successful toast is enough feedback.
   };
 
   return (
@@ -185,7 +150,11 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {initialUsers.length === 0 ? <p>Няма регистрирани потребители.</p> : (
+          {initialUsers.length === 0 ? (
+             <div className="py-10 text-center text-muted-foreground">
+                Няма регистрирани потребители.
+             </div>
+          ) : (
             <Table>
                 <TableHeader>
                 <TableRow>

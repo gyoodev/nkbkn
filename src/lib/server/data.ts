@@ -14,13 +14,15 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
 
     if (error) {
         console.error('Error fetching profiles:', error);
-        return [];
+        // Re-throw the error to be caught by Next.js error boundaries
+        throw new Error(`Failed to fetch user profiles: ${error.message}`);
     }
     
     if (!data) {
         return [];
     }
 
+    // Safely map the data, providing default values for potentially null fields
     return data.map(profile => ({
         id: profile.id,
         email: profile.email || 'не е наличен',
