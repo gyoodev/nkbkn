@@ -37,6 +37,17 @@ export default function SignupPage() {
     
         <form action={dispatch} className="space-y-6">
              <div className="space-y-2">
+                <Label htmlFor="username">Потребителско име</Label>
+                <Input
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="potrebitel"
+                    required
+                    className="h-12 rounded-xl"
+                />
+            </div>
+             <div className="space-y-2">
                 <Label htmlFor="phone">Телефон</Label>
                 <Input
                     id="phone"
