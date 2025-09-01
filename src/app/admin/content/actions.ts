@@ -3,8 +3,6 @@
 
 import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
-import fs from 'fs/promises';
-import path from 'path';
 
 async function checkAdmin() {
   const supabase = createServerClient();
@@ -61,35 +59,46 @@ export async function updateDevBannerStatus(
   } catch (error: any) {
     return { error: error.message };
   }
+  const supabase = createServerClient();
 
-  const configDir = path.join(process.cwd(), 'src', 'config');
-  const settingsPath = path.join(configDir, 'settings.json');
+  const { data, error: selectError } = await supabase
+    .from('site_content')
+    .select('key')
+    .eq('key', 'dev_banner_visible')
+    .single();
 
-  try {
-    // Ensure the directory exists
-    await fs.mkdir(configDir, { recursive: true });
-
-    let settings = {};
-    try {
-      const fileContent = await fs.readFile(settingsPath, 'utf-8');
-      settings = JSON.parse(fileContent);
-    } catch (readError: any) {
-      // If the file doesn't exist, we'll create it.
-      // We only ignore the ENOENT error.
-      if (readError.code !== 'ENOENT') {
-        throw readError;
-      }
-    }
-    
-    const newSettings = { ...settings, dev_banner_visible: isVisible };
-    await fs.writeFile(settingsPath, JSON.stringify(newSettings, null, 2), 'utf-8');
-
-    revalidatePath('/'); // Revalidate root layout to show/hide banner
-    revalidatePath('/admin/content');
-
-    return { error: null };
-  } catch (error: any) {
-    console.error('Failed to update settings.json:', error);
-    return { error: `Грешка при запис на файла: ${error.message}` };
+  if (selectError && selectError.code !== 'PGRST116') {
+      // PGRST116 means no rows found, which is fine. Log other errors.
+      console.error('Failed to check for banner status:', selectError);
+      return { error: `Грешка при проверка в базата данни: ${selectError.message}` };
   }
+
+  if (data) {
+    // Row exists, so update it
+    const { error: updateError } = await supabase
+        .from('site_content')
+        .update({ content: isVisible.toString() })
+        .eq('key', 'dev_banner_visible');
+    
+    if (updateError) {
+        console.error('Failed to update banner status:', updateError);
+        return { error: `Грешка при запис в базата данни: ${updateError.message}` };
+    }
+  } else {
+    // Row does not exist, so insert it
+    const { error: insertError } = await supabase
+        .from('site_content')
+        .insert({ key: 'dev_banner_visible', content: isVisible.toString() });
+    
+     if (insertError) {
+        console.error('Failed to insert banner status:', insertError);
+        return { error: `Грешка при създаване на запис в базата данни: ${insertError.message}` };
+    }
+  }
+
+
+  revalidatePath('/'); // Revalidate root layout to show/hide banner
+  revalidatePath('/admin/content');
+
+  return { error: null };
 }

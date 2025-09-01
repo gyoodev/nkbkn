@@ -5,8 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { LanguageProvider } from '@/hooks/use-language';
 import { DevBanner } from '@/components/dev-banner';
 import { CookieBanner } from '@/components/cookie-banner';
-import fs from 'fs/promises';
-import path from 'path';
+import { getSiteContent } from '@/lib/server/data';
 
 export const metadata: Metadata = {
   title: 'НКБКН - Национална комисия за Български конни надбягвания',
@@ -14,19 +13,8 @@ export const metadata: Metadata = {
 };
 
 async function getBannerVisibility() {
-    try {
-        const filePath = path.join(process.cwd(), 'src', 'config', 'settings.json');
-        const fileContent = await fs.readFile(filePath, 'utf-8');
-        const settings = JSON.parse(fileContent);
-        return settings.dev_banner_visible === true;
-    } catch (error: any) {
-        // If the file doesn't exist, that's okay, just default to false.
-        // This is expected on first run.
-        if (error.code !== 'ENOENT') {
-            console.error("Could not read settings.json:", error);
-        }
-        return false;
-    }
+    const value = await getSiteContent('dev_banner_visible');
+    return value === 'true';
 }
 
 
