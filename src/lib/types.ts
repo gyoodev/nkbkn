@@ -101,7 +101,7 @@ export interface SiteContent {
 
 export type UserProfile = {
   id: string
-  email: string
+  email: string | null
   created_at: string
   role: 'admin' | 'user'
   full_name: string | null

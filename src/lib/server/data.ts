@@ -17,13 +17,13 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
         throw new Error(`Failed to fetch user profiles: ${error.message}`);
     }
 
-    if (!data || data.length === 0) {
+    if (!data) {
         return [];
     }
     
     return data.map(profile => ({
         id: profile.id,
-        email: profile.email ?? 'няма имейл',
+        email: profile.email ?? null,
         created_at: profile.created_at ?? new Date().toISOString(),
         role: profile.role ?? 'user',
         full_name: profile.full_name ?? null,

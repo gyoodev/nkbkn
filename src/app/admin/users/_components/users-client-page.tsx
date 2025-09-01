@@ -2,7 +2,8 @@
 
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
+import { useTransition } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -29,7 +30,6 @@ import {
     DropdownMenuPortal,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Skeleton } from '@/components/ui/skeleton';
 import { updateUserRole } from '../actions';
 import type { UserProfile } from '@/lib/types';
 import { Textarea } from '@/components/ui/textarea';
@@ -75,7 +75,7 @@ function EmailDialog({ user }: { user: UserProfile }) {
     )
 }
 
-function RoleChanger({ user, onRoleChanged }: { user: UserProfile, onRoleChanged: () => void }) {
+function RoleChanger({ user }: { user: UserProfile }) {
     const [isPending, startTransition] = useTransition();
     const { toast } = useToast();
 
@@ -88,7 +88,7 @@ function RoleChanger({ user, onRoleChanged }: { user: UserProfile, onRoleChanged
                 toast({ variant: 'destructive', title: 'Грешка', description: result.error });
             } else {
                 toast({ title: 'Успех!', description: `Ролята на ${user.email} е променена на ${role}.`});
-                onRoleChanged();
+                // We might need a way to refresh the page/data here. For now, a manual refresh would work.
             }
         });
     }
@@ -126,7 +126,6 @@ function RoleChanger({ user, onRoleChanged }: { user: UserProfile, onRoleChanged
 
 
 export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] }) {
-  const [users, setUsers] = useState<UserProfile[]>(initialUsers);
   
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('bg-BG', {
@@ -134,11 +133,6 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
         month: 'long',
         day: 'numeric',
     });
-  };
-
-  const handleRoleChanged = () => {
-    // This function can be used to manually refetch or update the user list in the future
-    // For now, the successful toast is enough feedback.
   };
 
   return (
@@ -166,11 +160,11 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
                 </TableRow>
                 </TableHeader>
                 <TableBody>
-                {users.map((user) => (
+                {initialUsers.map((user) => (
                     <TableRow key={user.id}>
                     <TableCell className="font-medium">
                        <div className="flex items-center gap-2">
-                         {user.email}
+                         {user.email || 'Няма имейл'}
                          {user.deletion_requested && (
                            <Badge variant="destructive" className="gap-1.5">
                             <AlertTriangle className="h-3 w-3" />
@@ -188,7 +182,7 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
                     <TableCell>{formatDate(user.created_at)}</TableCell>
                     <TableCell className="text-right flex items-center justify-end gap-2">
                         <EmailDialog user={user} />
-                        <RoleChanger user={user} onRoleChanged={handleRoleChanged} />
+                        <RoleChanger user={user} />
                     </TableCell>
                     </TableRow>
                 ))}
