@@ -48,7 +48,7 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
     const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('reg_date', { ascending: false });
 
     if (error) {
         console.error('Error fetching user profiles:', error.message);
@@ -62,7 +62,7 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
     return data.map(profile => ({
         id: profile.id,
         email: profile.email ?? null,
-        created_at: profile.created_at ?? new Date().toISOString(),
+        reg_date: profile.reg_date ?? new Date().toISOString(),
         role: profile.role ?? 'user',
         full_name: profile.full_name ?? null,
         username: profile.username ?? null,

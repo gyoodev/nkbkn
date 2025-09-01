@@ -180,7 +180,7 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
                             {user.role === 'admin' ? 'Администратор' : 'Потребител'}
                         </Badge>
                     </TableCell>
-                    <TableCell>{formatDate(user.created_at)}</TableCell>
+                    <TableCell>{formatDate(user.reg_date)}</TableCell>
                     <TableCell className="text-right flex items-center justify-end gap-2">
                         <EmailDialog user={user} />
                         <RoleChanger user={user} />
