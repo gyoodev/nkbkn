@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useActionState, useState, useEffect } from 'react';
+import { useActionState, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { upsertNewsPost } from '../actions';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import Link from 'next/link';
 import type { NewsPost } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 import RichTextEditor from '@/components/rich-text-editor';
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -36,35 +36,53 @@ export function NewsPostForm({ post }: { post?: NewsPost }) {
   const [state, dispatch] = useActionState(upsertNewsPost, initialState);
   const [content, setContent] = useState(post?.content || '');
   
-  // Use a hidden input to pass the content to the server action
+  const categories = ["Новини", "Събития", "Предстоящи", "Важно", "Кандидатури"];
+
   const formAction = (formData: FormData) => {
     formData.set('content', content);
     dispatch(formData);
   };
 
-
   return (
-    <form action={formAction}>
+    <form action={formAction} encType="multipart/form-data">
         <input type="hidden" name="id" value={post?.id} />
+        <input type="hidden" name="current_image_url" value={post?.image_url} />
       <Card>
         <CardHeader>
           <CardTitle>{isEditing ? 'Редактирай публикация' : 'Нова публикация'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1">
-            <Label htmlFor="title">Заглавие</Label>
-            <Input id="title" name="title" defaultValue={post?.title} />
-            {state.errors?.title && <p className="text-sm font-medium text-destructive">{state.errors.title}</p>}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+                <Label htmlFor="title">Заглавие</Label>
+                <Input id="title" name="title" defaultValue={post?.title} />
+                {state.errors?.title && <p className="text-sm font-medium text-destructive">{state.errors.title}</p>}
+            </div>
+            <div className="space-y-1">
+                <Label htmlFor="category">Категория</Label>
+                <Select name="category" defaultValue={post?.category}>
+                    <SelectTrigger id="category">
+                        <SelectValue placeholder="Изберете категория" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {categories.map(cat => (
+                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                {state.errors?.category && <p className="text-sm font-medium text-destructive">{state.errors.category}</p>}
+            </div>
           </div>
+          
           <div className="space-y-1">
-            <Label htmlFor="category">Категория</Label>
-            <Input id="category" name="category" defaultValue={post?.category} />
-             {state.errors?.category && <p className="text-sm font-medium text-destructive">{state.errors.category}</p>}
-          </div>
-          <div className="space-y-1">
-            <Label htmlFor="image_url">URL на изображение</Label>
-            <Input id="image_url" name="image_url" defaultValue={post?.image_url} />
-             {state.errors?.image_url && <p className="text-sm font-medium text-destructive">{state.errors.image_url}</p>}
+            <Label htmlFor="image_file">Изображение</Label>
+            <Input id="image_file" name="image_file" type="file" accept="image/*" />
+            {isEditing && post?.image_url && (
+                <p className="text-sm text-muted-foreground">
+                    Текущо изображение: <a href={post.image_url} target="_blank" rel="noopener noreferrer" className="underline">преглед</a>. Оставете полето празно, за да го запазите.
+                </p>
+            )}
+             {state.errors?.image_file && <p className="text-sm font-medium text-destructive">{state.errors.image_file}</p>}
           </div>
           <div className="space-y-1">
             <Label htmlFor="content-editor">Съдържание</Label>

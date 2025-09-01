@@ -4,6 +4,8 @@
 import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 async function checkAdmin() {
     const supabase = createServerClient();
@@ -19,6 +21,7 @@ async function checkAdmin() {
 // Using manual validation instead of Zod to avoid session issues.
 async function validateFormData(formData: FormData) {
     const errors: Record<string, string> = {};
+    const id = formData.get('id');
 
     const title = formData.get('title');
     if (!title || typeof title !== 'string' || title.trim() === '') {
@@ -30,16 +33,14 @@ async function validateFormData(formData: FormData) {
         errors.category = 'Категорията е задължителна';
     }
     
-    const imageUrl = formData.get('image_url');
-    if (!imageUrl || typeof imageUrl !== 'string' || imageUrl.trim() === '') {
-        errors.image_url = 'URL адресът на изображението е задължителен';
-    } else {
-        try {
-            new URL(imageUrl);
-        } catch (_) {
-            errors.image_url = 'Въведете валиден URL адрес на изображение';
-        }
+    const imageFile = formData.get('image_file') as File;
+    if (!id && (!imageFile || imageFile.size === 0)) {
+        errors.image_file = 'Изображението е задължително';
     }
+    if (imageFile && imageFile.size > 0 && !imageFile.type.startsWith('image/')) {
+        errors.image_file = 'Моля, качете валиден файл с изображение.';
+    }
+
 
     const content = formData.get('content');
      if (!content || typeof content !== 'string' || content.trim() === '') {
@@ -71,7 +72,37 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
     const title = formData.get('title') as string;
     const category = formData.get('category') as string;
     const content = formData.get('content') as string;
-    const image_url = formData.get('image_url') as string;
+    const imageFile = formData.get('image_file') as File;
+    const currentImageUrl = formData.get('current_image_url') as string;
+
+    let imageUrl = currentImageUrl;
+
+    if (imageFile && imageFile.size > 0) {
+        try {
+            const uploadDir = path.join(process.cwd(), 'public', 'news-img');
+            await fs.mkdir(uploadDir, { recursive: true });
+            
+            const fileExtension = path.extname(imageFile.name);
+            const fileName = `${Date.now()}${fileExtension}`;
+            const filePath = path.join(uploadDir, fileName);
+
+            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            await fs.writeFile(filePath, buffer);
+
+            imageUrl = `/news-img/${fileName}`;
+        } catch (e) {
+            console.error('File upload error:', e);
+            return { message: 'Грешка при качване на файла.' };
+        }
+    }
+
+
+    if (!imageUrl) {
+         return {
+            errors: { image_file: 'Изображението е задължително.' },
+            message: 'Моля, качете изображение.',
+        };
+    }
 
     // Create a plain text excerpt from HTML content
     const plainTextContent = content.replace(/<[^>]*>?/gm, '');
@@ -81,9 +112,9 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
         title,
         category,
         content,
-        image_url,
+        image_url: imageUrl,
         excerpt,
-        user_id: user.id, // Ensure user_id is always present
+        user_id: user.id,
     };
     
     if (id) {
