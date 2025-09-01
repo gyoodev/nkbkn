@@ -77,6 +77,7 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
 
     let imageUrl = currentImageUrl;
 
+    // Check if a new file is uploaded and has content
     if (imageFile && imageFile.size > 0) {
         try {
             const uploadDir = path.join(process.cwd(), 'public', 'news-img');
