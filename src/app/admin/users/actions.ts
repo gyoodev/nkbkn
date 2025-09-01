@@ -17,15 +17,8 @@ async function checkAdmin() {
 
 
 export async function getUserProfiles(): Promise<UserProfile[]> {
-    try {
-        await checkAdmin();
-    } catch {
-        return [];
-    }
-
     const supabase = createServerClient();
-
-    const { data: profiles, error } = await supabase
+    const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
@@ -35,14 +28,15 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
         return [];
     }
     
-    if (!profiles) {
+    if (!data) {
         return [];
     }
 
-    return profiles.map(profile => ({
+    // Map the data to ensure it matches the UserProfile type and handle potential nulls
+    return data.map(profile => ({
         id: profile.id,
-        email: profile.email || 'не е наличен',
-        created_at: profile.created_at || new Date().toISOString(),
+        email: profile.email || 'не е наличен', // Provide a fallback for email
+        created_at: profile.created_at || new Date().toISOString(), // Provide a fallback for date
         role: profile.role || 'user',
         full_name: profile.full_name || null,
         username: profile.username || null,
