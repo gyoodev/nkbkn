@@ -4,8 +4,6 @@
 import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { promises as fs } from 'fs';
-import path from 'path';
 import { z } from 'zod';
 
 const FormSchema = z.object({
@@ -90,22 +88,22 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
 
     // Check if a new file is uploaded and has content
     if (image_file && image_file.size > 0) {
-        try {
-            const uploadDir = path.join(process.cwd(), 'public', 'news-img');
-            await fs.mkdir(uploadDir, { recursive: true });
-            
-            const fileExtension = path.extname(image_file.name);
-            const fileName = `${Date.now()}${fileExtension}`;
-            const filePath = path.join(uploadDir, fileName);
+        const fileName = `${Date.now()}-${image_file.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('news-images') // The name of your Supabase Storage bucket
+            .upload(fileName, image_file);
 
-            const buffer = Buffer.from(await image_file.arrayBuffer());
-            await fs.writeFile(filePath, buffer);
-
-            imageUrl = `/news-img/${fileName}`;
-        } catch (e) {
-            console.error('File upload error:', e);
-            return { message: 'Грешка при качване на файла.' };
+        if (uploadError) {
+            console.error('Supabase Storage upload error:', uploadError);
+            return { message: `Грешка при качване на файла: ${uploadError.message}` };
         }
+        
+        // Get the public URL of the uploaded file
+        const { data: { publicUrl } } = supabase.storage
+            .from('news-images')
+            .getPublicUrl(uploadData.path);
+            
+        imageUrl = publicUrl;
     }
 
 
@@ -190,6 +188,15 @@ export async function DeleteNewsPost(id: number) {
         return { message: error.message };
     }
     const supabase = createServerClient();
+
+    // Optional: Delete the image from storage as well
+    const { data: post, error: fetchError } = await supabase.from('news_posts').select('image_url').eq('id', id).single();
+    if (post && post.image_url) {
+        const fileName = post.image_url.split('/').pop();
+        if (fileName) {
+            await supabase.storage.from('news-images').remove([fileName]);
+        }
+    }
 
     const { error } = await supabase.from('news_posts').delete().eq('id', id);
 
