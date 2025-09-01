@@ -1,5 +1,6 @@
 
 
+
 'use server';
 
 import { createServerClient } from '@/lib/supabase/server';
@@ -47,8 +48,12 @@ export async function updateContent(
   // Revalidate the path of the page that uses this content
   if (key.startsWith('about_')) {
     revalidatePath('/about');
+  } else if (key === 'terms_content') {
+    revalidatePath('/terms');
+  } else if (key === 'privacy_content') {
+    revalidatePath('/privacy');
   } else {
-      revalidatePath('/'); // Revalidate root for other changes
+    revalidatePath('/'); // Revalidate root for other changes
   }
 
 
@@ -169,4 +174,3 @@ export async function updateHeroImage(prevState: any, formData: FormData) {
 export async function updateSiteLogo(prevState: any, formData: FormData) {
     return handleImageUpload(formData, 'site_logo_url', 'site_images');
 }
-

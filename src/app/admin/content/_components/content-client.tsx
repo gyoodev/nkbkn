@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useEffect, useState, useTransition, useActionState } from 'react';
@@ -20,6 +21,8 @@ type ContentState = {
     about_history: string;
     about_mission: string;
     about_team_text: string;
+    terms_content: string;
+    privacy_content: string;
 }
 
 interface AdminContentClientProps {
@@ -262,6 +265,22 @@ export function AdminContentClient({
                 content={content.about_team_text}
                 onContentChange={(newContent) => setContent(c => ({...c, about_team_text: newContent}))}
                 useRichText={false}
+            />
+
+            <ContentCard
+                contentKey="terms_content"
+                title="Условия и правила за ползване"
+                description="Редактирайте съдържанието на страницата 'Условия и правила за ползване'."
+                content={content.terms_content}
+                onContentChange={(newContent) => setContent(c => ({...c, terms_content: newContent}))}
+            />
+
+            <ContentCard
+                contentKey="privacy_content"
+                title="Политика за поверителност"
+                description="Редактирайте съдържанието на страницата 'Политика за поверителност'."
+                content={content.privacy_content}
+                onContentChange={(newContent) => setContent(c => ({...c, privacy_content: newContent}))}
             />
         </div>
   );

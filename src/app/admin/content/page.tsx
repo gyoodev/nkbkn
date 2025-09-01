@@ -1,4 +1,5 @@
 
+
 import { PageHeader } from '@/components/page-header';
 import { getSiteContent } from '@/lib/server/data';
 import { AdminContentClient } from './_components/content-client';
@@ -7,19 +8,23 @@ export const dynamic = 'force-dynamic';
 
 export default async function AdminContentPage() {
   
-  const [history, mission, team, bannerVisible, heroImage, siteLogo] = await Promise.all([
+  const [history, mission, team, bannerVisible, heroImage, siteLogo, termsContent, privacyContent] = await Promise.all([
     getSiteContent('about_history'),
     getSiteContent('about_mission'),
     getSiteContent('about_team_text'),
     getSiteContent('dev_banner_visible'),
     getSiteContent('hero_image_url'),
     getSiteContent('site_logo_url'),
+    getSiteContent('terms_content'),
+    getSiteContent('privacy_content'),
   ]);
 
   const initialContent = {
     about_history: history,
     about_mission: mission,
     about_team_text: team,
+    terms_content: termsContent,
+    privacy_content: privacyContent,
   };
 
   const initialDevBannerVisible = bannerVisible === 'true';
