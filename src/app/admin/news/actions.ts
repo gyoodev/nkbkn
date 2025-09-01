@@ -8,11 +8,6 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { z } from 'zod';
 
-const fileSchema = z
-  .any()
-  .refine((file): file is File => file instanceof File && file.size > 0, { message: 'Изображението е задължително' })
-  .refine((file) => file.type.startsWith('image/'), { message: 'Моля, качете валиден файл с изображение.' })
-
 const FormSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1, 'Заглавието е задължително'),
@@ -21,17 +16,28 @@ const FormSchema = z.object({
   image_file: z.any(),
   current_image_url: z.string().optional(),
 }).superRefine((data, ctx) => {
-    // If it's a new post (no ID), the image file is required.
-    if (!data.id && !(data.image_file instanceof File && data.image_file.size > 0)) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: "Изображението е задължително",
-            path: ['image_file'],
-        });
+    const imageFile = data.image_file;
+    const isFile = imageFile instanceof File && imageFile.size > 0;
+
+    // Case 1: Creating a new post
+    if (!data.id) {
+        if (!isFile) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Изображението е задължително",
+                path: ['image_file'],
+            });
+        } else if (!imageFile.type.startsWith('image/')) {
+             ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Моля, качете валиден файл с изображение.",
+                path: ['image_file'],
+            });
+        }
     }
-    // If it's an existing post and a file is provided, validate it.
-    if (data.id && data.image_file instanceof File && data.image_file.size > 0) {
-       if (!data.image_file.type.startsWith('image/')) {
+    // Case 2: Editing a post, and a new file is uploaded
+    else if (data.id && isFile) {
+       if (!imageFile.type.startsWith('image/')) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: "Моля, качете валиден файл с изображение.",
