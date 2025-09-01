@@ -125,7 +125,7 @@ function ImageUploadForm({
                     )}
                     <div className="space-y-1.5">
                         <Label htmlFor={formId}>{imageHint || 'Качи ново изображение'}</Label>
-                        <Input id={formId} name="image" type="file" />
+                        <Input id={formId} name="image" type="file" accept="image/*" />
                         {state.errors?.image && <p className="text-sm font-medium text-destructive">{state.errors.image}</p>}
                     </div>
                 </CardContent>

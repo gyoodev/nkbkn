@@ -1,6 +1,4 @@
 
-
-
 'use server';
 
 import { createServerClient } from '@/lib/supabase/server';
@@ -37,8 +35,7 @@ export async function updateContent(
   
   const { error } = await supabase
     .from('site_content')
-    .update({ content: content })
-    .eq('key', key);
+    .upsert({ key: key, content: content }, { onConflict: 'key' });
     
   if (error) {
     console.error('Error updating site content:', error);
@@ -71,41 +68,14 @@ export async function updateDevBannerStatus(
   }
   const supabase = createServerClient();
 
-  const { data, error: selectError } = await supabase
+  const { error } = await supabase
     .from('site_content')
-    .select('key')
-    .eq('key', 'dev_banner_visible')
-    .single();
-
-  if (selectError && selectError.code !== 'PGRST116') {
-      // PGRST116 means no rows found, which is fine. Log other errors.
-      console.error('Failed to check for banner status:', selectError);
-      return { error: `Грешка при проверка в базата данни: ${selectError.message}` };
-  }
-
-  if (data) {
-    // Row exists, so update it
-    const { error: updateError } = await supabase
-        .from('site_content')
-        .update({ content: isVisible.toString() })
-        .eq('key', 'dev_banner_visible');
+    .upsert({ key: 'dev_banner_visible', content: isVisible.toString() }, { onConflict: 'key' });
     
-    if (updateError) {
-        console.error('Failed to update banner status:', updateError);
-        return { error: `Грешка при запис в базата данни: ${updateError.message}` };
+    if (error) {
+        console.error('Failed to update banner status:', error);
+        return { error: `Грешка при запис в базата данни: ${error.message}` };
     }
-  } else {
-    // Row does not exist, so insert it
-    const { error: insertError } = await supabase
-        .from('site_content')
-        .insert({ key: 'dev_banner_visible', content: isVisible.toString() });
-    
-     if (insertError) {
-        console.error('Failed to insert banner status:', insertError);
-        return { error: `Грешка при създаване на запис в базата данни: ${insertError.message}` };
-    }
-  }
-
 
   revalidatePath('/'); // Revalidate root layout to show/hide banner
   revalidatePath('/admin/content');
@@ -118,7 +88,7 @@ const ImageSchema = z.object({
                    .refine(file => file?.type.startsWith('image/'), 'Моля, качете валиден файл с изображение.')
 });
 
-async function handleImageUpload(formData: FormData, contentKey: string, bucket: string) {
+async function handleImageUpload(prevState: any, formData: FormData, contentKey: string, bucket: string) {
     try {
         await checkAdmin();
     } catch (error: any) {
@@ -134,6 +104,7 @@ async function handleImageUpload(formData: FormData, contentKey: string, bucket:
         return {
             errors: validatedFields.error.flatten().fieldErrors,
             message: 'Моля, изберете валиден файл с изображение.',
+            success: false,
         };
     }
     
@@ -145,7 +116,8 @@ async function handleImageUpload(formData: FormData, contentKey: string, bucket:
         .upload(fileName, image);
 
     if (uploadError) {
-        return { message: `Грешка при качване на файла: ${uploadError.message}` };
+        console.error("Upload Error: ", uploadError);
+        return { message: `Грешка при качване на файла: ${uploadError.message}`, success: false };
     }
 
     const { data: { publicUrl } } = supabase.storage
@@ -157,7 +129,8 @@ async function handleImageUpload(formData: FormData, contentKey: string, bucket:
         .upsert({ key: contentKey, content: publicUrl }, { onConflict: 'key' });
 
     if (dbError) {
-        return { message: `Грешка при запис в базата данни: ${dbError.message}` };
+         console.error("DB Error: ", dbError);
+        return { message: `Грешка при запис в базата данни: ${dbError.message}`, success: false };
     }
 
     revalidatePath('/(main)', 'layout');
@@ -167,10 +140,10 @@ async function handleImageUpload(formData: FormData, contentKey: string, bucket:
 
 
 export async function updateHeroImage(prevState: any, formData: FormData) {
-    return handleImageUpload(formData, 'hero_image_url', 'site_images');
+    return handleImageUpload(prevState, formData, 'hero_image_url', 'site_images');
 }
 
 
 export async function updateSiteLogo(prevState: any, formData: FormData) {
-    return handleImageUpload(formData, 'site_logo_url', 'site_images');
+    return handleImageUpload(prevState, formData, 'site_logo_url', 'site_images');
 }
