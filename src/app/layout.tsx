@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 
 async function getBannerVisibility() {
     try {
-        const filePath = path.join(process.cwd(), 'config', 'settings.json');
+        const filePath = path.join(process.cwd(), 'src', 'config', 'settings.json');
         const fileContent = await fs.readFile(filePath, 'utf-8');
         const settings = JSON.parse(fileContent);
         return settings.dev_banner_visible === true;
