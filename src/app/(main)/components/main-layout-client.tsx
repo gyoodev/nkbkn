@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -125,13 +126,15 @@ export function MainLayoutClient({
   partners,
   socials,
   session,
-  isAdmin
+  isAdmin,
+  siteLogoUrl
 }: {
   children: React.ReactNode;
   partners: Partner[];
   socials: SocialLink[];
   session: Session | null;
   isAdmin: boolean;
+  siteLogoUrl: string;
 }) {
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
@@ -222,7 +225,7 @@ export function MainLayoutClient({
         <nav className="container mx-auto flex h-20 items-center justify-between px-4">
            <div className="flex flex-1 items-center justify-start">
              <Link href="/" className="flex items-center gap-3">
-               <Image src="/logo.png" alt="НКБКН Лого" width={48} height={48} className="h-12 w-auto" />
+               <Image src={siteLogoUrl || '/logo.png'} alt="НКБКН Лого" width={48} height={48} className="h-12 w-auto" />
             </Link>
            </div>
 

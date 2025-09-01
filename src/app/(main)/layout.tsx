@@ -1,10 +1,12 @@
 
+
 // This is the SERVER-ONLY layout component for the (main) group.
 
 import { createServerClient } from '@/lib/supabase/server';
 import type { Partner, SocialLink } from '@/lib/types';
 import type { Session } from '@supabase/supabase-js';
 import { MainLayoutClient } from './components/main-layout-client';
+import { getSiteContent } from '@/lib/server/data';
 
 // Server Component Wrapper that fetches data and renders the client component
 export default async function MainLayout({
@@ -29,6 +31,7 @@ export default async function MainLayout({
 
   const { data: socialData } = await supabase.from('social_links').select('*').order('id');
   const { data: partnerData } = await supabase.from('partners').select('*').order('created_at');
+  const siteLogoUrl = await getSiteContent('site_logo_url');
 
   return (
       <MainLayoutClient 
@@ -36,6 +39,7 @@ export default async function MainLayout({
         partners={partnerData || []}
         session={session}
         isAdmin={isAdmin}
+        siteLogoUrl={siteLogoUrl}
       >
           {children}
       </MainLayoutClient>

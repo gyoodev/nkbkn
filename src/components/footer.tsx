@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -8,6 +9,8 @@ import { Facebook, Instagram, Youtube, Code, Share2 } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
 import Image from 'next/image';
 import type { SocialLink } from '@/lib/types';
+import { useEffect, useState } from 'react';
+import { getSiteContent } from '@/lib/client/data';
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -41,6 +44,15 @@ function SocialIcon({ name, ...props }: { name: SocialLink['name'] } & React.SVG
 
 export function Footer({ socials }: { socials: SocialLink[] }) {
   const { text } = useLanguage();
+  const [siteLogoUrl, setSiteLogoUrl] = useState('');
+
+   useEffect(() => {
+    async function fetchLogo() {
+      const url = await getSiteContent('site_logo_url');
+      setSiteLogoUrl(url);
+    }
+    fetchLogo();
+  }, []);
 
   const footerLinks = {
     [text.aboutUs]: [
@@ -68,7 +80,7 @@ export function Footer({ socials }: { socials: SocialLink[] }) {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
           <div className="space-y-4 lg:col-span-1">
             <Link href="/" className="flex items-center gap-3">
-              <Image src="/logo.png" alt="НКБКН Лого" width={40} height={40} className="h-10 w-auto" />
+              <Image src={siteLogoUrl || "/logo.png"} alt="НКБКН Лого" width={40} height={40} className="h-10 w-auto" />
               <span className="text-lg font-bold uppercase tracking-wider text-primary">
                 {text.appName}
               </span>

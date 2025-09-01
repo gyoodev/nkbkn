@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { createServerClient } from '@/lib/supabase/server';
@@ -46,7 +47,10 @@ export async function updateContent(
   // Revalidate the path of the page that uses this content
   if (key.startsWith('about_')) {
     revalidatePath('/about');
+  } else {
+      revalidatePath('/'); // Revalidate root for other changes
   }
+
 
   return { error: null };
 }
@@ -104,12 +108,12 @@ export async function updateDevBannerStatus(
   return { error: null };
 }
 
-const HeroImageSchema = z.object({
+const ImageSchema = z.object({
     image: z.any().refine(file => file?.size > 0, 'Файлът е задължителен.')
                    .refine(file => file?.type.startsWith('image/'), 'Моля, качете валиден файл с изображение.')
 });
 
-export async function updateHeroImage(prevState: any, formData: FormData) {
+async function handleImageUpload(formData: FormData, contentKey: string, bucket: string) {
     try {
         await checkAdmin();
     } catch (error: any) {
@@ -117,7 +121,7 @@ export async function updateHeroImage(prevState: any, formData: FormData) {
     }
     const supabase = createServerClient();
 
-    const validatedFields = HeroImageSchema.safeParse({
+    const validatedFields = ImageSchema.safeParse({
         image: formData.get('image'),
     });
 
@@ -132,7 +136,7 @@ export async function updateHeroImage(prevState: any, formData: FormData) {
     
     const fileName = `${Date.now()}-${image.name}`;
     const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('site_images')
+        .from(bucket)
         .upload(fileName, image);
 
     if (uploadError) {
@@ -140,18 +144,29 @@ export async function updateHeroImage(prevState: any, formData: FormData) {
     }
 
     const { data: { publicUrl } } = supabase.storage
-        .from('site_images')
+        .from(bucket)
         .getPublicUrl(uploadData.path);
         
     const { error: dbError } = await supabase
         .from('site_content')
-        .upsert({ key: 'hero_image_url', content: publicUrl }, { onConflict: 'key' });
+        .upsert({ key: contentKey, content: publicUrl }, { onConflict: 'key' });
 
     if (dbError) {
         return { message: `Грешка при запис в базата данни: ${dbError.message}` };
     }
 
-    revalidatePath('/');
+    revalidatePath('/(main)', 'layout');
     revalidatePath('/admin/content');
     return { success: true, message: 'Изображението е актуализирано успешно!' };
 }
+
+
+export async function updateHeroImage(prevState: any, formData: FormData) {
+    return handleImageUpload(formData, 'hero_image_url', 'site_images');
+}
+
+
+export async function updateSiteLogo(prevState: any, formData: FormData) {
+    return handleImageUpload(formData, 'site_logo_url', 'site_images');
+}
+

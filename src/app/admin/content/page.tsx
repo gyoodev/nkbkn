@@ -4,11 +4,11 @@
 
 import { useEffect, useState, useTransition, useActionState } from 'react';
 import { PageHeader } from '@/components/page-header';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import RichTextEditor from '@/components/rich-text-editor';
-import { updateContent, updateDevBannerStatus, updateHeroImage } from './actions';
+import { updateContent, updateDevBannerStatus, updateHeroImage, updateSiteLogo } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
@@ -53,10 +53,26 @@ function DevBannerSwitch({ initialIsOn }: { initialIsOn: boolean }) {
   )
 }
 
-function HeroImageForm({ currentImageUrl }: { currentImageUrl: string }) {
+function ImageUploadForm({ 
+    title, 
+    description, 
+    currentImageUrl, 
+    action, 
+    formId, 
+    inputName,
+    imageHint
+}: { 
+    title: string;
+    description: string;
+    currentImageUrl: string;
+    action: (prevState: any, formData: FormData) => Promise<any>;
+    formId: string;
+    inputName: string;
+    imageHint?: string;
+}) {
     const { toast } = useToast();
     const initialState = { message: null, errors: {}, success: false };
-    const [state, dispatch] = useActionState(updateHeroImage, initialState);
+    const [state, dispatch] = useActionState(action, initialState);
     
     useEffect(() => {
         if (state.message) {
@@ -74,21 +90,21 @@ function HeroImageForm({ currentImageUrl }: { currentImageUrl: string }) {
         <form action={dispatch}>
             <Card>
                 <CardHeader>
-                    <CardTitle>Изображение на началната страница</CardTitle>
-                    <CardDescription>Качете ново изображение, което да се показва в хедъра на началната страница.</CardDescription>
+                    <CardTitle>{title}</CardTitle>
+                    <CardDescription>{description}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     {currentImageUrl && (
                         <div>
                             <Label>Текущо изображение</Label>
-                            <div className="mt-2 relative aspect-video w-full max-w-md rounded-md overflow-hidden">
-                                <Image src={currentImageUrl} alt="Текущо изображение" fill className="object-cover" />
+                            <div className="mt-2 relative aspect-video w-full max-w-md rounded-md overflow-hidden bg-muted">
+                                <Image src={currentImageUrl} alt="Текущо изображение" fill className="object-contain" />
                             </div>
                         </div>
                     )}
                     <div className="space-y-1.5">
-                        <Label htmlFor="hero-image">Качи ново изображение</Label>
-                        <Input id="hero-image" name="image" type="file" />
+                        <Label htmlFor={formId}>{imageHint || 'Качи ново изображение'}</Label>
+                        <Input id={formId} name="image" type="file" />
                         {state.errors?.image && <p className="text-sm font-medium text-destructive">{state.errors.image}</p>}
                     </div>
                 </CardContent>
@@ -179,18 +195,20 @@ export default function AdminContentPage() {
   const [content, setContent] = useState<ContentState | null>(null);
   const [devBannerVisible, setDevBannerVisible] = useState(false);
   const [heroImageUrl, setHeroImageUrl] = useState('');
+  const [siteLogoUrl, setSiteLogoUrl] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchContent() {
       setLoading(true);
       
-      const [history, mission, team, bannerVisible, heroImage] = await Promise.all([
+      const [history, mission, team, bannerVisible, heroImage, siteLogo] = await Promise.all([
         getSiteContent('about_history'),
         getSiteContent('about_mission'),
         getSiteContent('about_team_text'),
         getSiteContent('dev_banner_visible'),
-        getSiteContent('hero_image_url')
+        getSiteContent('hero_image_url'),
+        getSiteContent('site_logo_url'),
       ]);
 
       setContent({
@@ -201,6 +219,7 @@ export default function AdminContentPage() {
 
       setDevBannerVisible(bannerVisible === 'true');
       setHeroImageUrl(heroImage);
+      setSiteLogoUrl(siteLogo);
 
       setLoading(false);
     }
@@ -242,17 +261,35 @@ export default function AdminContentPage() {
       <div className="mt-8 grid gap-8">
             <Card>
                 <CardHeader>
-                <CardTitle>Банер за разработка</CardTitle>
+                <CardTitle>Общи настройки</CardTitle>
                 <CardDescription>
-                    Включете или изключете банера, който информира потребителите, че сайтът е в процес на разработка.
+                    Настройки, които се отразяват на целия сайт.
                 </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <DevBannerSwitch initialIsOn={devBannerVisible} />
                 </CardContent>
             </Card>
+            
+            <ImageUploadForm 
+                title="Лого на сайта"
+                description="Качете ново лого, което да се показва в хедъра на сайта. Препоръчително е да е PNG с прозрачен фон."
+                currentImageUrl={siteLogoUrl}
+                action={updateSiteLogo}
+                formId="site-logo-upload"
+                inputName="logo"
+                imageHint="Препоръчителен размер: 200x200px"
+            />
+            
+            <ImageUploadForm 
+                title="Изображение на началната страница"
+                description="Качете ново изображение, което да се показва в хедъра на началната страница."
+                currentImageUrl={heroImageUrl}
+                action={updateHeroImage}
+                formId="hero-image-upload"
+                inputName="hero-image"
+            />
 
-            <HeroImageForm currentImageUrl={heroImageUrl} />
 
             {content && (
                 <>
