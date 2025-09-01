@@ -103,7 +103,7 @@ export type UserProfile = {
   id: string
   email: string | null
   created_at: string | null
-  role: 'admin' | 'user'
+  role: 'admin' | 'user' | null
   full_name: string | null
   username: string | null
   avatar_url: string | null
