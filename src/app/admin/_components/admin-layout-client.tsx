@@ -20,6 +20,7 @@ import {
   Bell,
   Share2,
   Contact,
+  User as UserIcon,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -72,6 +73,7 @@ export default function AdminLayoutClient({ children, user }: { children: React.
   ];
   
   const settingsNavItems = [
+      { href: '/admin/users', label: 'Потребители', icon: <UserIcon /> },
       { href: '/admin/content', label: 'Съдържание', icon: <Settings /> },
       { href: '/admin/socials', label: 'Социални мрежи', icon: <Share2 /> },
   ];
