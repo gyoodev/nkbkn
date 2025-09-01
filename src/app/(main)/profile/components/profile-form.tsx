@@ -35,6 +35,7 @@ type Profile = {
   role: string | null;
   avatar_url: string | null;
   deletion_requested: boolean;
+  phone: string | null;
 } | null;
 
 interface ProfileFormProps {
@@ -189,9 +190,15 @@ export function ProfileForm({ user, profile }: ProfileFormProps) {
                                     <Input id="fullName" name="fullName" defaultValue={profile?.full_name || ''} />
                                 </div>
                             </div>
-                            <div className="space-y-1.5">
-                                <Label htmlFor="website">{text.website}</Label>
-                                <Input id="website" name="website" defaultValue={profile?.website || ''} placeholder="https://..." />
+                             <div className="grid sm:grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="phone">Телефон</Label>
+                                    <Input id="phone" name="phone" type="tel" defaultValue={profile?.phone || ''} />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="website">{text.website}</Label>
+                                    <Input id="website" name="website" defaultValue={profile?.website || ''} placeholder="https://..." />
+                                </div>
                             </div>
                             <div className="space-y-1.5">
                                 <Label htmlFor="email">{text.email}</Label>

@@ -1,5 +1,4 @@
 
-
 'use server';
 
 import { createServerClient } from '@/lib/supabase/server';
@@ -35,8 +34,12 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
         return [];
     }
 
-    const { data: usersData, error: authUsersError } = await supabase.auth.admin.listUsers();
-
+    const userIds = profiles.map(p => p.id);
+    const { data: usersData, error: authUsersError } = await supabase.auth.admin.listUsers({
+        page: 1,
+        perPage: 1000,
+    });
+    
     if (authUsersError) {
         console.error("Error fetching auth users, this might happen on non-local environments:", authUsersError);
         // Fallback to only using profiles table if admin user list fails
@@ -49,6 +52,7 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
             username: profile.username || null,
             avatar_url: profile.avatar_url || null,
             deletion_requested: profile.deletion_requested || false,
+            phone: profile.phone || null,
         }));
     }
 
@@ -65,6 +69,7 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
             username: profile.username || null,
             avatar_url: profile.avatar_url || null,
             deletion_requested: profile.deletion_requested || false,
+            phone: profile.phone || null,
         };
     });
 

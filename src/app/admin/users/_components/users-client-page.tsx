@@ -13,8 +13,8 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
   DialogTrigger,
-  DialogFooter
 } from "@/components/ui/dialog"
 import {
     DropdownMenu,
@@ -47,13 +47,15 @@ function EmailDialog({ user }: { user: UserProfile }) {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Изпращане на имейл до {user.email}</DialogTitle>
+                    <DialogTitle>Изпращане на имейл до {user.full_name || user.email}</DialogTitle>
                     <DialogDescription>
                         Напишете вашето съобщение по-долу. Натискането на бутона "Изпрати" ще отвори вашия имейл клиент по подразбиране.
                     </DialogDescription>
                 </DialogHeader>
-                 <div className="grid w-full items-center gap-1.5 py-4">
-                    <Label htmlFor="email-message">Съобщение</Label>
+                 <div className="grid w-full items-center gap-2 py-4">
+                    <div className="text-sm"><strong>Имейл:</strong> {user.email}</div>
+                    <div className="text-sm"><strong>Телефон:</strong> {user.phone || 'Няма'}</div>
+                    <Label htmlFor="email-message" className="mt-2">Съобщение</Label>
                     <Textarea 
                         id="email-message"
                         placeholder="Вашето съобщение тук..." 
@@ -126,7 +128,8 @@ function UsersTableSkeleton() {
          <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Потребител</TableHead>
+                <TableHead>Имейл</TableHead>
+                <TableHead>Име</TableHead>
                 <TableHead>Роля</TableHead>
                 <TableHead>Регистриран на</TableHead>
                 <TableHead className="text-right">Действия</TableHead>
@@ -136,6 +139,7 @@ function UsersTableSkeleton() {
               {Array.from({length: 5}).map((_, i) => (
                 <TableRow key={i}>
                   <TableCell><Skeleton className="h-4 w-48" /></TableCell>
+                  <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                   <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
                   <TableCell><Skeleton className="h-4 w-40" /></TableCell>
                   <TableCell className="text-right flex items-center justify-end gap-2">
@@ -186,7 +190,8 @@ export function UsersClientPage() {
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableHead>Потребител</TableHead>
+                    <TableHead>Имейл</TableHead>
+                    <TableHead>Име</TableHead>
                     <TableHead>Роля</TableHead>
                     <TableHead>Регистриран на</TableHead>
                     <TableHead className="text-right">Действия</TableHead>
@@ -206,6 +211,7 @@ export function UsersClientPage() {
                          )}
                        </div>
                     </TableCell>
+                    <TableCell>{user.full_name || user.username || '-'}</TableCell>
                     <TableCell>
                         <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
                             {user.role === 'admin' ? 'Администратор' : 'Потребител'}

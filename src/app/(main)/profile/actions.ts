@@ -9,6 +9,7 @@ const FormSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters.").max(20).optional(),
   fullName: z.string().max(50).optional(),
   website: z.string().url("Please enter a valid URL.").optional(),
+  phone: z.string().max(20).optional(),
 });
 
 type State = {
@@ -31,6 +32,7 @@ export async function updateProfile(prevState: State, formData: FormData): Promi
     username: formData.get('username') || undefined,
     fullName: formData.get('fullName') || undefined,
     website: formData.get('website') || undefined,
+    phone: formData.get('phone') || undefined,
   });
   
   if (!validatedFields.success) {
@@ -40,12 +42,13 @@ export async function updateProfile(prevState: State, formData: FormData): Promi
     };
   }
 
-  const { username, fullName, website } = validatedFields.data;
+  const { username, fullName, website, phone } = validatedFields.data;
 
   const { error } = await supabase.from('profiles').update({
     username,
     full_name: fullName,
     website,
+    phone,
     updated_at: new Date().toISOString(),
   }).eq('id', user.id);
 

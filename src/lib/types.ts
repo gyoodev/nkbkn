@@ -108,6 +108,7 @@ export type UserProfile = {
   username: string | null
   avatar_url: string | null
   deletion_requested: boolean
+  phone: string | null;
 }
 
 export interface Submission {

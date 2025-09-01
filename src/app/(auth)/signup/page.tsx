@@ -36,6 +36,17 @@ export default function SignupPage() {
         </div>
     
         <form action={dispatch} className="space-y-6">
+             <div className="space-y-2">
+                <Label htmlFor="phone">Телефон</Label>
+                <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="+359..."
+                    required
+                    className="h-12 rounded-xl"
+                />
+            </div>
             <div className="space-y-2">
                 <Label htmlFor="email">{text.email}</Label>
                 <Input
