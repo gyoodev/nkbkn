@@ -26,7 +26,6 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
 
     const supabase = createServerClient();
 
-    // 1. Fetch all profiles
     const { data: profiles, error: profilesError } = await supabase.from('profiles').select('*');
     if (profilesError) {
         console.error('Error fetching profiles:', profilesError);
@@ -35,40 +34,39 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
     if (!profiles) {
         return [];
     }
-    
-    // 2. Fetch all auth users from the auth schema
-    const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers();
-    
-     if (usersError) {
-        console.error('Error fetching auth users:', usersError);
-        // This might fail on some environments. Fallback to profiles only.
-        return profiles.map(p => ({
-            id: p.id,
-            email: 'N/A', // Cannot be loaded
-            created_at: p.created_at || new Date().toISOString(),
-            role: p.role || 'user',
-            full_name: p.full_name || null,
-            username: p.username || null,
-            avatar_url: p.avatar_url || null,
-            deletion_requested: p.deletion_requested || false,
-        }));
-    }
 
-    // 3. Combine them
-    const combined = profiles.map(profile => {
-        const authUser = users.find(u => u.id === profile.id);
-        return {
+    const { data: usersData, error: authUsersError } = await supabase.auth.admin.listUsers();
+
+    if (authUsersError) {
+        console.error("Error fetching auth users, this might happen on non-local environments:", authUsersError);
+        // Fallback to only using profiles table if admin user list fails
+        return profiles.map(profile => ({
             id: profile.id,
-            email: authUser?.email || 'Не е намерен',
-            created_at: authUser?.created_at || profile.created_at, // Fallback to profile creation if available
+            email: 'не може да бъде зареден', // Provide a fallback email
+            created_at: profile.created_at || new Date().toISOString(),
             role: profile.role || 'user',
             full_name: profile.full_name || null,
             username: profile.username || null,
             avatar_url: profile.avatar_url || null,
             deletion_requested: profile.deletion_requested || false,
-        }
-    });
+        }));
+    }
 
+    const authUsersById = new Map(usersData.users.map(u => [u.id, u]));
+
+    const combined = profiles.map(profile => {
+        const authUser = authUsersById.get(profile.id);
+        return {
+            id: profile.id,
+            email: authUser?.email || 'не е намерен',
+            created_at: authUser?.created_at || profile.created_at,
+            role: profile.role || 'user',
+            full_name: profile.full_name || null,
+            username: profile.username || null,
+            avatar_url: profile.avatar_url || null,
+            deletion_requested: profile.deletion_requested || false,
+        };
+    });
 
     return combined;
 }
