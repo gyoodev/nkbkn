@@ -92,7 +92,7 @@ async function handleImageUpload(prevState: any, formData: FormData, contentKey:
     try {
         await checkAdmin();
     } catch (error: any) {
-        return { message: error.message };
+        return { message: error.message, success: false };
     }
     const supabase = createServerClient();
 
