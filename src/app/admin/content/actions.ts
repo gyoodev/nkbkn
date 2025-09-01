@@ -62,7 +62,7 @@ export async function updateDevBannerStatus(
     return { error: error.message };
   }
 
-  const configDir = path.join(process.cwd(), 'src', 'config');
+  const configDir = path.join(process.cwd(), 'config');
   const settingsPath = path.join(configDir, 'settings.json');
 
   try {
