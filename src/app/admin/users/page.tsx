@@ -1,7 +1,7 @@
 
 import { PageHeader } from '@/components/page-header';
 import { UsersClientPage } from './_components/users-client-page';
-import { getUserProfiles } from './actions';
+import { getUserProfiles } from '@/lib/server/data';
 import type { UserProfile } from '@/lib/types';
 
 export const dynamic = 'force-dynamic';

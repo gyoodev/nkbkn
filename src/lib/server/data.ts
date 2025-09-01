@@ -2,8 +2,38 @@
 
 import 'server-only';
 
-import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, NewsPost } from '@/lib/types';
+import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, NewsPost, UserProfile } from '@/lib/types';
 import { createServerClient } from '../supabase/server';
+
+export async function getUserProfiles(): Promise<UserProfile[]> {
+    const supabase = createServerClient();
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching profiles:', error);
+        return [];
+    }
+    
+    if (!data) {
+        return [];
+    }
+
+    return data.map(profile => ({
+        id: profile.id,
+        email: profile.email || 'не е наличен',
+        created_at: profile.created_at || new Date().toISOString(),
+        role: profile.role || 'user',
+        full_name: profile.full_name || null,
+        username: profile.username || null,
+        avatar_url: profile.avatar_url || null,
+        deletion_requested: profile.deletion_requested || false,
+        phone: profile.phone || null,
+    }));
+}
+
 
 export async function getJockey(id: number): Promise<Jockey | null> {
     const supabase = createServerClient();
