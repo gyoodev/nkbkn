@@ -3,6 +3,7 @@
 
 import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
+import { z } from 'zod';
 
 async function checkAdmin() {
   const supabase = createServerClient();
@@ -101,4 +102,56 @@ export async function updateDevBannerStatus(
   revalidatePath('/admin/content');
 
   return { error: null };
+}
+
+const HeroImageSchema = z.object({
+    image: z.any().refine(file => file?.size > 0, 'Файлът е задължителен.')
+                   .refine(file => file?.type.startsWith('image/'), 'Моля, качете валиден файл с изображение.')
+});
+
+export async function updateHeroImage(prevState: any, formData: FormData) {
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { message: error.message };
+    }
+    const supabase = createServerClient();
+
+    const validatedFields = HeroImageSchema.safeParse({
+        image: formData.get('image'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: 'Моля, изберете валиден файл с изображение.',
+        };
+    }
+    
+    const { image } = validatedFields.data;
+    
+    const fileName = `${Date.now()}-${image.name}`;
+    const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('site_images')
+        .upload(fileName, image);
+
+    if (uploadError) {
+        return { message: `Грешка при качване на файла: ${uploadError.message}` };
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+        .from('site_images')
+        .getPublicUrl(uploadData.path);
+        
+    const { error: dbError } = await supabase
+        .from('site_content')
+        .upsert({ key: 'hero_image_url', content: publicUrl }, { onConflict: 'key' });
+
+    if (dbError) {
+        return { message: `Грешка при запис в базата данни: ${dbError.message}` };
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/content');
+    return { success: true, message: 'Изображението е актуализирано успешно!' };
 }

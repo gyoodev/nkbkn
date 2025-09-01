@@ -10,7 +10,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Badge } from '@/components/ui/badge';
 import type { NewsPost } from '@/lib/types';
 
-export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
+export function HomeClientPage({ posts, heroImageUrl }: { posts: NewsPost[], heroImageUrl?: string }) {
   const { text, language } = useLanguage();
 
   if (!posts || posts.length === 0) {
@@ -19,6 +19,7 @@ export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
 
   const mainPost = posts[0];
   const otherPosts = posts.slice(1);
+  const defaultHeroImage = "https://ekip7.bg/wp-content/uploads/2022/09/19-09-2022_kusii-3.jpg";
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString(language, {
@@ -33,7 +34,7 @@ export function HomeClientPage({ posts }: { posts: NewsPost[] }) {
       {/* Hero Section */}
       <section className="relative flex h-[70vh] w-full items-center justify-center text-white md:h-[80vh]">
         <Image
-          src="https://ekip7.bg/wp-content/uploads/2022/09/19-09-2022_kusii-3.jpg"
+          src={heroImageUrl || defaultHeroImage}
           alt="Close-up of a horse racing"
           fill
           className="object-cover object-center"

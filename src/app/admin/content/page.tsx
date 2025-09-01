@@ -2,20 +2,21 @@
 
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState, useTransition, useActionState } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import RichTextEditor from '@/components/rich-text-editor';
-import { updateContent, updateDevBannerStatus } from './actions';
+import { updateContent, updateDevBannerStatus, updateHeroImage } from './actions';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { getSiteContent } from '@/lib/client/data'; 
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
-
+import { Input } from '@/components/ui/input';
+import Image from 'next/image';
 
 function DevBannerSwitch({ initialIsOn }: { initialIsOn: boolean }) {
   const [isPending, startTransition] = useTransition();
@@ -50,6 +51,56 @@ function DevBannerSwitch({ initialIsOn }: { initialIsOn: boolean }) {
         <Label htmlFor="dev-banner-switch">Покажи банер за разработка</Label>
       </div>
   )
+}
+
+function HeroImageForm({ currentImageUrl }: { currentImageUrl: string }) {
+    const { toast } = useToast();
+    const initialState = { message: null, errors: {}, success: false };
+    const [state, dispatch] = useActionState(updateHeroImage, initialState);
+    
+    useEffect(() => {
+        if (state.message) {
+            toast({
+                variant: state.success ? 'default' : 'destructive',
+                title: state.success ? 'Успех!' : 'Грешка',
+                description: state.message,
+            });
+        }
+    }, [state, toast]);
+
+    const { pending } = useFormStatus();
+
+    return (
+        <form action={dispatch}>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Изображение на началната страница</CardTitle>
+                    <CardDescription>Качете ново изображение, което да се показва в хедъра на началната страница.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    {currentImageUrl && (
+                        <div>
+                            <Label>Текущо изображение</Label>
+                            <div className="mt-2 relative aspect-video w-full max-w-md rounded-md overflow-hidden">
+                                <Image src={currentImageUrl} alt="Текущо изображение" fill className="object-cover" />
+                            </div>
+                        </div>
+                    )}
+                    <div className="space-y-1.5">
+                        <Label htmlFor="hero-image">Качи ново изображение</Label>
+                        <Input id="hero-image" name="image" type="file" />
+                        {state.errors?.image && <p className="text-sm font-medium text-destructive">{state.errors.image}</p>}
+                    </div>
+                </CardContent>
+                <CardFooter>
+                     <Button type="submit" disabled={pending}>
+                        {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        Запази изображението
+                    </Button>
+                </CardFooter>
+            </Card>
+        </form>
+    )
 }
 
 function ContentCard({
@@ -127,17 +178,19 @@ type ContentState = {
 export default function AdminContentPage() {
   const [content, setContent] = useState<ContentState | null>(null);
   const [devBannerVisible, setDevBannerVisible] = useState(false);
+  const [heroImageUrl, setHeroImageUrl] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchContent() {
       setLoading(true);
       
-      const [history, mission, team, bannerVisible] = await Promise.all([
+      const [history, mission, team, bannerVisible, heroImage] = await Promise.all([
         getSiteContent('about_history'),
         getSiteContent('about_mission'),
         getSiteContent('about_team_text'),
-        getSiteContent('dev_banner_visible')
+        getSiteContent('dev_banner_visible'),
+        getSiteContent('hero_image_url')
       ]);
 
       setContent({
@@ -147,6 +200,7 @@ export default function AdminContentPage() {
       });
 
       setDevBannerVisible(bannerVisible === 'true');
+      setHeroImageUrl(heroImage);
 
       setLoading(false);
     }
@@ -168,9 +222,9 @@ export default function AdminContentPage() {
                 </Card>
                 <Card>
                     <CardHeader><Skeleton className="h-6 w-1/4" /></CardHeader>
-                    <CardContent><Skeleton className="h-32 w-full" /></CardContent>
+                    <CardContent><Skeleton className="h-48 w-full" /></CardContent>
                 </Card>
-                 <Card>
+                <Card>
                     <CardHeader><Skeleton className="h-6 w-1/4" /></CardHeader>
                     <CardContent><Skeleton className="h-32 w-full" /></CardContent>
                 </Card>
@@ -197,6 +251,8 @@ export default function AdminContentPage() {
                     <DevBannerSwitch initialIsOn={devBannerVisible} />
                 </CardContent>
             </Card>
+
+            <HeroImageForm currentImageUrl={heroImageUrl} />
 
             {content && (
                 <>
