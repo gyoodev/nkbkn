@@ -154,9 +154,9 @@ function UsersTableSkeleton() {
 }
 
 
-export function UsersClientPage() {
-  const [users, setUsers] = useState<UserProfile[]>([]);
-  const [loading, setLoading] = useState(true);
+export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] }) {
+  const [users, setUsers] = useState<UserProfile[]>(initialUsers);
+  const [loading, setLoading] = useState(false);
 
   const fetchUsers = async () => {
         setLoading(true);
@@ -164,10 +164,6 @@ export function UsersClientPage() {
         setUsers(data);
         setLoading(false);
     }
-  
-  useEffect(() => {
-    fetchUsers();
-  }, []);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('bg-BG', {
@@ -186,7 +182,7 @@ export function UsersClientPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {loading ? <UsersTableSkeleton /> : (
+          {loading && initialUsers.length === 0 ? <UsersTableSkeleton /> : (
             <Table>
                 <TableHeader>
                 <TableRow>
