@@ -1,3 +1,4 @@
+
 'use server';
 
 import { createServerClient } from '@/lib/supabase/server';
@@ -58,6 +59,39 @@ export async function updateProfile(prevState: State, formData: FormData): Promi
   revalidatePath('/profile');
   return {
     message: 'Профилът е актуализиран успешно!',
+    error: false,
+  };
+}
+
+
+export async function requestAccountDeletion(): Promise<State> {
+  const supabase = createServerClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) {
+    return {
+      message: 'Not authenticated.',
+      error: true,
+    };
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({ deletion_requested: true })
+    .eq('id', user.id);
+
+  if (error) {
+    return {
+      message: `Възникна грешка: ${error.message}`,
+      error: true,
+    };
+  }
+
+  revalidatePath('/profile');
+  revalidatePath('/admin/users');
+
+  return {
+    message: 'Вашата заявка за изтриване на акаунт е изпратена успешно. Администратор ще я прегледа.',
     error: false,
   };
 }

@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { MoreHorizontal, Mail, Shield, User, Loader2 } from 'lucide-react';
+import { MoreHorizontal, Mail, Shield, User, Loader2, AlertTriangle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -194,7 +194,17 @@ export function UsersClientPage() {
                 <TableBody>
                 {users.map((user) => (
                     <TableRow key={user.id}>
-                    <TableCell className="font-medium">{user.email}</TableCell>
+                    <TableCell className="font-medium">
+                       <div className="flex items-center gap-2">
+                         {user.email}
+                         {user.deletion_requested && (
+                           <Badge variant="destructive" className="gap-1.5">
+                            <AlertTriangle className="h-3 w-3" />
+                            Заявка за изтриване
+                           </Badge>
+                         )}
+                       </div>
+                    </TableCell>
                     <TableCell>
                         <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
                             {user.role === 'admin' ? 'Администратор' : 'Потребител'}

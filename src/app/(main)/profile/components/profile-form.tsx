@@ -1,9 +1,9 @@
 
 'use client';
 
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState, useEffect, useState, useTransition } from 'react';
 import { useFormStatus } from 'react-dom';
-import { updateProfile } from '../actions';
+import { updateProfile, requestAccountDeletion } from '../actions';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -11,10 +11,21 @@ import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/use-language';
 import type { User } from '@supabase/supabase-js';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Upload, User as UserIcon } from 'lucide-react';
+import { Loader2, Upload, User as UserIcon, Trash2, AlertTriangle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 type Profile = {
   id: string;
@@ -23,6 +34,7 @@ type Profile = {
   website: string | null;
   role: string | null;
   avatar_url: string | null;
+  deletion_requested: boolean;
 } | null;
 
 interface ProfileFormProps {
@@ -47,6 +59,73 @@ function SubmitButton() {
   );
 }
 
+function DeleteAccountSection({ profile }: { profile: Profile }) {
+    const { toast } = useToast();
+    const [isPending, startTransition] = useTransition();
+
+    const handleRequestDeletion = () => {
+        startTransition(async () => {
+            const result = await requestAccountDeletion();
+             toast({
+                variant: result.error ? 'destructive' : 'default',
+                title: result.error ? 'Грешка' : 'Успех!',
+                description: result.message,
+            });
+        });
+    };
+
+    if (profile?.deletion_requested) {
+        return (
+            <Card className="border-yellow-500 bg-yellow-50/50">
+                 <CardHeader>
+                    <CardTitle className="flex items-center gap-3 text-yellow-700">
+                        <AlertTriangle className="h-6 w-6" />
+                        Заявка за изтриване
+                    </CardTitle>
+                    <CardDescription className="text-yellow-600">
+                        Вашата заявка за изтриване на акаунт е изпратена и се обработва.
+                    </CardDescription>
+                </CardHeader>
+            </Card>
+        )
+    }
+
+    return (
+         <Card className="border-destructive/50">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-destructive">
+                    <Trash2 className="h-6 w-6" />
+                    Изтриване на акаунт
+                </CardTitle>
+                <CardDescription>
+                    Това действие е необратимо. Вашият профил ще бъде маркиран за изтриване и ще бъде премахнат от системата.
+                </CardDescription>
+            </CardHeader>
+            <CardFooter>
+                 <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button variant="destructive" disabled={isPending}>
+                             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                             Поискай изтриване на акаунт
+                        </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Сигурни ли сте?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Наистина ли искате да подадете заявка за изтриване на вашия акаунт? Това действие не може да бъде отменено.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                        <AlertDialogCancel>Отказ</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleRequestDeletion}>Потвърди</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            </CardFooter>
+        </Card>
+    )
+}
 
 export function ProfileForm({ user, profile }: ProfileFormProps) {
   const { text } = useLanguage();
@@ -65,66 +144,69 @@ export function ProfileForm({ user, profile }: ProfileFormProps) {
   }, [state, toast]);
 
   return (
-    <Card className="overflow-hidden">
-        <form action={dispatch}>
-            <div className="grid md:grid-cols-3">
-                <div className="md:col-span-1 bg-muted/50 p-6 md:border-r">
-                   <div className="flex flex-col items-center space-y-4">
-                        <div className="relative">
-                             <Avatar className="w-32 h-32 text-lg">
-                                <AvatarImage src={profile?.avatar_url ?? ''} alt={profile?.username ?? user.email} />
-                                <AvatarFallback>{(profile?.username || user.email)?.charAt(0).toUpperCase()}</AvatarFallback>
-                            </Avatar>
-                            <Button size="icon" className="absolute bottom-0 right-0 rounded-full" variant="outline">
-                                <Upload className="h-4 w-4" />
-                                <span className="sr-only">{text.uploadAvatar}</span>
-                            </Button>
-                        </div>
-                        <div className="text-center">
-                            <h2 className="text-2xl font-semibold">{profile?.full_name || profile?.username || 'Потребител'}</h2>
-                            <p className="text-muted-foreground">{user.email}</p>
-                            <Badge variant={profile?.role === 'admin' ? 'default' : 'secondary'} className="mt-2">
-                                {profile?.role === 'admin' ? 'Администратор' : 'Потребител'}
-                            </Badge>
-                        </div>
-                   </div>
-                </div>
+    <div className="space-y-8">
+        <Card className="overflow-hidden">
+            <form action={dispatch}>
+                <div className="grid md:grid-cols-3">
+                    <div className="md:col-span-1 bg-muted/50 p-6 md:border-r">
+                    <div className="flex flex-col items-center space-y-4">
+                            <div className="relative">
+                                <Avatar className="w-32 h-32 text-lg">
+                                    <AvatarImage src={profile?.avatar_url ?? ''} alt={profile?.username ?? user.email} />
+                                    <AvatarFallback>{(profile?.username || user.email)?.charAt(0).toUpperCase()}</AvatarFallback>
+                                </Avatar>
+                                <Button size="icon" className="absolute bottom-0 right-0 rounded-full" variant="outline">
+                                    <Upload className="h-4 w-4" />
+                                    <span className="sr-only">{text.uploadAvatar}</span>
+                                </Button>
+                            </div>
+                            <div className="text-center">
+                                <h2 className="text-2xl font-semibold">{profile?.full_name || profile?.username || 'Потребител'}</h2>
+                                <p className="text-muted-foreground">{user.email}</p>
+                                <Badge variant={profile?.role === 'admin' ? 'default' : 'secondary'} className="mt-2">
+                                    {profile?.role === 'admin' ? 'Администратор' : 'Потребител'}
+                                </Badge>
+                            </div>
+                    </div>
+                    </div>
 
-                <div className="md:col-span-2">
-                    <CardHeader>
-                        <div className="flex items-center gap-3">
-                            <UserIcon className="h-6 w-6 text-primary" />
-                            <CardTitle>{text.profile}</CardTitle>
-                        </div>
-                        <CardDescription>{text.profilePageDescription}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-6 px-6">
-                        <div className="grid sm:grid-cols-2 gap-4">
-                             <div className="space-y-1.5">
-                                <Label htmlFor="username">{text.username}</Label>
-                                <Input id="username" name="username" defaultValue={profile?.username || ''} />
+                    <div className="md:col-span-2">
+                        <CardHeader>
+                            <div className="flex items-center gap-3">
+                                <UserIcon className="h-6 w-6 text-primary" />
+                                <CardTitle>{text.profile}</CardTitle>
+                            </div>
+                            <CardDescription>{text.profilePageDescription}</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6 px-6">
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="username">{text.username}</Label>
+                                    <Input id="username" name="username" defaultValue={profile?.username || ''} />
+                                </div>
+                                <div className="space-y-1.5">
+                                    <Label htmlFor="fullName">{text.fullName}</Label>
+                                    <Input id="fullName" name="fullName" defaultValue={profile?.full_name || ''} />
+                                </div>
                             </div>
                             <div className="space-y-1.5">
-                                <Label htmlFor="fullName">{text.fullName}</Label>
-                                <Input id="fullName" name="fullName" defaultValue={profile?.full_name || ''} />
+                                <Label htmlFor="website">{text.website}</Label>
+                                <Input id="website" name="website" defaultValue={profile?.website || ''} placeholder="https://..." />
                             </div>
-                        </div>
-                        <div className="space-y-1.5">
-                            <Label htmlFor="website">{text.website}</Label>
-                            <Input id="website" name="website" defaultValue={profile?.website || ''} placeholder="https://..." />
-                        </div>
-                        <div className="space-y-1.5">
-                            <Label htmlFor="email">{text.email}</Label>
-                            <Input id="email" name="email" type="email" value={user?.email} disabled />
-                        </div>
-                    </CardContent>
-                     <Separator />
-                    <CardFooter className="justify-end p-6">
-                        <SubmitButton />
-                    </CardFooter>
+                            <div className="space-y-1.5">
+                                <Label htmlFor="email">{text.email}</Label>
+                                <Input id="email" name="email" type="email" value={user?.email} disabled />
+                            </div>
+                        </CardContent>
+                        <Separator />
+                        <CardFooter className="justify-end p-6">
+                            <SubmitButton />
+                        </CardFooter>
+                    </div>
                 </div>
-            </div>
-        </form>
-    </Card>
+            </form>
+        </Card>
+        <DeleteAccountSection profile={profile} />
+    </div>
   );
 }

@@ -50,6 +50,7 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
             full_name: p.full_name || null,
             username: p.username || null,
             avatar_url: p.avatar_url || null,
+            deletion_requested: p.deletion_requested || false,
         }));
     }
 
@@ -64,6 +65,7 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
             full_name: profile.full_name || null,
             username: profile.username || null,
             avatar_url: profile.avatar_url || null,
+            deletion_requested: profile.deletion_requested || false,
         }
     });
 
