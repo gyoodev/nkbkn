@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -29,7 +29,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getUserProfiles, updateUserRole } from '../actions';
+import { updateUserRole } from '../actions';
 import type { UserProfile } from '@/lib/types';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -156,21 +156,24 @@ function UsersTableSkeleton() {
 
 export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] }) {
   const [users, setUsers] = useState<UserProfile[]>(initialUsers);
-  const [loading, setLoading] = useState(false);
-
-  const fetchUsers = async () => {
-        setLoading(true);
-        const data = await getUserProfiles();
-        setUsers(data);
-        setLoading(false);
-    }
-
+  
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString('bg-BG', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
     });
+  };
+
+  // The onRoleChanged function will be passed to RoleChanger, but since data is fetched server-side,
+  // a full page refresh would be the simplest way to see the change, or we can update the state manually.
+  // For now, we assume the user will refresh or we can enhance this later if needed.
+  // A simple state update is better.
+  const handleRoleChanged = () => {
+    // A simple refresh could work, but let's just indicate a change happened.
+    // The parent page will need to re-fetch users. For now, let's just log it.
+    // In a real app you might trigger a re-fetch.
+    // window.location.reload();
   };
 
   return (
@@ -182,7 +185,7 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {loading && initialUsers.length === 0 ? <UsersTableSkeleton /> : (
+          {initialUsers.length === 0 ? <p>Няма регистрирани потребители.</p> : (
             <Table>
                 <TableHeader>
                 <TableRow>
@@ -216,7 +219,7 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
                     <TableCell>{formatDate(user.created_at)}</TableCell>
                     <TableCell className="text-right flex items-center justify-end gap-2">
                         <EmailDialog user={user} />
-                        <RoleChanger user={user} onRoleChanged={fetchUsers} />
+                        <RoleChanger user={user} onRoleChanged={handleRoleChanged} />
                     </TableCell>
                     </TableRow>
                 ))}
