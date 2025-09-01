@@ -19,8 +19,12 @@ async function getBannerVisibility() {
         const fileContent = await fs.readFile(filePath, 'utf-8');
         const settings = JSON.parse(fileContent);
         return settings.dev_banner_visible === true;
-    } catch (error) {
-        console.error("Could not read settings.json, defaulting to false", error);
+    } catch (error: any) {
+        // If the file doesn't exist, that's okay, just default to false.
+        // This is expected on first run.
+        if (error.code !== 'ENOENT') {
+            console.error("Could not read settings.json:", error);
+        }
         return false;
     }
 }
