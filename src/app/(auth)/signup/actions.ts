@@ -9,9 +9,16 @@ export async function signup(prevState: { error?: string, message?: string } | u
   const password = formData.get('password') as string;
   const phone = formData.get('phone') as string;
 
+  // First, sign up the user in the auth schema
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+        data: {
+            phone: phone,
+            email: email, // Passing email and phone here to be available in the trigger
+        }
+    }
   });
 
   if (authError) {
@@ -20,14 +27,19 @@ export async function signup(prevState: { error?: string, message?: string } | u
     };
   }
 
+  // Then, if the user was created successfully, update their profile.
+  // A trigger on the auth.users table should have already created a profile row.
   if (authData.user) {
     const { error: profileError } = await supabase.from('profiles').update({
         phone: phone,
+        email: email, // Explicitly update the email in the profiles table as well
     }).eq('id', authData.user.id);
     
     if(profileError) {
-        // Log the error but don't block the user from signing up
-        console.error('Error updating profile with phone number:', profileError.message);
+        // Log the error but don't block the user from signing up.
+        // This could happen if the trigger hasn't run yet, for example.
+        // The important part is that the auth user is created.
+        console.error('Error updating profile with phone and email:', profileError.message);
     }
   }
 
