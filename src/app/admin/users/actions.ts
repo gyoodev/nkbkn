@@ -25,9 +25,6 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
 
     const supabase = createServerClient();
 
-    // Fetch all profiles directly from the 'profiles' table.
-    // This table should contain all the necessary information, including email,
-    // which is now being populated upon user signup.
     const { data: profiles, error } = await supabase
         .from('profiles')
         .select('*')
@@ -42,12 +39,10 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
         return [];
     }
 
-    // The UserProfile type expects an email, which might be null in the DB
-    // for older users. We ensure it's always a string.
     return profiles.map(profile => ({
         id: profile.id,
-        email: profile.email || 'не е наличен', // Use email from profiles table
-        created_at: profile.created_at || new Date().toISOString(), // Use created_at from profiles table
+        email: profile.email || 'не е наличен',
+        created_at: profile.created_at || new Date().toISOString(),
         role: profile.role || 'user',
         full_name: profile.full_name || null,
         username: profile.username || null,
