@@ -6,6 +6,41 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { promises as fs } from 'fs';
 import path from 'path';
+import { z } from 'zod';
+
+const fileSchema = z
+  .any()
+  .refine((file): file is File => file instanceof File && file.size > 0, { message: 'Изображението е задължително' })
+  .refine((file) => file.type.startsWith('image/'), { message: 'Моля, качете валиден файл с изображение.' })
+
+const FormSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1, 'Заглавието е задължително'),
+  category: z.string().min(1, 'Категорията е задължителна'),
+  content: z.string().min(1, 'Съдържанието е задължително'),
+  image_file: z.any(),
+  current_image_url: z.string().optional(),
+}).superRefine((data, ctx) => {
+    // If it's a new post (no ID), the image file is required.
+    if (!data.id && !(data.image_file instanceof File && data.image_file.size > 0)) {
+        ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Изображението е задължително",
+            path: ['image_file'],
+        });
+    }
+    // If it's an existing post and a file is provided, validate it.
+    if (data.id && data.image_file instanceof File && data.image_file.size > 0) {
+       if (!data.image_file.type.startsWith('image/')) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Моля, качете валиден файл с изображение.",
+                path: ['image_file'],
+            });
+       }
+    }
+});
+
 
 async function checkAdmin() {
     const supabase = createServerClient();
@@ -18,39 +53,6 @@ async function checkAdmin() {
     return user;
 }
 
-// Using manual validation instead of Zod to avoid session issues.
-async function validateFormData(formData: FormData) {
-    const errors: Record<string, string> = {};
-    const id = formData.get('id');
-
-    const title = formData.get('title');
-    if (!title || typeof title !== 'string' || title.trim() === '') {
-        errors.title = 'Заглавието е задължително';
-    }
-
-    const category = formData.get('category');
-    if (!category || typeof category !== 'string' || category.trim() === '') {
-        errors.category = 'Категорията е задължителна';
-    }
-    
-    const imageFile = formData.get('image_file') as File;
-    if (!id && (!imageFile || imageFile.size === 0)) {
-        errors.image_file = 'Изображението е задължително';
-    }
-    if (imageFile && imageFile.size > 0 && !imageFile.type.startsWith('image/')) {
-        errors.image_file = 'Моля, качете валиден файл с изображение.';
-    }
-
-
-    const content = formData.get('content');
-     if (!content || typeof content !== 'string' || content.trim() === '') {
-        errors.content = 'Съдържанието е задължително';
-    }
-
-    return errors;
-}
-
-
 export async function upsertNewsPost(prevState: any, formData: FormData) {
     let user;
     try {
@@ -60,34 +62,37 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
     }
     const supabase = createServerClient();
     
-    const errors = await validateFormData(formData);
-    if (Object.keys(errors).length > 0) {
+     const validatedFields = FormSchema.safeParse({
+        id: formData.get('id') || undefined,
+        title: formData.get('title'),
+        category: formData.get('category'),
+        content: formData.get('content'),
+        image_file: formData.get('image_file'),
+        current_image_url: formData.get('current_image_url') || undefined,
+    });
+
+    if (!validatedFields.success) {
         return {
-            errors,
+            errors: validatedFields.error.flatten().fieldErrors,
             message: 'Моля, попълнете всички задължителни полета.',
         };
     }
     
-    const id = formData.get('id') as string;
-    const title = formData.get('title') as string;
-    const category = formData.get('category') as string;
-    const content = formData.get('content') as string;
-    const imageFile = formData.get('image_file') as File;
-    const currentImageUrl = formData.get('current_image_url') as string;
-
-    let imageUrl = currentImageUrl;
+    const { id, title, category, content, image_file, current_image_url } = validatedFields.data;
+    
+    let imageUrl = current_image_url;
 
     // Check if a new file is uploaded and has content
-    if (imageFile && imageFile.size > 0) {
+    if (image_file && image_file.size > 0) {
         try {
             const uploadDir = path.join(process.cwd(), 'public', 'news-img');
             await fs.mkdir(uploadDir, { recursive: true });
             
-            const fileExtension = path.extname(imageFile.name);
+            const fileExtension = path.extname(image_file.name);
             const fileName = `${Date.now()}${fileExtension}`;
             const filePath = path.join(uploadDir, fileName);
 
-            const buffer = Buffer.from(await imageFile.arrayBuffer());
+            const buffer = Buffer.from(await image_file.arrayBuffer());
             await fs.writeFile(filePath, buffer);
 
             imageUrl = `/news-img/${fileName}`;
@@ -100,7 +105,7 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
 
     if (!imageUrl) {
          return {
-            errors: { image_file: 'Изображението е задължително.' },
+            errors: { image_file: ['Изображението е задължително.'] },
             message: 'Моля, качете изображение.',
         };
     }
