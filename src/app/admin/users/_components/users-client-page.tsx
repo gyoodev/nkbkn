@@ -127,7 +127,8 @@ function RoleChanger({ user }: { user: UserProfile }) {
 
 export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] }) {
   
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return 'N/A';
     return new Date(dateString).toLocaleString('bg-BG', {
         year: 'numeric',
         month: 'long',
