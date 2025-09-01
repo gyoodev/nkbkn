@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { createServerClient } from '@/lib/supabase/server';
@@ -35,16 +36,16 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
         return [];
     }
     
-    // 2. Fetch all auth users
-    const { data: authUsers, error: usersError } = await supabase.auth.admin.listUsers();
+    // 2. Fetch all auth users from the auth schema
+    const { data: { users }, error: usersError } = await supabase.auth.admin.listUsers();
+    
      if (usersError) {
         console.error('Error fetching auth users:', usersError);
-        // This might fail on some environments, proceed with what we have from profiles if possible
-        // but it will lack email and created_at
+        // This might fail on some environments. Fallback to profiles only.
         return profiles.map(p => ({
             id: p.id,
-            email: 'не може да бъде зареден',
-            created_at: new Date().toISOString(),
+            email: 'N/A', // Cannot be loaded
+            created_at: p.created_at || new Date().toISOString(),
             role: p.role || 'user',
             full_name: p.full_name || null,
             username: p.username || null,
@@ -54,7 +55,7 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
 
     // 3. Combine them
     const combined = profiles.map(profile => {
-        const authUser = authUsers.users.find(u => u.id === profile.id);
+        const authUser = users.find(u => u.id === profile.id);
         return {
             id: profile.id,
             email: authUser?.email || 'Не е намерен',
