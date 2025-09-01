@@ -155,7 +155,7 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
 
         if (insertError) {
             console.error('Supabase insert error:', insertError);
-            return { message: insertError.message };
+            return { message: `Грешка при запис в базата данни: ${insertError.message}` };
         }
         
         const newId = newPost.id;
