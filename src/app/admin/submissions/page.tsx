@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Eye, MoreHorizontal, Check, Archive, Trash2, FolderSync } from 'lucide-react';
+import { Mail, Eye, MoreHorizontal, Check, Archive, Trash2, FolderSync, Printer } from 'lucide-react';
 import type { Submission } from '@/lib/types';
 import {
   Dialog,
@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogFooter,
 } from "@/components/ui/dialog"
 import {
     DropdownMenu,
@@ -43,6 +44,11 @@ function SubmissionDetail({ label, value }: { label: string, value: string | num
 }
 
 function ViewSubmissionDialog({ submission }: { submission: Submission }) {
+    
+    const handlePrint = () => {
+        window.print();
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -58,7 +64,7 @@ function ViewSubmissionDialog({ submission }: { submission: Submission }) {
                         Заявка от {submission.name}, получена на {new Date(submission.created_at).toLocaleString('bg-BG')}.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-3 py-4">
+                <div className="space-y-3 py-4 print-content">
                    
                     {(submission.type === 'Жокей' || submission.type === 'Треньор' || submission.type === 'Собственик') && (
                         <div className="space-y-2 rounded-md border p-4">
@@ -100,6 +106,12 @@ function ViewSubmissionDialog({ submission }: { submission: Submission }) {
                     </div>
 
                 </div>
+                <DialogFooter className="print:hidden">
+                    <Button variant="outline" onClick={handlePrint}>
+                        <Printer className="mr-2 h-4 w-4" />
+                        Принтирай
+                    </Button>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     )
@@ -252,3 +264,4 @@ export default function AdminSubmissionsPage() {
     </div>
   );
 }
+
