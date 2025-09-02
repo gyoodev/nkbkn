@@ -4,6 +4,7 @@
 import { createServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import AdminLayoutClient from './_components/admin-layout-client';
+import { PrintProvider } from '../print/page';
 
 export default async function AdminLayout({
   children,
@@ -28,5 +29,9 @@ export default async function AdminLayout({
       return redirect('/');
   }
 
-  return <AdminLayoutClient user={user}>{children}</AdminLayoutClient>;
+  return (
+    <PrintProvider>
+        <AdminLayoutClient user={user}>{children}</AdminLayoutClient>
+    </PrintProvider>
+  );
 }

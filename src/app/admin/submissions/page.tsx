@@ -31,7 +31,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { getSubmissions } from '@/lib/client/data';
 import { DeleteButton } from './_components/delete-button';
 import { UpdateStatusButton } from './_components/update-status-button';
-
+import { usePrint } from '@/app/print/page';
 
 function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {
     if (value === null || value === undefined || value === '') return null;
@@ -44,10 +44,88 @@ function SubmissionDetail({ label, value }: { label: string, value: string | num
 }
 
 function ViewSubmissionDialog({ submission }: { submission: Submission }) {
-    
+    const { print } = usePrint();
+    const printRef = useRef<HTMLDivElement>(null);
+
     const handlePrint = () => {
-        window.print();
+        if(printRef.current) {
+            print(printRef.current.cloneNode(true));
+        }
     }
+
+    const PrintContent = (
+         <div ref={printRef} className="print-content">
+            <style>{`
+                .print-content {
+                    font-family: sans-serif;
+                    line-height: 1.5;
+                }
+                .print-content h3 {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    margin-bottom: 0.5rem;
+                }
+                .print-content p {
+                    color: #666;
+                    margin-bottom: 1rem;
+                }
+                .print-content .details-section {
+                     border: 1px solid #e5e7eb;
+                     border-radius: 0.5rem;
+                     padding: 1rem;
+                     margin-bottom: 1rem;
+                }
+                 .print-content .details-section h4 {
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    margin-bottom: 0.5rem;
+                 }
+                 .print-content hr {
+                    border-top: 1px solid #e5e7eb;
+                    margin: 0.5rem 0;
+                 }
+            `}</style>
+            <h3>Заявка: {submission.type}</h3>
+            <p>Заявка от {submission.name}, получена на {new Date(submission.created_at).toLocaleString('bg-BG')}.</p>
+             {(submission.type === 'Жокей' || submission.type === 'Треньор' || submission.type === 'Собственик') && (
+                <div className="details-section">
+                    <h4>Лични данни</h4>
+                    <hr />
+                    <SubmissionDetail label="Име" value={submission.first_name} />
+                    <SubmissionDetail label="Фамилия" value={submission.last_name} />
+                    <SubmissionDetail label="Дата на раждане" value={submission.date_of_birth} />
+                    <SubmissionDetail label="ЕГН" value={submission.egn} />
+                    <SubmissionDetail label="Адрес" value={submission.address} />
+                    {(submission.type === 'Жокей' || submission.type === 'Треньор') && (
+                        <SubmissionDetail label="Победи" value={submission.wins} />
+                    )}
+                    {submission.type === 'Треньор' && (
+                        <SubmissionDetail label="Брой коне" value={submission.horse_count} />
+                    )}
+                </div>
+            )}
+             {submission.type === 'Кон' && (
+                 <div className="details-section">
+                     <h4>Данни за коня</h4>
+                     <hr />
+                     <SubmissionDetail label="Име на коня" value={submission.horse_name} />
+                     <SubmissionDetail label="Възраст" value={submission.age} />
+                     <SubmissionDetail label="Баща" value={submission.sire} />
+                     <SubmissionDetail label="Майка" value={submission.dam} />
+                     <SubmissionDetail label="Собственик" value={submission.owner} />
+                     <SubmissionDetail label="Участия" value={submission.mounts} />
+                     <SubmissionDetail label="Победи" value={submission.wins} />
+                </div>
+            )}
+
+            <div className="details-section">
+                <h4>Данни за контакт</h4>
+                <hr />
+                <SubmissionDetail label="Имейл" value={submission.email} />
+                <SubmissionDetail label="Телефон" value={submission.phone} />
+            </div>
+        </div>
+    );
 
     return (
         <Dialog>
@@ -64,49 +142,10 @@ function ViewSubmissionDialog({ submission }: { submission: Submission }) {
                         Заявка от {submission.name}, получена на {new Date(submission.created_at).toLocaleString('bg-BG')}.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-3 py-4 print-content">
-                   
-                    {(submission.type === 'Жокей' || submission.type === 'Треньор' || submission.type === 'Собственик') && (
-                        <div className="space-y-2 rounded-md border p-4">
-                            <h4 className="font-semibold text-md">Лични данни</h4>
-                            <Separator />
-                            <SubmissionDetail label="Име" value={submission.first_name} />
-                            <SubmissionDetail label="Фамилия" value={submission.last_name} />
-                            <SubmissionDetail label="Дата на раждане" value={submission.date_of_birth} />
-                            <SubmissionDetail label="ЕГН" value={submission.egn} />
-                            <SubmissionDetail label="Адрес" value={submission.address} />
-                            {(submission.type === 'Жокей' || submission.type === 'Треньор') && (
-                                <SubmissionDetail label="Победи" value={submission.wins} />
-                            )}
-                            {submission.type === 'Треньор' && (
-                                <SubmissionDetail label="Брой коне" value={submission.horse_count} />
-                            )}
-                        </div>
-                    )}
-                    
-                    {submission.type === 'Кон' && (
-                         <div className="space-y-2 rounded-md border p-4">
-                             <h4 className="font-semibold text-md">Данни за коня</h4>
-                             <Separator />
-                             <SubmissionDetail label="Име на коня" value={submission.horse_name} />
-                             <SubmissionDetail label="Възраст" value={submission.age} />
-                             <SubmissionDetail label="Баща" value={submission.sire} />
-                             <SubmissionDetail label="Майка" value={submission.dam} />
-                             <SubmissionDetail label="Собственик" value={submission.owner} />
-                             <SubmissionDetail label="Участия" value={submission.mounts} />
-                             <SubmissionDetail label="Победи" value={submission.wins} />
-                        </div>
-                    )}
-
-                    <div className="space-y-2 rounded-md border p-4">
-                        <h4 className="font-semibold text-md">Данни за контакт</h4>
-                        <Separator />
-                        <SubmissionDetail label="Имейл" value={submission.email} />
-                        <SubmissionDetail label="Телефон" value={submission.phone} />
-                    </div>
-
+                <div className="space-y-3 py-4">
+                   {PrintContent}
                 </div>
-                <DialogFooter className="print:hidden">
+                <DialogFooter>
                     <Button variant="outline" onClick={handlePrint}>
                         <Printer className="mr-2 h-4 w-4" />
                         Принтирай
@@ -264,4 +303,3 @@ export default function AdminSubmissionsPage() {
     </div>
   );
 }
-

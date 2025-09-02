@@ -109,20 +109,33 @@ export async function upsertTrack(prevState: any, formData: FormData) {
             message: 'Моля, качете изображение.',
         };
     }
+
+    const dataToSave = {
+        ...trackData,
+        image_url: imageUrl,
+    };
     
-    const { error } = await supabase
-        .from('tracks')
-        .upsert({
-            id: id || undefined,
-            ...trackData,
-            image_url: imageUrl,
-        });
-
-
-    if (error) {
-        console.error('Supabase error:', error);
-        return { message: error.message };
+    if (id) {
+        // Update existing track
+        const { error } = await supabase
+            .from('tracks')
+            .update(dataToSave)
+            .eq('id', id);
+        if (error) {
+            console.error('Supabase error:', error);
+            return { message: error.message };
+        }
+    } else {
+        // Insert new track
+        const { error } = await supabase
+            .from('tracks')
+            .insert(dataToSave);
+        if (error) {
+            console.error('Supabase error:', error);
+            return { message: error.message };
+        }
     }
+
 
     revalidatePath('/admin/tracks');
     revalidatePath('/tracks');
