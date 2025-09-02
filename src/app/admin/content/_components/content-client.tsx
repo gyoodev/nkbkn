@@ -231,7 +231,7 @@ export function AdminContentClient({
                 currentImageUrl={initialSiteLogoUrl}
                 action={updateSiteLogo}
                 formId="site-logo-upload"
-                imageHint="Препоръчителен размер: 200x200px"
+                imageHint="Препоръчителен размер: 300x300px"
             />
             
             <ImageUploadForm 
