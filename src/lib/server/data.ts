@@ -2,7 +2,7 @@
 
 import 'server-only';
 
-import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, NewsPost, UserProfile, Stats } from '@/lib/types';
+import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, NewsPost, UserProfile, Stats, Track } from '@/lib/types';
 import { createServerClient } from '../supabase/server';
 
 
@@ -233,4 +233,16 @@ export async function getSiteContent(key: string): Promise<string> {
         console.error(`Error in getSiteContent for key "${key}":`, e.message);
         return '';
     }
+}
+
+export async function getTrack(id: number): Promise<Track | null> {
+    const supabase = createServerClient();
+    const { data, error } = await supabase.from('tracks').select('*').eq('id', id).single();
+    if (error || !data) {
+        if (error && error.code !== 'PGRST116') {
+            console.error(`Error fetching track with id ${id}:`, error);
+        }
+        return null;
+    }
+    return data;
 }

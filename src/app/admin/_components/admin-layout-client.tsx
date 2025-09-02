@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -21,6 +22,7 @@ import {
   Share2,
   Contact,
   User as UserIcon,
+  MapPin,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -70,6 +72,7 @@ export default function AdminLayoutClient({ children, user }: { children: React.
      { href: '/admin/trainers', label: 'Треньори', icon: <Users /> },
      { href: '/admin/horses', label: 'Коне', icon: <HorseLogo /> },
      { href: '/admin/partners', label: 'Партньори', icon: <Building /> },
+     { href: '/admin/tracks', label: 'Хиподруми', icon: <MapPin /> },
   ];
   
   const settingsNavItems = [

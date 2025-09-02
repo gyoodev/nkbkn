@@ -72,9 +72,21 @@ export async function getHorses(): Promise<Horse[]> {
     }
 }
 
-export const tracks: Track[] = [
-    { id: 1, name: 'Хиподрум "Гецово"', location: 'с. Гецово, обл. Разград', description: '„Хиподрумът в момента е в изоставено състояние, но нашият екип вече работи активно по неговото възстановяване, за да бъде готов за Държавното първенство по конни надбягвания през сезон 2026. Следващата ни цел е да осигурим финансиране и подкрепа от общината за цялостното проектиране и пълно обновяване на съоръжението.“' },
-];
+
+export async function getTracks(): Promise<Track[]> {
+    const supabase = createBrowserClient();
+    try {
+        const { data, error } = await supabase.from('tracks').select('*').order('name', { ascending: true });
+        if (error) {
+            console.error('Error fetching tracks:', error.message);
+            return [];
+        }
+        return data || [];
+    } catch(e: any) {
+        console.error('Error fetching tracks:', e.message);
+        return [];
+    }
+}
 
 export const galleryImages: { id: number; src: string; alt: string, hint: string }[] = [];
 
