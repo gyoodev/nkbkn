@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import Image from 'next/image';
-import { MapPin } from 'lucide-react';
+import { MapPin, TrendingUp } from 'lucide-react';
 import type { Track } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { getTracks } from '@/lib/client/data';
@@ -20,6 +20,7 @@ function TrackPageSkeleton() {
                     <Skeleton className="h-6 w-1/2" />
                 </CardHeader>
                 <CardContent>
+                    <Skeleton className="h-4 w-1/4 mb-4" />
                     <Skeleton className="h-24 w-full" />
                 </CardContent>
             </Card>
@@ -86,6 +87,11 @@ export default function TracksPage() {
                 <CardDescription className="pt-2 text-lg">{track.location}</CardDescription>
             </CardHeader>
             <CardContent>
+                 <div className="mb-4 flex items-center gap-2 text-muted-foreground">
+                    <TrendingUp className="h-5 w-5" />
+                    <span className="font-semibold">Дължина на пистата:</span>
+                    <span>{track.track_length} метра</span>
+                </div>
                 <p className="text-base text-muted-foreground">{track.description}</p>
             </CardContent>
         </Card>

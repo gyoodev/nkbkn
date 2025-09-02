@@ -11,6 +11,7 @@ const FormSchema = z.object({
   name: z.string().min(1, 'Името е задължително'),
   location: z.string().min(1, 'Местоположението е задължително'),
   description: z.string().min(1, 'Описанието е задължително'),
+  track_length: z.coerce.number().min(1, 'Дължината на пистата е задължителна'),
   image_file: z.any(),
   current_image_url: z.string().optional(),
 }).superRefine((data, ctx) => {
@@ -68,6 +69,7 @@ export async function upsertTrack(prevState: any, formData: FormData) {
         name: formData.get('name'),
         location: formData.get('location'),
         description: formData.get('description'),
+        track_length: formData.get('track_length'),
         image_file: formData.get('image_file'),
         current_image_url: formData.get('current_image_url') || undefined,
     });

@@ -50,10 +50,17 @@ export function TrackForm({ track }: { track?: Track }) {
             <Input id="name" name="name" defaultValue={track?.name} />
             {state.errors?.name && <p className="text-sm font-medium text-destructive">{state.errors.name}</p>}
           </div>
-          <div className="space-y-1">
-            <Label htmlFor="location">Местоположение</Label>
-            <Input id="location" name="location" defaultValue={track?.location} />
-            {state.errors?.location && <p className="text-sm font-medium text-destructive">{state.errors.location}</p>}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+                <Label htmlFor="location">Местоположение</Label>
+                <Input id="location" name="location" defaultValue={track?.location} />
+                {state.errors?.location && <p className="text-sm font-medium text-destructive">{state.errors.location}</p>}
+            </div>
+            <div className="space-y-1">
+                <Label htmlFor="track_length">Дължина на пистата (в метри)</Label>
+                <Input id="track_length" name="track_length" type="number" defaultValue={track?.track_length} />
+                {state.errors?.track_length && <p className="text-sm font-medium text-destructive">{state.errors.track_length}</p>}
+            </div>
           </div>
            <div className="space-y-1">
             <Label htmlFor="image_file">Изображение</Label>
