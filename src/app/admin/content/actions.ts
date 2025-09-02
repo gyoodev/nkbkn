@@ -21,6 +21,33 @@ async function checkAdmin() {
     throw new Error('Administrator privileges required');
 }
 
+async function upsertSiteContent(key: string, content: string): Promise<{ error: string | null }> {
+    const supabase = createServerClient();
+
+    // First, try to update
+    const { error: updateError, count } = await supabase
+        .from('site_content')
+        .update({ content })
+        .eq('key', key);
+    
+    // If update did not find a row, insert a new one
+    if (count === 0 && !updateError) {
+        const { error: insertError } = await supabase
+            .from('site_content')
+            .insert({ key, content });
+        
+        if (insertError) {
+            console.error('Error inserting site content:', insertError);
+            return { error: `Грешка при запис в базата данни (insert): ${insertError.message}` };
+        }
+    } else if (updateError) {
+        console.error('Error updating site content:', updateError);
+        return { error: `Грешка при запис в базата данни (update): ${updateError.message}` };
+    }
+
+    return { error: null };
+}
+
 export async function updateContent(
   key: string,
   content: string
@@ -31,15 +58,9 @@ export async function updateContent(
     return { error: error.message };
   }
   
-  const supabase = createServerClient();
-  
-  const { error } = await supabase
-    .from('site_content')
-    .upsert({ key: key, content: content }, { onConflict: 'key' });
-    
-  if (error) {
-    console.error('Error updating site content:', error);
-    return { error: `Грешка при обновяване на съдържанието: ${error.message}` };
+  const result = await upsertSiteContent(key, content);
+  if (result.error) {
+      return result;
   }
 
   // Revalidate the path of the page that uses this content
@@ -66,21 +87,7 @@ export async function updateDevBannerStatus(
   } catch (error: any) {
     return { error: error.message };
   }
-  const supabase = createServerClient();
-
-  const { error } = await supabase
-    .from('site_content')
-    .upsert({ key: 'dev_banner_visible', content: isVisible.toString() }, { onConflict: 'key' });
-    
-    if (error) {
-        console.error('Failed to update banner status:', error);
-        return { error: `Грешка при запис в базата данни: ${error.message}` };
-    }
-
-  revalidatePath('/'); // Revalidate root layout to show/hide banner
-  revalidatePath('/admin/content');
-
-  return { error: null };
+  return await upsertSiteContent('dev_banner_visible', isVisible.toString());
 }
 
 const ImageSchema = z.object({
@@ -124,13 +131,10 @@ async function handleImageUpload(prevState: any, formData: FormData, contentKey:
         .from(bucket)
         .getPublicUrl(uploadData.path);
         
-    const { error: dbError } = await supabase
-        .from('site_content')
-        .upsert({ key: contentKey, content: publicUrl }, { onConflict: 'key' });
+    const { error: dbError } = await upsertSiteContent(contentKey, publicUrl);
 
     if (dbError) {
-         console.error("DB Error: ", dbError);
-        return { message: `Грешка при запис в базата данни: ${dbError.message}`, success: false };
+        return { message: dbError, success: false };
     }
 
     revalidatePath('/(main)', 'layout');
