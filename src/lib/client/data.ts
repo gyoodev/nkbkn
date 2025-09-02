@@ -1,7 +1,7 @@
 
 'use client';
 
-import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, Submission, SocialLink, ContactSubmission } from '@/lib/types';
+import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, Submission, SocialLink, ContactSubmission, Owner } from '@/lib/types';
 import { createBrowserClient } from '../supabase/client';
 
 
@@ -298,6 +298,21 @@ export async function getNewsPosts(): Promise<NewsPost[]> {
         }));
     } catch(e: any) {
         console.error('Error fetching news posts:', e.message);
+        return [];
+    }
+}
+
+export async function getOwners(): Promise<Owner[]> {
+    const supabase = createBrowserClient();
+    try {
+        const { data, error } = await supabase.from('owners').select('*').order('name', { ascending: true });
+        if (error) {
+            console.error('Error fetching owners:', error.message);
+            return [];
+        }
+        return data || [];
+    } catch(e: any) {
+        console.error('Error in getOwners:', e.message);
         return [];
     }
 }

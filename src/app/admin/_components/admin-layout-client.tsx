@@ -71,6 +71,7 @@ export default function AdminLayoutClient({ children, user }: { children: React.
      { href: '/admin/jockeys', label: 'Жокеи', icon: <Users /> },
      { href: '/admin/trainers', label: 'Треньори', icon: <Users /> },
      { href: '/admin/horses', label: 'Коне', icon: <HorseLogo /> },
+     { href: '/admin/owners', label: 'Собственици', icon: <Users /> },
      { href: '/admin/partners', label: 'Партньори', icon: <Building /> },
      { href: '/admin/tracks', label: 'Хиподруми', icon: <MapPin /> },
   ];

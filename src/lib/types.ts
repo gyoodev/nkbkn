@@ -172,3 +172,15 @@ export type Stats = {
     news: number;
     events: number;
 };
+
+export interface Owner {
+    id: number;
+    created_at: string;
+    name: string;
+    date_of_birth: string | null;
+    egn: string | null;
+    address: string | null;
+    email: string | null;
+    phone: string | null;
+    image_url: string | null;
+}
