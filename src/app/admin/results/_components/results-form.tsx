@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useMemo } from 'react';
 import { useFormStatus } from 'react-dom';
 import { upsertResult } from '../actions';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,9 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import type { Result } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { tracks } from '@/lib/client/data';
+
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -32,6 +35,7 @@ export function ResultsForm({ result }: { result?: Result }) {
   const isEditing = !!result;
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useActionState(upsertResult, initialState);
+  const trackNames = useMemo(() => tracks.map(t => t.name), []);
 
   return (
     <form action={dispatch}>
@@ -53,7 +57,14 @@ export function ResultsForm({ result }: { result?: Result }) {
           </div>
            <div className="space-y-1">
             <Label htmlFor="track">Хиподрум</Label>
-            <Input id="track" name="track" defaultValue={result?.track} />
+             <Select name="track" defaultValue={result?.track}>
+                <SelectTrigger>
+                    <SelectValue placeholder="Изберете хиподрум" />
+                </SelectTrigger>
+                <SelectContent>
+                    {trackNames.map(name => <SelectItem key={name} value={name}>{name}</SelectItem>)}
+                </SelectContent>
+            </Select>
              {state.errors?.track && <p className="text-sm font-medium text-destructive">{state.errors.track}</p>}
           </div>
           <div className="space-y-1">
