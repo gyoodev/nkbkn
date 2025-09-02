@@ -11,8 +11,40 @@ const FormSchema = z.object({
   name: z.string().min(1, 'Името е задължително'),
   location: z.string().min(1, 'Местоположението е задължително'),
   description: z.string().min(1, 'Описанието е задължително'),
-  image_url: z.string().url('Въведете валиден URL адрес на изображение'),
+  image_file: z.any(),
+  current_image_url: z.string().optional(),
+}).superRefine((data, ctx) => {
+    const imageFile = data.image_file;
+    const isFile = imageFile instanceof File && imageFile.size > 0;
+
+    // Case 1: Creating a new track
+    if (!data.id) {
+        if (!isFile) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Изображението е задължително",
+                path: ['image_file'],
+            });
+        } else if (!imageFile.type.startsWith('image/')) {
+             ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Моля, качете валиден файл с изображение.",
+                path: ['image_file'],
+            });
+        }
+    }
+    // Case 2: Editing a track, and a new file is uploaded
+    else if (data.id && isFile) {
+       if (!imageFile.type.startsWith('image/')) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Моля, качете валиден файл с изображение.",
+                path: ['image_file'],
+            });
+       }
+    }
 });
+
 
 async function checkAdmin() {
     const supabase = createServerClient();
@@ -32,11 +64,12 @@ export async function upsertTrack(prevState: any, formData: FormData) {
     const supabase = createServerClient();
 
     const validatedFields = FormSchema.safeParse({
-        id: formData.get('id'),
+        id: formData.get('id') || undefined,
         name: formData.get('name'),
         location: formData.get('location'),
         description: formData.get('description'),
-        image_url: formData.get('image_url'),
+        image_file: formData.get('image_file'),
+        current_image_url: formData.get('current_image_url') || undefined,
     });
 
     if (!validatedFields.success) {
@@ -46,13 +79,41 @@ export async function upsertTrack(prevState: any, formData: FormData) {
         };
     }
     
-    const { id, ...trackData } = validatedFields.data;
+    const { id, image_file, current_image_url, ...trackData } = validatedFields.data;
+
+    let imageUrl = current_image_url;
+
+    if (image_file && image_file.size > 0) {
+        const fileName = `${Date.now()}-${image_file.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('site_images')
+            .upload(fileName, image_file);
+
+        if (uploadError) {
+            console.error('Supabase Storage upload error:', uploadError);
+            return { message: `Грешка при качване на файла: ${uploadError.message}` };
+        }
+        
+        const { data: { publicUrl } } = supabase.storage
+            .from('site_images')
+            .getPublicUrl(uploadData.path);
+            
+        imageUrl = publicUrl;
+    }
+
+    if (!imageUrl) {
+         return {
+            errors: { image_file: ['Изображението е задължително.'] },
+            message: 'Моля, качете изображение.',
+        };
+    }
     
     const { error } = await supabase
         .from('tracks')
         .upsert({
             id: id || undefined,
-            ...trackData
+            ...trackData,
+            image_url: imageUrl,
         });
 
 
@@ -74,6 +135,22 @@ export async function deleteTrack(id: number) {
         return { message: error.message };
     }
     const supabase = createServerClient();
+    
+     // Optional: Delete the image from storage as well
+    const { data: track, error: fetchError } = await supabase.from('tracks').select('image_url').eq('id', id).single();
+    if (track && track.image_url) {
+        const fileName = track.image_url.split('/').pop();
+        if (fileName) {
+             // We don't know the full path, just the name. This might fail if files are in subdirectories.
+             // Best effort deletion.
+            try {
+                await supabase.storage.from('site_images').remove([fileName]);
+            } catch (storageError) {
+                console.warn(`Could not delete image ${fileName} from storage:`, storageError)
+            }
+        }
+    }
+
 
     const { error } = await supabase.from('tracks').delete().eq('id', id);
 

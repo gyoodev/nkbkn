@@ -12,6 +12,7 @@ import Link from 'next/link';
 import type { Track } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
+import Image from 'next/image';
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -35,8 +36,9 @@ export function TrackForm({ track }: { track?: Track }) {
   const [state, dispatch] = useActionState(upsertTrack, initialState);
 
   return (
-    <form action={dispatch}>
+    <form action={dispatch} encType="multipart/form-data">
         <input type="hidden" name="id" value={track?.id} />
+        <input type="hidden" name="current_image_url" value={track?.image_url} />
       <Card>
         <CardHeader>
           <CardTitle>{isEditing ? 'Редактирай хиподрум' : 'Нов хиподрум'}</CardTitle>
@@ -53,10 +55,20 @@ export function TrackForm({ track }: { track?: Track }) {
             <Input id="location" name="location" defaultValue={track?.location} />
             {state.errors?.location && <p className="text-sm font-medium text-destructive">{state.errors.location}</p>}
           </div>
-          <div className="space-y-1">
-            <Label htmlFor="image_url">URL на снимка</Label>
-            <Input id="image_url" name="image_url" defaultValue={track?.image_url} />
-            {state.errors?.image_url && <p className="text-sm font-medium text-destructive">{state.errors.image_url}</p>}
+           <div className="space-y-1">
+            <Label htmlFor="image_file">Изображение</Label>
+             {isEditing && track?.image_url && (
+                <div className="mt-2 relative aspect-video w-full max-w-md rounded-md overflow-hidden bg-muted">
+                    <Image src={track.image_url} alt="Текущо изображение" fill className="object-contain" />
+                </div>
+            )}
+            <Input id="image_file" name="image_file" type="file" accept="image/*" />
+             {isEditing && track?.image_url && (
+                <p className="text-sm text-muted-foreground">
+                    Оставете полето празно, за да запазите текущото изображение.
+                </p>
+            )}
+            {state.errors?.image_file && <p className="text-sm font-medium text-destructive">{state.errors.image_file}</p>}
           </div>
            <div className="space-y-1">
             <Label htmlFor="description">Описание</Label>
