@@ -41,13 +41,14 @@ export default function AdminTracksPage() {
     const [tracks, setTracks] = useState<Track[]>([]);
     const [loading, setLoading] = useState(true);
 
+    async function loadData() {
+        setLoading(true);
+        const data = await getTracks();
+        setTracks(data);
+        setLoading(false);
+    }
+
     useEffect(() => {
-        async function loadData() {
-            setLoading(true);
-            const data = await getTracks();
-            setTracks(data);
-            setLoading(false);
-        }
         loadData();
     }, [])
 
@@ -107,7 +108,7 @@ export default function AdminTracksPage() {
                                     <Link href={`/admin/tracks/${track.id}/edit`}>Редактирай</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DeleteTrackButton id={track.id} />
+                                <DeleteTrackButton id={track.id} onDeleted={loadData} />
                             </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>

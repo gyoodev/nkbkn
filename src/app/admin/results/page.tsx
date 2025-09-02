@@ -47,13 +47,14 @@ export default function AdminResultsPage() {
     const [results, setResults] = useState<Result[]>([]);
     const [loading, setLoading] = useState(true);
 
+    async function loadData() {
+        setLoading(true);
+        const data = await getResults();
+        setResults(data);
+        setLoading(false);
+    }
+
     useEffect(() => {
-        async function loadData() {
-            setLoading(true);
-            const data = await getResults();
-            setResults(data);
-            setLoading(false);
-        }
         loadData();
     }, []);
 
@@ -117,7 +118,7 @@ export default function AdminResultsPage() {
                                                         <Link href={`/admin/results/${result.id}/edit`}>Редактирай</Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
-                                                    <DeleteResultButton id={result.id} />
+                                                    <DeleteResultButton id={result.id} onDeleted={loadData} />
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>

@@ -50,13 +50,14 @@ export default function AdminPartnersPage() {
     const [partners, setPartners] = useState<Partner[]>([]);
     const [loading, setLoading] = useState(true);
 
+    async function loadData() {
+        setLoading(true);
+        const data = await getPartners();
+        setPartners(data);
+        setLoading(false);
+    }
+
     useEffect(() => {
-        async function loadData() {
-            setLoading(true);
-            const data = await getPartners();
-            setPartners(data);
-            setLoading(false);
-        }
         loadData();
     }, []);
 
@@ -128,7 +129,7 @@ export default function AdminPartnersPage() {
                                 <Link href={`/admin/partners/${partner.id}/edit`}>Редактирай</Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DeletePartnerButton id={partner.id} />
+                            <DeletePartnerButton id={partner.id} onDeleted={loadData} />
                         </DropdownMenuContent>
                         </DropdownMenu>
                     </TableCell>

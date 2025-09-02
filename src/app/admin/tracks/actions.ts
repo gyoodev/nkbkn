@@ -129,7 +129,7 @@ export async function upsertTrack(prevState: any, formData: FormData) {
         // Insert new track
         const { error } = await supabase
             .from('tracks')
-            .insert(dataToSave);
+            .insert({ ...dataToSave, id: undefined });
         if (error) {
             console.error('Supabase error:', error);
             return { message: error.message };
@@ -143,11 +143,11 @@ export async function upsertTrack(prevState: any, formData: FormData) {
 }
 
 
-export async function deleteTrack(id: number) {
+export async function deleteTrack(id: number): Promise<{ success: boolean; message: string }> {
     try {
         await checkAdmin();
     } catch (error: any) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
     const supabase = createServerClient();
     
@@ -170,9 +170,10 @@ export async function deleteTrack(id: number) {
     const { error } = await supabase.from('tracks').delete().eq('id', id);
 
     if (error) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
 
     revalidatePath('/admin/tracks');
     revalidatePath('/tracks');
+    return { success: true, message: 'Хиподрумът е изтрит успешно.' };
 }

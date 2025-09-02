@@ -75,20 +75,21 @@ export async function upsertHorse(prevState: any, formData: FormData) {
 }
 
 
-export async function deleteHorse(id: number) {
+export async function deleteHorse(id: number): Promise<{ success: boolean; message: string }> {
     try {
         await checkAdmin();
     } catch (error: any) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
     const supabase = createServerClient();
 
     const { error } = await supabase.from('horses').delete().eq('id', id);
 
     if (error) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
 
     revalidatePath('/admin/horses');
     revalidatePath('/horses');
+    return { success: true, message: 'Конят е изтрит успешно.' };
 }

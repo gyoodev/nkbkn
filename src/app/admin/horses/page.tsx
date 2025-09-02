@@ -50,13 +50,14 @@ export default function AdminHorsesPage() {
     const [horses, setHorses] = useState<Horse[]>([]);
     const [loading, setLoading] = useState(true);
 
+    async function loadData() {
+        setLoading(true);
+        const data = await getHorses();
+        setHorses(data);
+        setLoading(false);
+    }
+
     useEffect(() => {
-        async function loadData() {
-            setLoading(true);
-            const data = await getHorses();
-            setHorses(data);
-            setLoading(false);
-        }
         loadData();
     }, [])
 
@@ -127,7 +128,7 @@ export default function AdminHorsesPage() {
                                 <Link href={`/admin/horses/${horse.id}/edit`}>Редактирай</Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DeleteHorseButton id={horse.id} />
+                            <DeleteHorseButton id={horse.id} onDeleted={loadData} />
                         </DropdownMenuContent>
                         </DropdownMenu>
                     </TableCell>

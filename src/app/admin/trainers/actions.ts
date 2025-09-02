@@ -73,20 +73,21 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
 }
 
 
-export async function deleteTrainer(id: number) {
+export async function deleteTrainer(id: number): Promise<{ success: boolean; message: string }> {
     try {
         await checkAdmin();
     } catch (error: any) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
     const supabase = createServerClient();
 
     const { error } = await supabase.from('trainers').delete().eq('id', id);
 
     if (error) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
 
     revalidatePath('/admin/trainers');
     revalidatePath('/trainers');
+    return { success: true, message: 'Треньорът е изтрит успешно.' };
 }

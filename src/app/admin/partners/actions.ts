@@ -63,20 +63,21 @@ export async function upsertPartner(prevState: any, formData: FormData) {
 }
 
 
-export async function deletePartner(id: number) {
+export async function deletePartner(id: number): Promise<{ success: boolean; message: string }> {
     try {
         await checkAdmin();
     } catch (error: any) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
     const supabase = createServerClient();
 
     const { error } = await supabase.from('partners').delete().eq('id', id);
 
     if (error) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
 
     revalidatePath('/admin/partners');
     revalidatePath('/'); // Revalidate home page
+    return { success: true, message: 'Партньорът е изтрит успешно.' };
 }

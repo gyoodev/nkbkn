@@ -45,13 +45,14 @@ export default function AdminJockeysPage() {
     const [jockeys, setJockeys] = useState<Jockey[]>([]);
     const [loading, setLoading] = useState(true);
 
+    async function loadData() {
+        setLoading(true);
+        const data = await getJockeys();
+        setJockeys(data);
+        setLoading(false);
+    }
+
     useEffect(() => {
-        async function loadData() {
-            setLoading(true);
-            const data = await getJockeys();
-            setJockeys(data);
-            setLoading(false);
-        }
         loadData();
     }, [])
 
@@ -115,7 +116,7 @@ export default function AdminJockeysPage() {
                                     <Link href={`/admin/jockeys/${jockey.id}/edit`}>Редактирай</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DeleteJockeyButton id={jockey.id} />
+                                <DeleteJockeyButton id={jockey.id} onDeleted={loadData} />
                             </DropdownMenuContent>
                             </DropdownMenu>
                         </TableCell>

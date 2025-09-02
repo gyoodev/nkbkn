@@ -44,13 +44,14 @@ export default function AdminTrainersPage() {
     const [trainers, setTrainers] = useState<Trainer[]>([]);
     const [loading, setLoading] = useState(true);
 
+    async function loadData() {
+        setLoading(true);
+        const data = await getTrainers();
+        setTrainers(data);
+        setLoading(false);
+    }
+
     useEffect(() => {
-        async function loadData() {
-            setLoading(true);
-            const data = await getTrainers();
-            setTrainers(data);
-            setLoading(false);
-        }
         loadData();
     }, []);
 
@@ -112,7 +113,7 @@ export default function AdminTrainersPage() {
                                 <Link href={`/admin/trainers/${trainer.id}/edit`}>Редактирай</Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DeleteTrainerButton id={trainer.id} />
+                            <DeleteTrainerButton id={trainer.id} onDeleted={loadData} />
                         </DropdownMenuContent>
                         </DropdownMenu>
                     </TableCell>

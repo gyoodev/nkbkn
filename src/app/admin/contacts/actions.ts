@@ -14,21 +14,22 @@ async function checkAdmin() {
     if (profile?.role !== 'admin') throw new Error('Administrator privileges required');
 }
 
-export async function deleteContactSubmission(id: number) {
+export async function deleteContactSubmission(id: number): Promise<{ success: boolean; message: string }> {
     try {
         await checkAdmin();
     } catch (error: any) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
     const supabase = createServerClient();
 
     const { error } = await supabase.from('contact_submissions').delete().eq('id', id);
     if (error) {
         console.error('Error deleting contact submission:', error);
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
 
     revalidatePath('/admin/contacts');
+    return { success: true, message: 'Запитването е изтрито успешно.' };
 }
 
 export async function updateContactStatus(id: number, status: ContactSubmission['status']) {

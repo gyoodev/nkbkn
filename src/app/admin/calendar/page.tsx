@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,7 @@ import type { RaceEvent } from '@/lib/types';
 import { format } from 'date-fns';
 import { bg, enUS } from 'date-fns/locale';
 import { useLanguage } from '@/hooks/use-language';
-import { PlusCircle, Edit, Trash2 } from 'lucide-react';
+import { PlusCircle, Edit, Trash2, Loader2 } from 'lucide-react';
 import { deleteRaceEvent } from './actions';
 import {
   AlertDialog,
@@ -25,19 +25,30 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
 
 
 function DeleteButton({ id, onDeleted }: { id: number, onDeleted: () => void }) {
-  const handleDelete = async () => {
-    await deleteRaceEvent(id);
-    onDeleted();
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const handleDelete = () => {
+    startTransition(async () => {
+        const result = await deleteRaceEvent(id);
+        if (result.success) {
+            toast({ title: 'Успех', description: result.message });
+            onDeleted();
+        } else {
+            toast({ variant: 'destructive', title: 'Грешка', description: result.message });
+        }
+    });
   };
 
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-          <Button variant="destructive" size="icon">
-            <Trash2 className="h-4 w-4" />
+          <Button variant="destructive" size="icon" disabled={isPending}>
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
             <span className="sr-only">Изтрий</span>
         </Button>
       </AlertDialogTrigger>

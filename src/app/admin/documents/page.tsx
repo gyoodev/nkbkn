@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { MoreHorizontal, PlusCircle, Download } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
 import { getDocuments } from '@/lib/client/data';
 import Link from 'next/link';
@@ -47,13 +47,14 @@ export default function AdminDocumentsPage() {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
 
+  async function loadData() {
+    setLoading(true);
+    const data = await getDocuments();
+    setDocuments(data);
+    setLoading(false);
+  }
+
   useEffect(() => {
-    async function loadData() {
-        setLoading(true);
-        const data = await getDocuments();
-        setDocuments(data);
-        setLoading(false);
-    }
     loadData();
   }, [])
 
@@ -124,10 +125,13 @@ export default function AdminDocumentsPage() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Действия</DropdownMenuLabel>
                           <DropdownMenuItem asChild>
-                            <a href={doc.href} target="_blank" download>Изтегли</a>
+                            <a href={doc.href} target="_blank" download className="flex items-center">
+                                <Download className="mr-2 h-4 w-4" />
+                                Изтегли
+                            </a>
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
-                          <DeleteButton id={doc.id} />
+                          <DeleteButton id={doc.id} onDeleted={loadData} />
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>

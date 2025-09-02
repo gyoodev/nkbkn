@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Contact, Eye, Trash2, Check, Clock, Reply, MoreHorizontal, Send } from 'lucide-react';
+import { Contact, Eye, Trash2, Check, Clock, Reply, MoreHorizontal, Send, Loader2 } from 'lucide-react';
 import type { ContactSubmission } from '@/lib/types';
 import {
   Dialog,
@@ -32,6 +32,7 @@ import { deleteContactSubmission, updateContactStatus } from './actions';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 
 function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {
@@ -98,18 +99,27 @@ function ViewSubmissionDialog({ submission }: { submission: ContactSubmission })
     )
 }
 
-function ActionsMenu({ submission }: { submission: ContactSubmission }) {
+function ActionsMenu({ submission, onAction }: { submission: ContactSubmission, onAction: () => void }) {
     const [isPending, startTransition] = useTransition();
+    const { toast } = useToast();
 
     const handleDelete = () => {
-        startTransition(() => {
-            deleteContactSubmission(submission.id)
+        startTransition(async () => {
+            const result = await deleteContactSubmission(submission.id);
+             if (result.success) {
+                toast({ title: 'Успех', description: result.message });
+                onAction();
+            } else {
+                toast({ variant: 'destructive', title: 'Грешка', description: result.message });
+            }
         })
     }
 
     const handleUpdateStatus = (status: ContactSubmission['status']) => {
-        startTransition(() => {
-            updateContactStatus(submission.id, status)
+        startTransition(async () => {
+            await updateContactStatus(submission.id, status)
+            toast({ title: 'Успех!', description: `Статусът е променен.` });
+            onAction();
         })
     }
 
@@ -117,7 +127,7 @@ function ActionsMenu({ submission }: { submission: ContactSubmission }) {
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                  <Button variant="ghost" size="icon" disabled={isPending}>
-                    <MoreHorizontal className="h-4 w-4" />
+                    {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreHorizontal className="h-4 w-4" />}
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
@@ -175,13 +185,14 @@ export default function AdminContactsPage() {
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([]);
   const [loading, setLoading] = useState(true);
 
+  async function loadData() {
+    setLoading(true);
+    const data = await getContactSubmissions();
+    setSubmissions(data);
+    setLoading(false);
+  }
+
   useEffect(() => {
-    async function loadData() {
-        setLoading(true);
-        const data = await getContactSubmissions();
-        setSubmissions(data);
-        setLoading(false);
-    }
     loadData();
   }, []);
 
@@ -250,7 +261,7 @@ export default function AdminContactsPage() {
                     <TableCell>{formatDate(sub.created_at)}</TableCell>
                     <TableCell className="text-right flex items-center justify-end gap-2">
                         <ViewSubmissionDialog submission={sub} />
-                        <ActionsMenu submission={sub} />
+                        <ActionsMenu submission={sub} onAction={loadData} />
                     </TableCell>
                     </TableRow>
                 ))}

@@ -124,11 +124,11 @@ export async function upsertRaceEvent(prevState: any, formData: FormData) {
 }
 
 
-export async function deleteRaceEvent(id: number) {
+export async function deleteRaceEvent(id: number): Promise<{ success: boolean; message: string }> {
     try {
         await checkAdmin();
     } catch (error: any) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
     const supabase = createServerClient();
 
@@ -136,15 +136,16 @@ export async function deleteRaceEvent(id: number) {
     const { error: racesError } = await supabase.from('races').delete().eq('event_id', id);
 
     if (racesError) {
-        return { message: `Error deleting races for event: ${racesError.message}` };
+        return { success: false, message: `Грешка при изтриване на състезанията към събитието: ${racesError.message}` };
     }
 
     const { error } = await supabase.from('race_events').delete().eq('id', id);
 
     if (error) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
 
     revalidatePath('/admin/calendar');
     revalidatePath('/calendar');
+    return { success: true, message: 'Събитието е изтрито успешно.' };
 }

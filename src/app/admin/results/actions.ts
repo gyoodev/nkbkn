@@ -71,20 +71,21 @@ export async function upsertResult(prevState: any, formData: FormData) {
 }
 
 
-export async function deleteResult(id: number) {
+export async function deleteResult(id: number): Promise<{ success: boolean; message: string }> {
     try {
         await checkAdmin();
     } catch (error: any) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
     const supabase = createServerClient();
 
     const { error } = await supabase.from('results').delete().eq('id', id);
 
     if (error) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
 
     revalidatePath('/admin/results');
     revalidatePath('/results');
+    return { success: true, message: 'Резултатът е изтрит успешно.' };
 }

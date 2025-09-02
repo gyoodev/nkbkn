@@ -75,35 +75,36 @@ export async function uploadDocument(prevState: any, formData: FormData) {
   redirect('/admin/documents');
 }
 
-export async function deleteDocument(id: number) {
+export async function deleteDocument(id: number): Promise<{ success: boolean; message: string }> {
     try {
         await checkAdmin();
     } catch (error: any) {
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
     const supabase = createServerClient();
 
     // First get the document path
     const { data: doc, error: fetchError } = await supabase.from('documents').select('path').eq('id', id).single();
     if (fetchError || !doc) {
-        return { message: 'Документът не е намерен.' };
+        return { success: false, message: 'Документът не е намерен.' };
     }
 
     // Delete file from storage
     const { error: storageError } = await supabase.storage.from('documents').remove([doc.path]);
      if (storageError) {
         console.error('Storage Error:', storageError);
-        return { message: 'Грешка при изтриване на файла от хранилището.' };
+        return { success: false, message: 'Грешка при изтриване на файла от хранилището.' };
     }
     
     // Delete record from database
     const { error } = await supabase.from('documents').delete().eq('id', id);
     if (error) {
         console.error('DB Error:', error);
-        return { message: error.message };
+        return { success: false, message: error.message };
     }
 
     revalidatePath('/admin/documents');
     revalidatePath('/regulations');
     revalidatePath('/forms');
+    return { success: true, message: 'Документът е изтрит успешно.' };
 }
