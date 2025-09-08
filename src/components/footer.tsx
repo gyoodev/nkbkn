@@ -80,7 +80,7 @@ export function Footer({ socials }: { socials: SocialLink[] }) {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
           <div className="space-y-4 lg:col-span-1">
             <Link href="/" className="flex items-center gap-3">
-              <Image src={siteLogoUrl || "/logo.png"} alt="НКБКН Лого" width={40} height={40} className="h-10 w-auto" />
+              <Image src={siteLogoUrl || "/logo.png"} alt="НКБКН Лого" width={56} height={56} className="h-14 w-auto" />
               <span className="text-lg font-bold uppercase tracking-wider text-primary">
                 {text.appName}
               </span>
