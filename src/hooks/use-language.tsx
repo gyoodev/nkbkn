@@ -37,7 +37,7 @@ const translations = {
 
     // News Section
     latestFromTheTrack: 'Последни новини от пистата',
-    latestFromTheTrackDescription: 'Бъдете в крак с всички събития от света на конните надбягвания в България.',
+    latestFromTheTrackDescription: 'Всичко най-актуално и интересно от пистите в България – новини, анализи и предстоящи събития.',
     readMore: 'Прочети повече',
 
     // Footer
@@ -214,7 +214,7 @@ const translations = {
 
     // News Section
     latestFromTheTrack: 'Latest From The Track',
-    latestFromTheTrackDescription: 'Stay up to date with all horse racing events in Bulgaria.',
+    latestFromTheTrackDescription: 'All the latest and most interesting news from the tracks in Bulgaria - news, analysis, and upcoming events.',
     readMore: 'Read More',
 
     // Footer
