@@ -139,26 +139,22 @@ export function MainLayoutClient({
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
   
-  const leftNavItems = [
+  const mainNavItems = [
     { href: '/about', label: text.aboutCommissionShort, icon: <Info /> },
     { href: '/jockeys', label: text.jockeys },
     { href: '/trainers', label: text.trainers },
     { href: '/horses', label: text.horses },
-  ];
-
-  const rightNavItems = [
     { href: '/tracks', label: text.tracks },
     { href: '/gallery', label: text.gallery },
     { href: '/news', label: text.news },
     { href: '/forms', label: text.forms, icon: <FileText /> },
+    { href: '/calendar', label: text.calendar },
   ];
   
-  const allNavItems = [
+  const allNavItemsForMobile = [
       { href: '/', label: text.home, exact: true },
-      ...leftNavItems, 
-      ...rightNavItems,
+      ...mainNavItems,
       { href: '/contact', label: text.contact },
-      { href: '/calendar', label: text.calendar },
     ];
 
   const LanguageSelector = () => (
@@ -222,60 +218,49 @@ export function MainLayoutClient({
           </div>
         </div>
 
-        <nav className="container mx-auto flex h-44 items-center justify-between px-4">
-           <div className="flex flex-1 items-center justify-start">
+        <nav className="container mx-auto flex flex-col items-center justify-center px-4 py-4">
+           {/* Centered Logo */}
+           <div className="flex justify-center w-full">
              <Link href="/" className="flex items-center gap-3">
                <Image src={siteLogoUrl || '/logo.png'} alt="НКБКН Лого" width={150} height={150} className="h-36 w-auto" />
             </Link>
            </div>
-
-          <div className="hidden items-center gap-2 text-sm font-medium uppercase text-gray-700 md:flex">
-            {leftNavItems.map((item) => (
+           
+           {/* Desktop Nav Links */}
+          <div className="hidden items-center gap-2 text-sm font-medium uppercase text-gray-700 md:flex mt-4">
+            {mainNavItems.map((item) => (
               <Link key={item.href} href={item.href} passHref>
-                <Button variant={pathname.startsWith(item.href) ? 'default' : 'ghost'}>{item.label}</Button>
-              </Link>
-            ))}
-            <div className="w-px self-stretch bg-border mx-2"/>
-            {rightNavItems.map((item) => (
-               <Link key={item.href} href={item.href} passHref>
                 <Button variant={pathname.startsWith(item.href) ? 'default' : 'ghost'}>{item.label}</Button>
               </Link>
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
-            <Button asChild>
-                <Link href="/calendar">
-                  <Calendar className="mr-2 h-4 w-4" />
-                  {text.calendar}
-                </Link>
-            </Button>
-            <div className="md:hidden">
-                <Sheet>
-                <SheetTrigger asChild>
-                    <Button variant="outline" size="icon">
-                    <Menu />
-                    </Button>
-                </SheetTrigger>
-                <SheetContent>
-                    <SheetHeader>
-                        <SheetTitle className="sr-only">Menu</SheetTitle>
-                    </SheetHeader>
-                    <div className="mt-8 flex flex-col gap-4">
-                    {allNavItems.map((item) => (
-                        <Link key={item.href} href={item.href} passHref>
-                            <Button 
-                                variant={item.exact ? pathname === item.href ? 'default' : 'ghost' : pathname.startsWith(item.href) ? 'default' : 'ghost'} 
-                                className="justify-start"
-                            >
-                                {item.label}
-                            </Button>
-                        </Link>
-                    ))}
-                    </div>
-                </SheetContent>
-                </Sheet>
-            </div>
+          {/* Mobile Menu Trigger */}
+          <div className="md:hidden absolute top-12 right-4">
+              <Sheet>
+              <SheetTrigger asChild>
+                  <Button variant="outline" size="icon">
+                  <Menu />
+                  </Button>
+              </SheetTrigger>
+              <SheetContent>
+                  <SheetHeader>
+                      <SheetTitle className="sr-only">Menu</SheetTitle>
+                  </SheetHeader>
+                  <div className="mt-8 flex flex-col gap-4">
+                  {allNavItemsForMobile.map((item) => (
+                      <Link key={item.href} href={item.href} passHref>
+                          <Button 
+                              variant={item.exact ? pathname === item.href ? 'default' : 'ghost' : pathname.startsWith(item.href) ? 'default' : 'ghost'} 
+                              className="justify-start w-full"
+                          >
+                              {item.label}
+                          </Button>
+                      </Link>
+                  ))}
+                  </div>
+              </SheetContent>
+              </Sheet>
           </div>
         </nav>
       </header>
