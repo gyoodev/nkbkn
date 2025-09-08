@@ -222,10 +222,10 @@ export function MainLayoutClient({
           </div>
         </div>
 
-        <nav className="container mx-auto flex h-28 items-center justify-between px-4">
+        <nav className="container mx-auto flex h-44 items-center justify-between px-4">
            <div className="flex flex-1 items-center justify-start">
              <Link href="/" className="flex items-center gap-3">
-               <Image src={siteLogoUrl || '/logo.png'} alt="НКБКН Лого" width={100} height={100} className="h-24 w-auto" />
+               <Image src={siteLogoUrl || '/logo.png'} alt="НКБКН Лого" width={150} height={150} className="h-36 w-auto" />
             </Link>
            </div>
 
