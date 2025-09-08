@@ -218,7 +218,7 @@ export function MainLayoutClient({
           </div>
         </div>
 
-        <nav className="container mx-auto flex flex-col items-center justify-center px-4 py-4">
+        <nav className="container mx-auto flex flex-col items-center justify-center px-4 py-4 relative">
            {/* Centered Logo */}
            <div className="flex justify-center w-full">
              <Link href="/" className="flex items-center gap-3">
@@ -236,7 +236,7 @@ export function MainLayoutClient({
           </div>
 
           {/* Mobile Menu Trigger */}
-          <div className="md:hidden absolute top-12 right-4">
+          <div className="md:hidden absolute top-1/2 -translate-y-1/2 right-4">
               <Sheet>
               <SheetTrigger asChild>
                   <Button variant="outline" size="icon">
