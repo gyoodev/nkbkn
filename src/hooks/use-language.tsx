@@ -37,7 +37,7 @@ const translations = {
 
     // News Section
     latestFromTheTrack: 'Последни новини от пистата',
-    latestFromTheTrackDescription: 'Бъдете в крак с всички събития от света на конните надбягвания.',
+    latestFromTheTrackDescription: 'Бъдете в крак с всички събития от България на конните надбягвания.',
     readMore: 'Прочети повече',
 
     // Footer
@@ -61,7 +61,7 @@ const translations = {
     home: 'Начало',
     aboutCommissionShort: 'НКБКН',
     jockeys: 'Жокеи',
-    trainers: 'Треньори',
+    trainers: 'Треньoри',
     horses: 'Коне',
     tracks: 'Хиподрум',
     gallery: 'Галерия',
@@ -214,7 +214,7 @@ const translations = {
 
     // News Section
     latestFromTheTrack: 'Latest From The Track',
-    latestFromTheTrackDescription: 'Stay up to date with all events from the world of horse racing.',
+    latestFromTheTrackDescription: 'Stay up to date with all horse racing events in Bulgaria.',
     readMore: 'Read More',
 
     // Footer
@@ -391,3 +391,5 @@ export const useLanguage = () => {
   }
   return context;
 };
+
+    
