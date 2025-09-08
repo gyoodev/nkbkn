@@ -37,7 +37,7 @@ const translations = {
 
     // News Section
     latestFromTheTrack: 'Последни новини от пистата',
-    latestFromTheTrackDescription: 'Бъдете в крак с всички събития от България на конните надбягвания.',
+    latestFromTheTrackDescription: 'Бъдете в крак с всички събития от света на конните надбягвания в България.',
     readMore: 'Прочети повече',
 
     // Footer
@@ -392,4 +392,5 @@ export const useLanguage = () => {
   return context;
 };
 
+    
     
