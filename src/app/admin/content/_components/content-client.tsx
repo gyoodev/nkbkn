@@ -23,6 +23,8 @@ type ContentState = {
     about_team_text: string;
     terms_content: string;
     privacy_content: string;
+    hero_title: string;
+    hero_subtitle: string;
 }
 
 interface AdminContentClientProps {
@@ -189,7 +191,7 @@ function ContentCard({
                 id={`${contentKey}-editor`}
                 value={content}
                 onChange={(e) => onContentChange(e.target.value)}
-                rows={5}
+                rows={useRichText ? 5 : 2}
              />
           )}
         </div>
@@ -240,6 +242,24 @@ export function AdminContentClient({
                 currentImageUrl={initialHeroImageUrl}
                 action={updateHeroImage}
                 formId="hero-image-upload"
+            />
+
+            <ContentCard
+                contentKey="hero_title"
+                title="Заглавие на началната страница"
+                description="Основното заглавие, което се показва на голямата снимка на началната страница."
+                content={content.hero_title}
+                onContentChange={(newContent) => setContent(c => ({...c, hero_title: newContent}))}
+                useRichText={false}
+            />
+
+            <ContentCard
+                contentKey="hero_subtitle"
+                title="Подзаглавие на началната страница"
+                description="Текстът под основното заглавие на началната страница."
+                content={content.hero_subtitle}
+                onContentChange={(newContent) => setContent(c => ({...c, hero_subtitle: newContent}))}
+                useRichText={false}
             />
 
             <ContentCard

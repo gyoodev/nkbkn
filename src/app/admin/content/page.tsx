@@ -8,7 +8,18 @@ export const dynamic = 'force-dynamic';
 
 export default async function AdminContentPage() {
   
-  const [history, mission, team, bannerVisible, heroImage, siteLogo, termsContent, privacyContent] = await Promise.all([
+  const [
+    history, 
+    mission, 
+    team, 
+    bannerVisible, 
+    heroImage, 
+    siteLogo, 
+    termsContent, 
+    privacyContent,
+    heroTitle,
+    heroSubtitle
+  ] = await Promise.all([
     getSiteContent('about_history'),
     getSiteContent('about_mission'),
     getSiteContent('about_team_text'),
@@ -17,6 +28,8 @@ export default async function AdminContentPage() {
     getSiteContent('site_logo_url'),
     getSiteContent('terms_content'),
     getSiteContent('privacy_content'),
+    getSiteContent('hero_title'),
+    getSiteContent('hero_subtitle'),
   ]);
 
   const initialContent = {
@@ -25,6 +38,8 @@ export default async function AdminContentPage() {
     about_team_text: team,
     terms_content: termsContent,
     privacy_content: privacyContent,
+    hero_title: heroTitle,
+    hero_subtitle: heroSubtitle
   };
 
   const initialDevBannerVisible = bannerVisible === 'true';

@@ -10,8 +10,19 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Badge } from '@/components/ui/badge';
 import type { NewsPost } from '@/lib/types';
 
-export function HomeClientPage({ posts, heroImageUrl }: { posts: NewsPost[], heroImageUrl?: string }) {
+interface HomeClientPageProps {
+    posts: NewsPost[];
+    heroImageUrl?: string;
+    heroTitle?: string;
+    heroSubtitle?: string;
+}
+
+export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }: HomeClientPageProps) {
   const { text, language } = useLanguage();
+
+  const defaultHeroTitle = "СТРАСТ, АДРЕНАЛИН И ЛЮБОВ КЪМ КОНЕТЕ";
+  const defaultHeroSubtitle = "Официалният дом на българските конни надбягвания.";
+  const defaultHeroImage = "https://ekip7.bg/wp-content/uploads/2022/09/19-09-2022_kusii-3.jpg";
 
   if (!posts || posts.length === 0) {
     return <div>Loading...</div>; // Or a proper loading skeleton
@@ -19,7 +30,6 @@ export function HomeClientPage({ posts, heroImageUrl }: { posts: NewsPost[], her
 
   const mainPost = posts[0];
   const otherPosts = posts.slice(1);
-  const defaultHeroImage = "https://ekip7.bg/wp-content/uploads/2022/09/19-09-2022_kusii-3.jpg";
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString(language, {
@@ -46,10 +56,10 @@ export function HomeClientPage({ posts, heroImageUrl }: { posts: NewsPost[], her
         <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center">
           <div className="max-w-4xl space-y-4 md:space-y-6">
             <h1 className="font-headline text-4xl font-extrabold uppercase leading-tight tracking-wide text-shadow-lg sm:text-5xl md:text-6xl lg:text-7xl">
-              {text.heroTitle}
+              {heroTitle || defaultHeroTitle}
             </h1>
             <p className="text-lg text-gray-200 sm:text-xl md:text-2xl">
-              {text.homeSubtitle}
+              {heroSubtitle || defaultHeroSubtitle}
             </p>
             <div className="flex flex-col gap-4 pt-4 sm:flex-row sm:justify-center">
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
