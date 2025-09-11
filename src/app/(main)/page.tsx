@@ -10,7 +10,7 @@ export default async function HomePage() {
   const [posts, heroImageUrl, heroTitle, heroSubtitle] = await Promise.all([
     getNewsPosts(),
     getSiteContent('hero_image_url'),
-    getSiteContent('hero_title'),
+    getSiteContent('slider_title'),
     getSiteContent('hero_subtitle')
   ]);
 

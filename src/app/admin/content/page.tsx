@@ -17,7 +17,7 @@ export default async function AdminContentPage() {
     siteLogo, 
     termsContent, 
     privacyContent,
-    heroTitle,
+    sliderTitle,
     heroSubtitle
   ] = await Promise.all([
     getSiteContent('about_history'),
@@ -28,7 +28,7 @@ export default async function AdminContentPage() {
     getSiteContent('site_logo_url'),
     getSiteContent('terms_content'),
     getSiteContent('privacy_content'),
-    getSiteContent('hero_title'),
+    getSiteContent('slider_title'),
     getSiteContent('hero_subtitle'),
   ]);
 
@@ -38,7 +38,7 @@ export default async function AdminContentPage() {
     about_team_text: team,
     terms_content: termsContent,
     privacy_content: privacyContent,
-    hero_title: heroTitle,
+    slider_title: sliderTitle,
     hero_subtitle: heroSubtitle
   };
 

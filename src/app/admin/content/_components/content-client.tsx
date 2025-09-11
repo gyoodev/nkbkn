@@ -23,7 +23,7 @@ type ContentState = {
     about_team_text: string;
     terms_content: string;
     privacy_content: string;
-    hero_title: string;
+    slider_title: string;
     hero_subtitle: string;
 }
 
@@ -245,11 +245,11 @@ export function AdminContentClient({
             />
 
             <ContentCard
-                contentKey="hero_title"
+                contentKey="slider_title"
                 title="Заглавие на началната страница"
                 description="Основното заглавие, което се показва на голямата снимка на началната страница."
-                content={content.hero_title}
-                onContentChange={(newContent) => setContent(c => ({...c, hero_title: newContent}))}
+                content={content.slider_title}
+                onContentChange={(newContent) => setContent(c => ({...c, slider_title: newContent}))}
                 useRichText={false}
             />
 
