@@ -11,7 +11,7 @@ export default async function HomePage() {
     getNewsPosts(),
     getSiteContent('hero_image_url'),
     getSiteContent('slider_title'),
-    getSiteContent('hero_subtitle')
+    getSiteContent('slider_desc')
   ]);
 
   return <HomeClientPage 

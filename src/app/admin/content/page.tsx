@@ -18,7 +18,7 @@ export default async function AdminContentPage() {
     termsContent, 
     privacyContent,
     sliderTitle,
-    heroSubtitle
+    sliderDesc
   ] = await Promise.all([
     getSiteContent('about_history'),
     getSiteContent('about_mission'),
@@ -29,7 +29,7 @@ export default async function AdminContentPage() {
     getSiteContent('terms_content'),
     getSiteContent('privacy_content'),
     getSiteContent('slider_title'),
-    getSiteContent('hero_subtitle'),
+    getSiteContent('slider_desc'),
   ]);
 
   const initialContent = {
@@ -39,7 +39,7 @@ export default async function AdminContentPage() {
     terms_content: termsContent,
     privacy_content: privacyContent,
     slider_title: sliderTitle,
-    hero_subtitle: heroSubtitle
+    slider_desc: sliderDesc
   };
 
   const initialDevBannerVisible = bannerVisible === 'true';

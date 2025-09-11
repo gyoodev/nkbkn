@@ -24,7 +24,7 @@ type ContentState = {
     terms_content: string;
     privacy_content: string;
     slider_title: string;
-    hero_subtitle: string;
+    slider_desc: string;
 }
 
 interface AdminContentClientProps {
@@ -254,11 +254,11 @@ export function AdminContentClient({
             />
 
             <ContentCard
-                contentKey="hero_subtitle"
+                contentKey="slider_desc"
                 title="Подзаглавие на началната страница"
                 description="Текстът под основното заглавие на началната страница."
-                content={content.hero_subtitle}
-                onContentChange={(newContent) => setContent(c => ({...c, hero_subtitle: newContent}))}
+                content={content.slider_desc}
+                onContentChange={(newContent) => setContent(c => ({...c, slider_desc: newContent}))}
                 useRichText={false}
             />
 
