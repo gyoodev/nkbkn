@@ -87,6 +87,15 @@ export async function upsertTrack(prevState: any, formData: FormData) {
 
     if (image_file && image_file.size > 0) {
         const fileName = `${Date.now()}-${image_file.name}`;
+        
+        if (id && current_image_url) {
+            const oldFileName = current_image_url.split('/').pop();
+            if (oldFileName) {
+                // The bucket for tracks is 'site_images'
+                await supabase.storage.from('site_images').remove([oldFileName]);
+            }
+        }
+
         const { data: uploadData, error: uploadError } = await supabase.storage
             .from('site_images')
             .upload(fileName, image_file);

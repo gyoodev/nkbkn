@@ -89,8 +89,21 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
     // Check if a new file is uploaded and has content
     if (image_file && image_file.size > 0) {
         const fileName = `${Date.now()}-${image_file.name}`;
+        
+        // If editing and there's a current image, delete the old one
+        if (id && current_image_url) {
+            const oldFileName = current_image_url.split('/').pop();
+            if (oldFileName) {
+                const { error: deleteError } = await supabase.storage.from('news-images').remove([oldFileName]);
+                if (deleteError) {
+                    console.error('Error deleting old image:', deleteError.message);
+                    // Don't block the update if deletion fails, but log it
+                }
+            }
+        }
+
         const { data: uploadData, error: uploadError } = await supabase.storage
-            .from('news-images') // The name of your Supabase Storage bucket
+            .from('news-images')
             .upload(fileName, image_file);
 
         if (uploadError) {
@@ -98,7 +111,6 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
             return { message: `Грешка при качване на файла: ${uploadError.message}` };
         }
         
-        // Get the public URL of the uploaded file
         const { data: { publicUrl } } = supabase.storage
             .from('news-images')
             .getPublicUrl(uploadData.path);
