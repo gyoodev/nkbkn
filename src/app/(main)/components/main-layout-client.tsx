@@ -1,5 +1,6 @@
 
 
+
 'use client';
 
 import Link from 'next/link';
@@ -153,6 +154,7 @@ export function MainLayoutClient({
     { href: '/about', label: text.aboutCommissionShort, icon: <Info /> },
     { href: '/jockeys', label: text.jockeys },
     { href: '/trainers', label: text.trainers },
+    { href: '/owners', label: text.owners },
     { href: '/horses', label: text.horses },
     { href: '/tracks', label: text.tracks },
     { href: '/gallery', label: text.gallery },

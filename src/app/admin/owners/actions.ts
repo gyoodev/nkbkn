@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { z } from 'zod';
@@ -67,6 +68,7 @@ export async function upsertOwner(prevState: any, formData: FormData) {
     }
 
     revalidatePath('/admin/owners');
+    revalidatePath('/owners');
     redirect('/admin/owners');
 }
 
@@ -85,5 +87,6 @@ export async function deleteOwner(id: number): Promise<{ success: boolean; messa
     }
 
     revalidatePath('/admin/owners');
+    revalidatePath('/owners');
     return { success: true, message: 'Собственикът е изтрит успешно.' };
 }

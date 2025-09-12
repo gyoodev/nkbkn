@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useMemo } from 'react';
@@ -63,6 +64,7 @@ const translations = {
     jockeys: 'Жокеи',
     trainers: 'Треньoри',
     horses: 'Коне',
+    owners: 'Собственици',
     tracks: 'Хиподрум',
     gallery: 'Галерия',
     racePreview: 'Превю на състезание',
@@ -94,6 +96,8 @@ const translations = {
     jockeysPageDescription: 'Статистики и информация за водещите жокеи в България.',
     trainersPageTitle: 'Профили на треньори',
     trainersPageDescription: 'Постижения и информация за най-добрите треньори.',
+    ownersPageTitle: 'Собственици на коне',
+    ownersPageDescription: 'Информация за регистрираните собственици в системата.',
     horsesPageTitle: 'База данни с коне',
     horsesPageDescription: 'Регистрирани състезателни коне, родословие и минали резултати.',
     tracksPageTitle: 'Локатор на писти',
@@ -157,7 +161,7 @@ const translations = {
     
     // Trainers Page
     achievements: 'Постижения',
-    
+
     // Tracks Page
     interactiveMapComingSoon: 'Интерактивна карта - скоро',
 
@@ -238,6 +242,7 @@ const translations = {
     jockeys: 'Jockeys',
     trainers: 'Trainers',
     horses: 'Horses',
+    owners: 'Owners',
     tracks: 'Track',
     gallery: 'Gallery',
     racePreview: 'Race Preview',
@@ -268,6 +273,8 @@ const translations = {
     jockeysPageDescription: 'Statistics and information about the leading jockeys in Bulgaria.',
     trainersPageTitle: 'Trainer Profiles',
     trainersPageDescription: 'Achievements and information about the top trainers.',
+    ownersPageTitle: 'Horse Owners',
+    ownersPageDescription: 'Information about the registered owners in the system.',
     horsesPageTitle: 'Horse Database',
     horsesPageDescription: 'Registered racehorses, lineage, and past results.',
     tracksPageTitle: 'Track Locator',
