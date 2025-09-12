@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 const SocialLinkSchema = z.object({
   id: z.coerce.number(),
-  url: z.string().url('Моля, въведете валиден URL адрес.').or(z.literal('')).optional(),
+  url: z.union([z.string().url('Моля, въведете валиден URL адрес.'), z.literal('')]),
 });
 
 const AllSocialsSchema = z.array(SocialLinkSchema);
