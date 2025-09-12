@@ -228,16 +228,16 @@ export function MainLayoutClient({
           </div>
         </div>
 
-        <nav className="container mx-auto flex flex-col items-center justify-center px-4 py-4 relative">
+        <nav className="container mx-auto flex flex-col items-center justify-center px-4 py-2 relative">
            {/* Centered Logo */}
            <div className="flex justify-center w-full">
              <Link href="/" className="flex items-center gap-3">
-               <Image src={siteLogoUrl || '/logo.png'} alt="НКБКН Лого" width={150} height={150} className="h-36 w-auto" />
+               <Image src={siteLogoUrl || '/logo.png'} alt="НКБКН Лого" width={150} height={150} className="h-28 w-auto" />
             </Link>
            </div>
            
            {/* Desktop Nav Links */}
-          <div className="hidden items-center gap-2 text-sm font-medium uppercase text-gray-700 md:flex mt-4">
+          <div className="hidden items-center gap-2 text-sm font-medium uppercase text-gray-700 md:flex">
             {mainNavItems.map((item) => (
               <Link key={item.href} href={item.href} passHref>
                 <Button variant={pathname.startsWith(item.href) ? 'default' : 'ghost'}>{item.label}</Button>
