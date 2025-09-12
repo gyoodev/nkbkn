@@ -10,7 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import type { Trainer } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { User } from 'lucide-react';
+import { User, UserX } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export const dynamic = 'force-dynamic';
 
@@ -105,13 +106,25 @@ export default function TrainersPage() {
         title={text.trainersPageTitle}
         description={text.trainersPageDescription}
       />
-      <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-8">
         {loading ? (
-             Array.from({length: 3}).map((_, i) => <TrainerCardSkeleton key={i} />)
+             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {Array.from({length: 3}).map((_, i) => <TrainerCardSkeleton key={i} />)}
+            </div>
+        ) : trainers.length === 0 ? (
+            <Alert>
+                <UserX className="h-4 w-4" />
+                <AlertTitle>Няма добавени треньори</AlertTitle>
+                <AlertDescription>
+                    В момента няма добавени профили на треньори в системата.
+                </AlertDescription>
+            </Alert>
         ) : (
-            trainers.map((trainer) => (
-                <TrainerCard key={trainer.id} trainer={trainer} text={text} />
-            ))
+            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {trainers.map((trainer) => (
+                    <TrainerCard key={trainer.id} trainer={trainer} text={text} />
+                ))}
+            </div>
         )}
       </div>
     </div>

@@ -10,8 +10,9 @@ import { PageHeader } from '@/components/page-header';
 import type { Owner } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { User, Mail, Phone } from 'lucide-react';
+import { User, Mail, Phone, UserX } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 
 function OwnerCardSkeleton() {
@@ -89,13 +90,25 @@ export default function OwnersPage() {
                 title={text.ownersPageTitle}
                 description={text.ownersPageDescription}
             />
-            <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-8">
                 {loading ? (
-                    Array.from({length: 6}).map((_, i) => <OwnerCardSkeleton key={i} />)
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        {Array.from({length: 6}).map((_, i) => <OwnerCardSkeleton key={i} />)}
+                    </div>
+                ) : owners.length === 0 ? (
+                     <Alert>
+                        <UserX className="h-4 w-4" />
+                        <AlertTitle>Няма добавени собственици</AlertTitle>
+                        <AlertDescription>
+                            В момента няма добавени профили на собственици в системата.
+                        </AlertDescription>
+                    </Alert>
                 ) : (
-                    owners.map((owner) => (
-                        <OwnerCard key={owner.id} owner={owner} text={text} />
-                    ))
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        {owners.map((owner) => (
+                            <OwnerCard key={owner.id} owner={owner} text={text} />
+                        ))}
+                    </div>
                 )}
             </div>
         </div>

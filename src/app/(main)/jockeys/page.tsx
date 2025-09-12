@@ -9,7 +9,8 @@ import { PageHeader } from '@/components/page-header';
 import type { Jockey } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { User } from 'lucide-react';
+import { User, UserX } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export const dynamic = 'force-dynamic';
 
@@ -82,13 +83,25 @@ export default function JockeysPage() {
                 title={text.jockeysPageTitle}
                 description={text.jockeysPageDescription}
             />
-            <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="mt-8">
                 {loading ? (
-                    Array.from({length: 8}).map((_, i) => <JockeyCardSkeleton key={i} />)
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {Array.from({length: 8}).map((_, i) => <JockeyCardSkeleton key={i} />)}
+                    </div>
+                ) : jockeys.length === 0 ? (
+                    <Alert>
+                        <UserX className="h-4 w-4" />
+                        <AlertTitle>Няма добавени жокеи</AlertTitle>
+                        <AlertDescription>
+                            В момента няма добавени профили на жокеи в системата.
+                        </AlertDescription>
+                    </Alert>
                 ) : (
-                    jockeys.map((jockey) => (
-                        <JockeyCard key={jockey.id} jockey={jockey} text={text} />
-                    ))
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {jockeys.map((jockey) => (
+                            <JockeyCard key={jockey.id} jockey={jockey} text={text} />
+                        ))}
+                    </div>
                 )}
             </div>
         </div>
