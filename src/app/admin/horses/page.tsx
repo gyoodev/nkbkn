@@ -8,12 +8,12 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { MoreHorizontal, PlusCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
-import { HorseIcon } from '@/components/icons/horse-icon';
 import Link from 'next/link';
 import { DeleteHorseButton } from './_components/delete-horse-button';
 import type { Horse } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getHorses } from '@/lib/client/data';
+import { NewHorseIcon } from '@/components/icons/new-horse-icon';
 
 function HorsesTableSkeleton() {
     return (
@@ -70,7 +70,7 @@ export default function AdminHorsesPage() {
       <Card className="mt-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <HorseIcon className="h-6 w-6" />
+            <NewHorseIcon className="h-6 w-6" />
             Коне
           </CardTitle>
           <CardDescription>

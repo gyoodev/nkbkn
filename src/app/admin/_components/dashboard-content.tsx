@@ -3,16 +3,16 @@
 import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Users, FileText, PlusCircle, Mail, CalendarPlus, Activity } from 'lucide-react';
-import { HorseIcon } from '@/components/icons/horse-icon';
 import { Button } from '@/components/ui/button';
 import type { Stats } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
+import { NewHorseIcon } from '@/components/icons/new-horse-icon';
 
 
 export function DashboardContent({ stats, user }: { stats: Stats, user: User | null }) {
     
     const summaryStats = [
-        { title: 'Общо коне', value: stats.horses, icon: <HorseIcon className="h-6 w-6 text-muted-foreground" /> },
+        { title: 'Общо коне', value: stats.horses, icon: <NewHorseIcon className="h-6 w-6 text-muted-foreground" /> },
         { title: 'Жокеи', value: stats.jockeys, icon: <Users className="h-6 w-6 text-muted-foreground" /> },
         { title: 'Треньoри', value: stats.trainers, icon: <Users className="h-6 w-6 text-muted-foreground" /> },
         { title: 'Новини', value: stats.news, icon: <FileText className="h-6 w-6 text-muted-foreground" /> },
@@ -21,7 +21,7 @@ export function DashboardContent({ stats, user }: { stats: Stats, user: User | n
      const quickTools = [
         { href: '/admin/news/new', label: 'Добави новина', icon: <PlusCircle /> },
         { href: '/admin/calendar/new', label: 'Добави събитие', icon: <CalendarPlus /> },
-        { href: '/admin/horses/new', label: 'Добави кон', icon: <HorseIcon /> },
+        { href: '/admin/horses/new', label: 'Добави кон', icon: <NewHorseIcon /> },
         { href: '/admin/submissions', label: 'Преглед на заявки', icon: <Mail /> },
     ]
 

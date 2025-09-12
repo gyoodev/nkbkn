@@ -40,12 +40,12 @@ import {
     SidebarGroupLabel,
     SidebarGroupContent
 } from '@/components/ui/sidebar';
-import { HorseLogo } from '@/components/icons/horse-logo';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { createBrowserClient } from '@/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
+import { NewHorseIcon } from '@/components/icons/new-horse-icon';
 
 
 export default function AdminLayoutClient({ children, user }: { children: React.ReactNode, user: User | null }) {
@@ -70,8 +70,8 @@ export default function AdminLayoutClient({ children, user }: { children: React.
 
   const managementNavItems = [
      { href: '/admin/jockeys', label: 'Жокеи', icon: <Users /> },
-     { href: '/admin/trainers', label: 'Треньори', icon: <Users /> },
-     { href: '/admin/horses', label: 'Коне', icon: <HorseLogo /> },
+     { href: '/admin/trainers', label: 'Треньoри', icon: <Users /> },
+     { href: '/admin/horses', label: 'Коне', icon: <NewHorseIcon /> },
      { href: '/admin/owners', label: 'Собственици', icon: <Users /> },
      { href: '/admin/partners', label: 'Партньори', icon: <Building /> },
      { href: '/admin/tracks', label: 'Хиподруми', icon: <MapPin /> },
@@ -92,7 +92,7 @@ export default function AdminLayoutClient({ children, user }: { children: React.
         <Sidebar>
             <SidebarHeader>
                 <div className="flex items-center gap-2">
-                    <HorseLogo className="h-8 w-8 text-primary" />
+                    <NewHorseIcon className="h-8 w-8 text-primary" />
                     <span className="text-lg font-semibold">НКБКН Админ</span>
                 </div>
             </SidebarHeader>

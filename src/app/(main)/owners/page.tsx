@@ -13,7 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { User, UserX } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { HorseIcon } from '@/components/icons/horse-icon';
+import { NewHorseIcon } from '@/components/icons/new-horse-icon';
 
 
 function OwnerCardSkeleton() {
@@ -50,7 +50,7 @@ function OwnerCard({ owner, text }: { owner: Owner, text: any }) {
         <CardContent>
             <div className="mt-2 space-y-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
-                    <HorseIcon className="h-4 w-4" />
+                    <NewHorseIcon className="h-4 w-4" />
                     <span>Брой коне: {owner.horse_count || 0}</span>
                 </div>
             </div>

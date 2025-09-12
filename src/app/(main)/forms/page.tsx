@@ -13,11 +13,11 @@ import { submitApplication } from './actions';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
-import { HorseIcon } from '@/components/icons/horse-icon';
 import { User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { NewHorseIcon } from '@/components/icons/new-horse-icon';
 
 
 function SubmitButton() {
@@ -211,7 +211,7 @@ export default function FormsPage() {
         { value: 'jockey', title: 'Заявка за жокей', description: 'Кандидатствайте за лиценз', icon: <User className="h-8 w-8" />, component: <JockeyForm /> },
         { value: 'trainer', title: 'Заявка за треньор', description: 'Кандидатствайте за лиценз', icon: <User className="h-8 w-8" />, component: <TrainerForm /> },
         { value: 'owner', title: 'Заявка за собственик', description: 'Регистрирайте се в системата', icon: <User className="h-8 w-8" />, component: <OwnerForm /> },
-        { value: 'horse', title: 'Заявка за кон', description: 'Регистрирайте нов състезателен кон', icon: <HorseIcon className="h-8 w-8" />, component: <HorseForm /> },
+        { value: 'horse', title: 'Заявка за кон', description: 'Регистрирайте нов състезателен кон', icon: <NewHorseIcon className="h-8 w-8" />, component: <HorseForm /> },
     ];
     
     const activeFormData = forms.find(f => f.value === activeForm);
