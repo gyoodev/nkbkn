@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { useActionState, useEffect, useRef } from 'react';
@@ -11,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
-import { Share2, Loader2 } from 'lucide-react';
+import { Share2, Loader2, Mail, Phone, User } from 'lucide-react';
 import type { SocialLink } from '@/lib/types';
 import { useState } from 'react';
 import { getSocialLinks } from '@/lib/client/data';
@@ -146,12 +145,20 @@ export default function ContactPage() {
                 <CardHeader>
                     <CardTitle>{text.findUs}</CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <p className="text-muted-foreground">
-                        {text.appNameFull}<br/>
-                        {text.addressStreet}<br/>
-                        {text.addressCity}
-                    </p>
+                <CardContent className="space-y-3 text-muted-foreground">
+                    <p>Търговище Център<br/>ул. Дамян Груев 1<br/>7700 Търговище</p>
+                    <div className="flex items-center gap-2 pt-2">
+                        <Mail className="h-4 w-4" />
+                        <a href="mailto:info@nkbkn.bg" className="hover:text-primary">info@nkbkn.bg</a>
+                    </div>
+                     <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4" />
+                        <span>0899898029</span>
+                    </div>
+                     <div className="flex items-center gap-2">
+                        <User className="h-4 w-4" />
+                        <span>Председател: Бернар Кемалов</span>
+                    </div>
                 </CardContent>
             </Card>
              <Card>

@@ -126,8 +126,6 @@ const translations = {
     sendMessage: 'Изпратете ни съобщение',
     findUs: 'Намерете ни',
     followUs: 'Последвайте ни',
-    addressStreet: 'ул. "Състезателна" 1',
-    addressCity: '1000 София, България',
 
     // Horse Table
     horseName: 'Име на коня',
@@ -302,8 +300,6 @@ const translations = {
     sendMessage: 'Send us a message',
     findUs: 'Find Us',
     followUs: 'Follow Us',
-    addressStreet: '1 "Sastezatelna" Str.',
-    addressCity: '1000 Sofia, Bulgaria',
 
     // Horse Table
     horseName: 'Horse Name',
@@ -391,6 +387,3 @@ export const useLanguage = () => {
   }
   return context;
 };
-
-    
-    
