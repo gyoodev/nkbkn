@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { PageHeader } from '@/components/page-header';
@@ -16,6 +17,7 @@ import { HorseIcon } from '@/components/icons/horse-icon';
 import { User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 
 function SubmitButton() {
@@ -131,7 +133,21 @@ function HorseForm() {
             <input type="hidden" name="type" value="Кон" />
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-1.5"><Label htmlFor="horse_name">Име на коня</Label><Input id="horse_name" name="horse_name" required /></div>
+                  <div className="space-y-1.5"><Label htmlFor="horse_name">Име</Label><Input id="horse_name" name="horse_name" required /></div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="gender">Пол</Label>
+                    <Select name="gender" required>
+                        <SelectTrigger id="gender">
+                            <SelectValue placeholder="Изберете пол" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Кобила">Кобила</SelectItem>
+                            <SelectItem value="Жребец">Жребец</SelectItem>
+                            <SelectItem value="Кастрат">Кастрат</SelectItem>
+                        </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5"><Label htmlFor="passport_number">Номер на паспорт</Label><Input id="passport_number" name="passport_number" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="age">Възраст</Label><Input id="age" name="age" type="number" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="sire">Баща</Label><Input id="sire" name="sire" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="dam">Майка</Label><Input id="dam" name="dam" required /></div>

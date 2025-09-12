@@ -1,5 +1,6 @@
 
 
+
 export interface Jockey {
   id: number;
   name: string;
@@ -141,6 +142,8 @@ export interface Submission {
     sire?: string | null;
     dam?: string | null;
     owner?: string | null;
+    gender?: 'Кобила' | 'Жребец' | 'Кастрат' | null;
+    passport_number?: string | null;
     
     // Shared stats for horse/jockey/trainer
     mounts?: number | null;

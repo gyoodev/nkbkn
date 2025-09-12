@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { createServerClient } from "@/lib/supabase/server";
@@ -29,6 +30,8 @@ const ApplicationSchema = z.object({
   owner: z.string().optional(),
   mounts: z.coerce.number().optional(),
   wins: z.coerce.number().optional(),
+  gender: z.enum(['Кобила', 'Жребец', 'Кастрат']).optional(),
+  passport_number: z.string().optional(),
 });
 
 
@@ -74,6 +77,8 @@ export async function submitApplication(prevState: State, formData: FormData): P
             owner: formData.get('owner'),
             mounts: formData.get('mounts'),
             wins: formData.get('wins'),
+            gender: formData.get('gender'),
+            passport_number: formData.get('passport_number'),
         };
     }
 
