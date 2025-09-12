@@ -1,11 +1,16 @@
 
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { MapPin, TrendingUp } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { MapPin, TrendingUp, Navigation } from 'lucide-react';
 import { PageHeader } from '@/components/page-header';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export default function TracksPage() {
+  const address = "с. Гецово, обл. Разград";
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
        <PageHeader
@@ -16,7 +21,7 @@ export default function TracksPage() {
             <CardHeader>
                 <CardTitle className="flex items-center gap-3 font-headline text-2xl text-primary">
                     <MapPin className="h-6 w-6" />
-                    с. Гецово, обл. Разград
+                    {address}
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -33,6 +38,14 @@ export default function TracksPage() {
                     <span>Пясъчна</span>
                 </div>
             </CardContent>
+            <CardFooter>
+                 <Button asChild>
+                    <Link href={googleMapsUrl} target="_blank">
+                        <Navigation className="mr-2 h-4 w-4" />
+                        Навигиране към хиподрума
+                    </Link>
+                </Button>
+            </CardFooter>
         </Card>
       </div>
     </div>
