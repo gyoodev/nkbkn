@@ -107,7 +107,9 @@ export default function AdminOwnersPage() {
                         <TableCell className="font-medium flex items-center gap-2">
                              <Avatar>
                                 <AvatarImage src={owner.image_url ?? undefined} alt={owner.name}/>
-                                <AvatarFallback>{owner.name.charAt(0)}</AvatarFallback>
+                                <AvatarFallback>
+                                    <Users className="h-5 w-5" />
+                                </AvatarFallback>
                             </Avatar>
                             {owner.name}
                         </TableCell>

@@ -42,8 +42,8 @@ function JockeyCard({ jockey, text }: { jockey: Jockey, text: any }) {
                 data-ai-hint="portrait person"
             />
           ) : (
-            <div className="flex h-full w-full items-center justify-center">
-                <User className="h-16 w-16 text-muted-foreground" />
+            <div className="flex h-full w-full items-center justify-center bg-muted">
+                <User className="h-24 w-24 text-muted-foreground" />
             </div>
           )}
         </div>
