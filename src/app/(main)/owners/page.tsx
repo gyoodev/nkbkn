@@ -10,9 +10,10 @@ import { PageHeader } from '@/components/page-header';
 import type { Owner } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { User, Mail, Phone, UserX } from 'lucide-react';
+import { User, UserX } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { HorseIcon } from '@/components/icons/horse-icon';
 
 
 function OwnerCardSkeleton() {
@@ -22,12 +23,11 @@ function OwnerCardSkeleton() {
             <Skeleton className="h-16 w-16 rounded-full" />
             <div className="space-y-2">
                 <Skeleton className="h-6 w-40" />
-                <Skeleton className="h-4 w-48" />
+                <Skeleton className="h-4 w-24" />
             </div>
         </CardHeader>
         <CardContent className="space-y-2 pt-0">
              <Skeleton className="h-4 w-full" />
-             <Skeleton className="h-4 w-3/4" />
         </CardContent>
     </Card>
   );
@@ -45,23 +45,14 @@ function OwnerCard({ owner, text }: { owner: Owner, text: any }) {
             </Avatar>
             <div>
                 <CardTitle className="font-headline text-xl text-primary">{owner.name}</CardTitle>
-                {owner.address && <CardDescription>{owner.address}</CardDescription>}
             </div>
         </CardHeader>
         <CardContent>
             <div className="mt-2 space-y-2 text-sm text-muted-foreground">
-                {owner.email && (
-                    <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4" />
-                        <a href={`mailto:${owner.email}`} className="hover:underline">{owner.email}</a>
-                    </div>
-                )}
-                 {owner.phone && (
-                    <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4" />
-                        <span>{owner.phone}</span>
-                    </div>
-                )}
+                <div className="flex items-center gap-2">
+                    <HorseIcon className="h-4 w-4" />
+                    <span>Брой коне: {owner.horse_count || 0}</span>
+                </div>
             </div>
         </CardContent>
     </Card>

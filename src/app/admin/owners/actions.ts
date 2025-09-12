@@ -16,6 +16,7 @@ const FormSchema = z.object({
   email: z.string().email('Въведете валиден имейл').nullable().optional(),
   phone: z.string().nullable().optional(),
   image_url: z.string().url('Въведете валиден URL').nullable().optional(),
+  horse_count: z.coerce.number().min(0, "Броят коне трябва да е положително число.").nullable().optional(),
 });
 
 async function checkAdmin() {
@@ -44,6 +45,7 @@ export async function upsertOwner(prevState: any, formData: FormData) {
         email: formData.get('email') || null,
         phone: formData.get('phone') || null,
         image_url: formData.get('image_url') || null,
+        horse_count: formData.get('horse_count') || null,
     });
 
     if (!validatedFields.success) {

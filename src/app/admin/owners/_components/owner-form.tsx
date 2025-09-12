@@ -72,10 +72,15 @@ export function OwnerForm({ owner }: { owner?: Owner }) {
             <Input id="phone" name="phone" type="tel" defaultValue={owner?.phone || ''} />
             {state.errors?.phone && <p className="text-sm font-medium text-destructive">{state.errors.phone}</p>}
           </div>
-           <div className="space-y-1 md:col-span-2">
+           <div className="space-y-1">
             <Label htmlFor="image_url">URL на снимка</Label>
             <Input id="image_url" name="image_url" defaultValue={owner?.image_url || ''} />
              {state.errors?.image_url && <p className="text-sm font-medium text-destructive">{state.errors.image_url}</p>}
+          </div>
+           <div className="space-y-1">
+            <Label htmlFor="horse_count">Брой коне</Label>
+            <Input id="horse_count" name="horse_count" type="number" defaultValue={owner?.horse_count || 0} />
+             {state.errors?.horse_count && <p className="text-sm font-medium text-destructive">{state.errors.horse_count}</p>}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">

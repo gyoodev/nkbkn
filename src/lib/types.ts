@@ -2,6 +2,7 @@
 
 
 
+
 export interface Jockey {
   id: number;
   name: string;
@@ -187,4 +188,5 @@ export interface Owner {
     email: string | null;
     phone: string | null;
     image_url: string | null;
+    horse_count: number | null;
 }
