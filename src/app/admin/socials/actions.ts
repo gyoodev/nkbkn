@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 const SocialLinkSchema = z.object({
   id: z.coerce.number(),
-  url: z.string().url('Моля, въведете валиден URL адрес.'),
+  url: z.string().url('Моля, въведете валиден URL адрес.').or(z.literal('')).optional(),
 });
 
 const AllSocialsSchema = z.array(SocialLinkSchema);
@@ -54,11 +54,12 @@ export async function updateSocialLinks(
   const validatedFields = AllSocialsSchema.safeParse(linksToUpdate);
   
   if (!validatedFields.success) {
+      console.error(validatedFields.error);
       return { success: false, message: 'Възникна грешка при валидацията на данните.' };
   }
 
   const upsertPromises = validatedFields.data.map((link) =>
-    supabase.from('social_links').update({ url: link.url }).eq('id', link.id)
+    supabase.from('social_links').update({ url: link.url || '' }).eq('id', link.id)
   );
 
   const results = await Promise.all(upsertPromises);
