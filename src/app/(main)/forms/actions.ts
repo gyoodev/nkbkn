@@ -1,3 +1,4 @@
+
 'use server';
 
 import { createServerClient } from "@/lib/supabase/server";
@@ -17,7 +18,7 @@ const ApplicationSchema = z.object({
   egn: z.string().optional(),
   address: z.string().optional(),
 
-  // Trainer specific
+  // Trainer/Owner specific
   horse_count: z.coerce.number().optional(),
   
   // Horse specific
@@ -60,7 +61,7 @@ export async function submitApplication(prevState: State, formData: FormData): P
      if (formType === 'Жокей' || formType === 'Треньор') {
         dataToValidate.wins = formData.get('wins');
     }
-    if (formType === 'Треньор') {
+    if (formType === 'Треньор' || formType === 'Собственик') {
         dataToValidate.horse_count = formData.get('horse_count');
     }
     if (formType === 'Кон') {

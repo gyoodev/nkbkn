@@ -132,7 +132,7 @@ export interface Submission {
     egn?: string | null;
     address?: string | null;
 
-    // Trainer specific
+    // Trainer/Owner specific
     horse_count?: number | null;
     
     // Horse specific
