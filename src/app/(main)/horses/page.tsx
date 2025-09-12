@@ -16,6 +16,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import type { Horse } from '@/lib/types';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { NewHorseIcon } from '@/components/icons/new-horse-icon';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,7 +78,19 @@ export default function HorsesPage() {
       />
       <Card className="mt-8">
         <CardContent className="p-0">
-         {loading ? <HorsesTableSkeleton /> : (
+         {loading ? (
+            <HorsesTableSkeleton />
+         ) : !loading && horses.length === 0 ? (
+            <div className="p-6">
+                 <Alert>
+                    <NewHorseIcon className="h-4 w-4" />
+                    <AlertTitle>Няма регистрирани коне</AlertTitle>
+                    <AlertDescription>
+                        В момента няма регистрирани коне в системата.
+                    </AlertDescription>
+                </Alert>
+            </div>
+         ) : (
             <Table>
                 <TableHeader>
                 <TableRow>
