@@ -5,13 +5,6 @@ import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
-const SocialLinkSchema = z.object({
-  id: z.coerce.number(),
-  url: z.union([z.string().url('Моля, въведете валиден URL адрес.'), z.literal('')]),
-});
-
-const AllSocialsSchema = z.array(SocialLinkSchema);
-
 type State = {
   success: boolean;
   message: string;
@@ -51,14 +44,7 @@ export async function updateSocialLinks(
     url: value as string,
   }));
   
-  const validatedFields = AllSocialsSchema.safeParse(linksToUpdate);
-  
-  if (!validatedFields.success) {
-      console.error(validatedFields.error);
-      return { success: false, message: 'Възникна грешка при валидацията на данните.' };
-  }
-
-  const upsertPromises = validatedFields.data.map((link) =>
+  const upsertPromises = linksToUpdate.map((link) =>
     supabase.from('social_links').update({ url: link.url || '' }).eq('id', link.id)
   );
 
