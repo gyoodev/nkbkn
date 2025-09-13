@@ -100,10 +100,10 @@ export async function signup(prevState: { error?: string } | undefined, formData
 
   // Create a profile for the new user.
   const { error: rpcError } = await supabase.rpc('create_user_profile', {
-      user_id: authData.user.id,
-      email: email,
-      phone: phone,
-      username: username,
+      p_user_id: authData.user.id,
+      p_email: email,
+      p_phone: phone,
+      p_username: username,
   });
 
   if (rpcError) {
