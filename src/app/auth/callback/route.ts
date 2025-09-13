@@ -19,5 +19,6 @@ export async function GET(request: Request) {
   }
 
   // return the user to an error page with instructions
+  // This page doesn't exist, but it's a good practice to have it.
   return NextResponse.redirect(`${origin}/auth/auth-code-error`);
 }

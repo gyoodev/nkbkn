@@ -93,7 +93,7 @@ export function Footer({ socials }: { socials: SocialLink[] }) {
             </p>
             <div className="flex space-x-4">
                 {socials.map((social) => (
-                    <a key={social.id} href={social.url} className="text-gray-500 hover:text-primary dark:hover:text-primary-foreground">
+                    <a key={social.id} href={social.url} className="text-gray-500 hover:text-primary dark:hover:text-white">
                         <span className="sr-only">{social.name}</span>
                         <SocialIcon name={social.name} className="h-5 w-5" />
                     </a>

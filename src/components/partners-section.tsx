@@ -8,6 +8,10 @@ import type { Partner } from "@/lib/types";
 export function PartnersSection({ partners }: { partners: Partner[] }) {
     const { text } = useLanguage();
 
+    if (partners.length === 0) {
+        return null;
+    }
+
     return (
         <section className="py-12 bg-white dark:bg-gray-950">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,7 +20,6 @@ export function PartnersSection({ partners }: { partners: Partner[] }) {
                         {text.ourTrustedPartners}
                     </h2>
                 </div>
-                 {partners.length > 0 && (
                  <div
                   className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
                 >
@@ -35,7 +38,6 @@ export function PartnersSection({ partners }: { partners: Partner[] }) {
                         ))}
                     </ul>
                 </div>
-                 )}
             </div>
         </section>
     );

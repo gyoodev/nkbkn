@@ -91,13 +91,6 @@ export default function SignupPage() {
                     <AlertDescription>{state.error}</AlertDescription>
                 </Alert>
             )}
-             {state?.message && (
-                <Alert>
-                    <Terminal className="h-4 w-4" />
-                    <AlertTitle>Успех!</AlertTitle>
-                    <AlertDescription>{state.message}</AlertDescription>
-                </Alert>
-            )}
             <SubmitButton />
         </form>
         <div className="text-center text-sm">
