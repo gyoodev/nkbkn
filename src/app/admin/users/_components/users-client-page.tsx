@@ -35,28 +35,30 @@ import type { UserProfile } from '@/lib/types';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/hooks/use-language';
 
 function EmailDialog({ user }: { user: UserProfile }) {
     const [message, setMessage] = useState('');
+    const { text } = useLanguage();
     return (
         <Dialog>
             <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
                     <Mail className="mr-2 h-4 w-4" />
-                    Изпрати имейл
+                    {text.sendMessage}
                 </Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Изпращане на имейл до {user.full_name || user.email}</DialogTitle>
+                    <DialogTitle>{text.sendMessage} до {user.full_name || user.email}</DialogTitle>
                     <DialogDescription>
                         Напишете вашето съобщение по-долу. Натискането на бутона "Изпрати" ще отвори вашия имейл клиент по подразбиране.
                     </DialogDescription>
                 </DialogHeader>
                  <div className="grid w-full items-center gap-2 py-4">
-                    <div className="text-sm"><strong>Имейл:</strong> {user.email}</div>
+                    <div className="text-sm"><strong>{text.email}:</strong> {user.email}</div>
                     <div className="text-sm"><strong>Телефон:</strong> {user.phone || 'Няма'}</div>
-                    <Label htmlFor="email-message" className="mt-2">Съобщение</Label>
+                    <Label htmlFor="email-message" className="mt-2">{text.message}</Label>
                     <Textarea 
                         id="email-message"
                         placeholder="Вашето съобщение тук..." 
@@ -67,7 +69,7 @@ function EmailDialog({ user }: { user: UserProfile }) {
                 </div>
                 <DialogFooter>
                      <Button asChild>
-                        <a href={`mailto:${user.email}?body=${encodeURIComponent(message)}`}>Изпрати</a>
+                        <a href={`mailto:${user.email}?body=${encodeURIComponent(message)}`}>{text.submit}</a>
                     </Button>
                 </DialogFooter>
             </DialogContent>

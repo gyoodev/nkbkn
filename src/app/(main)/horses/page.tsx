@@ -22,18 +22,19 @@ import { NewHorseIcon } from '@/components/icons/new-horse-icon';
 export const dynamic = 'force-dynamic';
 
 function HorsesTableSkeleton() {
+    const { text } = useLanguage();
     return (
         <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Име на коня</TableHead>
-                <TableHead>Баща</TableHead>
-                <TableHead>Майка</TableHead>
-                <TableHead className="text-center">Участия</TableHead>
-                <TableHead className="text-center">Победи</TableHead>
-                 <TableHead className="text-center">Най-добро време</TableHead>
-                <TableHead className="text-center">Възраст</TableHead>
-                <TableHead>Собственик</TableHead>
+                <TableHead>{text.horseNameTable}</TableHead>
+                <TableHead>{text.sire}</TableHead>
+                <TableHead>{text.dam}</TableHead>
+                <TableHead className="text-center">{text.mounts}</TableHead>
+                <TableHead className="text-center">{text.wins}</TableHead>
+                 <TableHead className="text-center">{text.bestTime}</TableHead>
+                <TableHead className="text-center">{text.age}</TableHead>
+                <TableHead>{text.owner}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -94,12 +95,12 @@ export default function HorsesPage() {
             <Table>
                 <TableHeader>
                 <TableRow>
-                    <TableHead>{text.horseName}</TableHead>
+                    <TableHead>{text.horseNameTable}</TableHead>
                     <TableHead>{text.sire}</TableHead>
                     <TableHead>{text.dam}</TableHead>
                     <TableHead className="text-center">{text.mounts}</TableHead>
                     <TableHead className="text-center">{text.wins}</TableHead>
-                     <TableHead className="text-center">Най-добро време</TableHead>
+                     <TableHead className="text-center">{text.bestTime}</TableHead>
                     <TableHead className="text-center">{text.age}</TableHead>
                     <TableHead>{text.owner}</TableHead>
                 </TableRow>
