@@ -2,13 +2,13 @@
 
 'use client';
 
-import { useState } from 'react';
-import { useTransition } from 'react';
+import { useState, useTransition, useActionState, useRef, useEffect } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { MoreHorizontal, Mail, Shield, User, Loader2, AlertTriangle } from 'lucide-react';
+import { MoreHorizontal, Mail, Shield, User, Loader2, AlertTriangle, Send } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog"
 import {
     DropdownMenu,
@@ -30,18 +31,49 @@ import {
     DropdownMenuPortal,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { updateUserRole } from '../actions';
+import { updateUserRole, sendEmailToUser } from '../actions';
 import type { UserProfile } from '@/lib/types';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/hooks/use-language';
+import { Input } from '@/components/ui/input';
 
 function EmailDialog({ user }: { user: UserProfile }) {
-    const [message, setMessage] = useState('');
     const { text } = useLanguage();
+    const [open, setOpen] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
+    const { toast } = useToast();
+    const initialState = { success: false, message: '' };
+    const [state, formAction] = useActionState(sendEmailToUser, initialState);
+
+     useEffect(() => {
+        if(state.message) {
+            toast({
+                variant: state.success ? 'default' : 'destructive',
+                title: state.success ? 'Успех' : 'Грешка',
+                description: state.message
+            });
+            if (state.success) {
+                setOpen(false);
+                formRef.current?.reset();
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [state]);
+
+    function SubmitButton() {
+        const { pending } = useFormStatus();
+        return (
+             <Button type="submit" disabled={pending}>
+                {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {pending ? 'Изпращане...' : 'Изпрати съобщение'}
+            </Button>
+        )
+    }
+
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
                     <Mail className="mr-2 h-4 w-4" />
@@ -52,26 +84,34 @@ function EmailDialog({ user }: { user: UserProfile }) {
                 <DialogHeader>
                     <DialogTitle>{text.sendMessage} до {user.full_name || user.email}</DialogTitle>
                     <DialogDescription>
-                        Напишете вашето съобщение по-долу. Натискането на бутона "Изпрати" ще отвори вашия имейл клиент по подразбиране.
+                       Съобщението ще бъде изпратено директно до {user.email}.
                     </DialogDescription>
                 </DialogHeader>
-                 <div className="grid w-full items-center gap-2 py-4">
-                    <div className="text-sm"><strong>{text.email}:</strong> {user.email}</div>
-                    <div className="text-sm"><strong>Телефон:</strong> {user.phone || 'Няма'}</div>
-                    <Label htmlFor="email-message" className="mt-2">{text.message}</Label>
-                    <Textarea 
-                        id="email-message"
-                        placeholder="Вашето съобщение тук..." 
-                        rows={6}
-                        value={message}
-                        onChange={e => setMessage(e.target.value)}
-                    />
-                </div>
-                <DialogFooter>
-                     <Button asChild>
-                        <a href={`mailto:${user.email}?body=${encodeURIComponent(message)}`}>{text.submit}</a>
-                    </Button>
-                </DialogFooter>
+                <form action={formAction} ref={formRef}>
+                     <input type="hidden" name="to" value={user.email || ''} />
+                     <div className="space-y-4 py-4">
+                        <div className="text-sm"><strong>Телефон:</strong> {user.phone || 'Няма'}</div>
+                         <div className="space-y-2">
+                            <Label htmlFor="subject">Тема</Label>
+                            <Input id="subject" name="subject" defaultValue={`Съобщение от НКБКН`} />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="email-message">{text.message}</Label>
+                            <Textarea 
+                                id="email-message"
+                                name="message"
+                                placeholder="Вашето съобщение тук..." 
+                                rows={6}
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <SubmitButton />
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">Отказ</Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </form>
             </DialogContent>
         </Dialog>
     )
