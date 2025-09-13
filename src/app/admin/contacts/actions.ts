@@ -8,6 +8,9 @@ import { z } from 'zod';
 import * as nodemailer from 'nodemailer';
 import { EmailTemplate } from '@/lib/email-template';
 import { getSiteContent } from '@/lib/server/data';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 async function checkAdmin() {
     const supabase = createServerClient();
