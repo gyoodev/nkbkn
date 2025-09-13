@@ -87,7 +87,7 @@ export default function SignupPage() {
              {state?.error && (
                 <Alert variant="destructive">
                     <Terminal className="h-4 w-4" />
-                    <AlertTitle>Грешка</AlertTitle>
+                    <AlertTitle>What is the error</AlertTitle>
                     <AlertDescription>{state.error}</AlertDescription>
                 </Alert>
             )}
