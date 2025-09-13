@@ -1,5 +1,6 @@
 
 
+
 'use client';
 
 import { useEffect, useState, useTransition, useActionState } from 'react';
@@ -16,15 +17,16 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 type ContentState = {
-    about_history: string;
-    about_mission: string;
-    about_team_text: string;
-    terms_content: string;
-    privacy_content: string;
-    slider_title: string;
-    slider_desc: string;
+    about_history_bg: string; about_history_en: string;
+    about_mission_bg: string; about_mission_en: string;
+    about_team_text_bg: string; about_team_text_en: string;
+    terms_content_bg: string; terms_content_en: string;
+    privacy_content_bg: string; privacy_content_en: string;
+    slider_title_bg: string; slider_title_en: string;
+    slider_desc_bg: string; slider_desc_en: string;
 }
 
 interface AdminContentClientProps {
@@ -150,16 +152,16 @@ function ContentCard({
   contentKey: string;
   title: string;
   description: string;
-  content: string;
-  onContentChange: (newContent: string) => void;
+  content: { bg: string, en: string };
+  onContentChange: (lang: 'bg' | 'en', newContent: string) => void;
   useRichText?: boolean;
 }) {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
-  const handleSave = () => {
+  const handleSave = (lang: 'bg' | 'en') => {
     startTransition(async () => {
-      const { error } = await updateContent(contentKey, content);
+      const { error } = await updateContent(`${contentKey}_${lang}`, content[lang]);
       if (error) {
         toast({
           variant: 'destructive',
@@ -169,7 +171,7 @@ function ContentCard({
       } else {
         toast({
           title: 'Успех!',
-          description: `Секция "${title}" е запазена успешно.`,
+          description: `Секция "${title}" (${lang.toUpperCase()}) е запазена успешно.`,
         });
       }
     });
@@ -182,23 +184,50 @@ function ContentCard({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div>
-          <Label htmlFor={`${contentKey}-editor`}>Съдържание</Label>
-           {useRichText ? (
-            <RichTextEditor value={content} onChange={onContentChange} />
-          ) : (
-             <Textarea
-                id={`${contentKey}-editor`}
-                value={content}
-                onChange={(e) => onContentChange(e.target.value)}
-                rows={useRichText ? 5 : 2}
-             />
-          )}
-        </div>
-        <Button onClick={handleSave} disabled={isPending}>
-          {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Запази промените
-        </Button>
+        <Tabs defaultValue="bg" className="w-full">
+            <TabsList>
+                <TabsTrigger value="bg">Български</TabsTrigger>
+                <TabsTrigger value="en">English</TabsTrigger>
+            </TabsList>
+            <TabsContent value="bg" className="mt-4 space-y-4">
+                 <div>
+                    <Label htmlFor={`${contentKey}-editor-bg`}>Съдържание (BG)</Label>
+                    {useRichText ? (
+                        <RichTextEditor value={content.bg} onChange={(newContent) => onContentChange('bg', newContent)} />
+                    ) : (
+                        <Textarea
+                            id={`${contentKey}-editor-bg`}
+                            value={content.bg}
+                            onChange={(e) => onContentChange('bg', e.target.value)}
+                            rows={useRichText ? 5 : 3}
+                        />
+                    )}
+                 </div>
+                 <Button onClick={() => handleSave('bg')} disabled={isPending}>
+                    {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Запази Български
+                </Button>
+            </TabsContent>
+            <TabsContent value="en" className="mt-4 space-y-4">
+                 <div>
+                    <Label htmlFor={`${contentKey}-editor-en`}>Content (EN)</Label>
+                    {useRichText ? (
+                        <RichTextEditor value={content.en} onChange={(newContent) => onContentChange('en', newContent)} />
+                    ) : (
+                        <Textarea
+                            id={`${contentKey}-editor-en`}
+                            value={content.en}
+                            onChange={(e) => onContentChange('en', e.target.value)}
+                             rows={useRichText ? 5 : 3}
+                        />
+                    )}
+                 </div>
+                 <Button onClick={() => handleSave('en')} disabled={isPending}>
+                    {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Save English
+                </Button>
+            </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );
@@ -212,6 +241,10 @@ export function AdminContentClient({
     initialSiteLogoUrl
 }: AdminContentClientProps) {
   const [content, setContent] = useState<ContentState>(initialContent);
+
+  const handleContentChange = (key: keyof ContentState, newContent: string) => {
+      setContent(c => ({...c, [key]: newContent }));
+  }
 
   return (
       <div className="grid gap-8">
@@ -248,8 +281,8 @@ export function AdminContentClient({
                 contentKey="slider_title"
                 title="Заглавие на началната страница"
                 description="Основното заглавие, което се показва на голямата снимка на началната страница."
-                content={content.slider_title}
-                onContentChange={(newContent) => setContent(c => ({...c, slider_title: newContent}))}
+                content={{ bg: content.slider_title_bg, en: content.slider_title_en }}
+                onContentChange={(lang, newContent) => handleContentChange(`slider_title_${lang}`, newContent)}
                 useRichText={false}
             />
 
@@ -257,8 +290,8 @@ export function AdminContentClient({
                 contentKey="slider_desc"
                 title="Подзаглавие на началната страница"
                 description="Текстът под основното заглавие на началната страница."
-                content={content.slider_desc}
-                onContentChange={(newContent) => setContent(c => ({...c, slider_desc: newContent}))}
+                content={{ bg: content.slider_desc_bg, en: content.slider_desc_en }}
+                onContentChange={(lang, newContent) => handleContentChange(`slider_desc_${lang}`, newContent)}
                 useRichText={false}
             />
 
@@ -266,24 +299,24 @@ export function AdminContentClient({
                 contentKey="about_history"
                 title="История"
                 description="Редактирайте съдържанието на секция 'Нашата история' в страница 'За нас'."
-                content={content.about_history}
-                onContentChange={(newContent) => setContent(c => ({...c, about_history: newContent}))}
+                content={{ bg: content.about_history_bg, en: content.about_history_en }}
+                onContentChange={(lang, newContent) => handleContentChange(`about_history_${lang}`, newContent)}
             />
             
             <ContentCard
                 contentKey="about_mission"
                 title="Мисия"
                 description="Редактирайте съдържанието на секция 'Нашата мисия' в страница 'За нас'."
-                content={content.about_mission}
-                onContentChange={(newContent) => setContent(c => ({...c, about_mission: newContent}))}
+                content={{ bg: content.about_mission_bg, en: content.about_mission_en }}
+                onContentChange={(lang, newContent) => handleContentChange(`about_mission_${lang}`, newContent)}
             />
 
             <ContentCard
                 contentKey="about_team_text"
                 title="Екип"
                 description="Текстът, който се показва в секция 'Екип' на страница 'За нас'."
-                content={content.about_team_text}
-                onContentChange={(newContent) => setContent(c => ({...c, about_team_text: newContent}))}
+                content={{ bg: content.about_team_text_bg, en: content.about_team_text_en }}
+                onContentChange={(lang, newContent) => handleContentChange(`about_team_text_${lang}`, newContent)}
                 useRichText={false}
             />
 
@@ -291,16 +324,16 @@ export function AdminContentClient({
                 contentKey="terms_content"
                 title="Условия и правила за ползване"
                 description="Редактирайте съдържанието на страницата 'Условия и правила за ползване'."
-                content={content.terms_content}
-                onContentChange={(newContent) => setContent(c => ({...c, terms_content: newContent}))}
+                content={{ bg: content.terms_content_bg, en: content.terms_content_en }}
+                onContentChange={(lang, newContent) => handleContentChange(`terms_content_${lang}`, newContent)}
             />
 
             <ContentCard
                 contentKey="privacy_content"
                 title="Политика за поверителност"
                 description="Редактирайте съдържанието на страницата 'Политика за поверителност'."
-                content={content.privacy_content}
-                onContentChange={(newContent) => setContent(c => ({...c, privacy_content: newContent}))}
+                content={{ bg: content.privacy_content_bg, en: content.privacy_content_en }}
+                onContentChange={(lang, newContent) => handleContentChange(`privacy_content_${lang}`, newContent)}
             />
         </div>
   );

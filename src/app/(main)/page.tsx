@@ -1,14 +1,19 @@
 
 
-import { getNewsPosts, getSiteContent } from '@/lib/server/data';
+
+import { getSiteContent } from '@/lib/server/data';
 import type { NewsPost } from '@/lib/types';
 import { HomeClientPage } from './components/home-client-page';
+import { createServerClient } from '@/lib/supabase/server';
 
 
 export default async function HomePage() {
+  const supabase = createServerClient();
+  const { data: newsData, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
+  const posts: NewsPost[] = (newsData || []).map((post: any) => ({ ...post, href: `/news/${post.id}`}));
+  
   // Fetch all data in parallel
-  const [posts, heroImageUrl, heroTitle, heroSubtitle] = await Promise.all([
-    getNewsPosts(),
+  const [heroImageUrl, heroTitle, heroSubtitle] = await Promise.all([
     getSiteContent('hero_image_url'),
     getSiteContent('slider_title'),
     getSiteContent('slider_desc')

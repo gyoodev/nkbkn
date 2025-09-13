@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { createServerClient } from '@/lib/supabase/server';
@@ -66,9 +67,9 @@ export async function updateContent(
   // Revalidate the path of the page that uses this content
   if (key.startsWith('about_')) {
     revalidatePath('/about');
-  } else if (key === 'terms_content') {
+  } else if (key.startsWith('terms_')) {
     revalidatePath('/terms');
-  } else if (key === 'privacy_content') {
+  } else if (key.startsWith('privacy_')) {
     revalidatePath('/privacy');
   } else {
     revalidatePath('/'); // Revalidate root for other changes

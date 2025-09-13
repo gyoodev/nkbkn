@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { PageHeader } from '@/components/page-header';
@@ -10,7 +11,7 @@ import { useEffect, useState } from 'react';
 
 // Make the component async to fetch data on the server
 export default function AboutPage() {
-  const { text } = useLanguage();
+  const { text, language } = useLanguage();
   const [historyContent, setHistoryContent] = useState('');
   const [missionContent, setMissionContent] = useState('');
   const [teamContent, setTeamContent] = useState('');
@@ -18,10 +19,11 @@ export default function AboutPage() {
 
   useEffect(() => {
     async function fetchData() {
+        setLoading(true);
         const [history, mission, team] = await Promise.all([
-            getSiteContent('about_history'),
-            getSiteContent('about_mission'),
-            getSiteContent('about_team_text'),
+            getSiteContent('about_history', language),
+            getSiteContent('about_mission', language),
+            getSiteContent('about_team_text', language),
         ]);
         setHistoryContent(history);
         setMissionContent(mission);
@@ -29,7 +31,7 @@ export default function AboutPage() {
         setLoading(false);
     }
     fetchData();
-  }, [])
+  }, [language])
 
 
   const sections = [

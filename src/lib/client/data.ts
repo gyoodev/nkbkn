@@ -1,5 +1,6 @@
 
 
+
 'use client';
 
 import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, Submission, SocialLink, ContactSubmission, Owner } from '@/lib/types';
@@ -248,24 +249,35 @@ export async function getSubmissions(): Promise<Submission[]> {
     return data;
 }
 
-export async function getSiteContent(key: string): Promise<string> {
+export async function getSiteContent(key: string, lang?: 'bg' | 'en'): Promise<string> {
     const supabase = createBrowserClient();
+    
+    let finalLang = lang;
+    if (typeof window !== 'undefined') {
+        const cookieValue = document.cookie.split('; ').find(row => row.startsWith(`NEXT_LOCALE=`));
+        finalLang = lang || (cookieValue?.split('=')[1] as 'bg' | 'en') || 'bg';
+    } else {
+        finalLang = lang || 'bg';
+    }
+
+    const fullKey = (key.endsWith('_bg') || key.endsWith('_en')) ? key : `${key}_${finalLang}`;
+    
     try {
         const { data, error } = await supabase
             .from('site_content')
             .select('content')
-            .eq('key', key)
+            .eq('key', fullKey)
             .single();
 
         if (error || !data) {
             if (error && error.code !== 'PGRST116') { // 'PGRST116' means no rows found
-                console.error(`Error fetching site content for key "${key}":`, error.message);
+                console.error(`Error fetching site content for key "${fullKey}":`, error.message);
             }
             return '';
         }
         return data.content || '';
     } catch (e: any) {
-        console.error(`Error in getSiteContent for key "${key}":`, e.message);
+        console.error(`Error in getSiteContent for key "${fullKey}":`, e.message);
         return '';
     }
 }

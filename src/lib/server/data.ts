@@ -2,10 +2,12 @@
 
 
 
+
 import 'server-only';
 
 import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, NewsPost, UserProfile, Stats, Track, Owner } from '@/lib/types';
 import { createServerClient } from '../supabase/server';
+import { cookies } from 'next/headers';
 
 
 export async function getDashboardStats(): Promise<Stats> {
@@ -215,24 +217,29 @@ export async function getPartner(id: number): Promise<Partner | null> {
     return data;
 }
 
-export async function getSiteContent(key: string): Promise<string> {
+export async function getSiteContent(key: string, lang?: 'bg' | 'en'): Promise<string> {
     const supabase = createServerClient();
+    const cookieStore = cookies();
+    const finalLang = lang || cookieStore.get('NEXT_LOCALE')?.value || 'bg';
+    
+    const fullKey = (key.endsWith('_bg') || key.endsWith('_en')) ? key : `${key}_${finalLang}`;
+    
     try {
         const { data, error } = await supabase
             .from('site_content')
             .select('content')
-            .eq('key', key)
+            .eq('key', fullKey)
             .single();
 
         if (error || !data) {
             if (error && error.code !== 'PGRST116') { // 'PGRST116' means no rows found
-                console.error(`Error fetching site content for key "${key}":`, error.message);
+                console.error(`Error fetching site content for key "${fullKey}":`, error.message);
             }
             return '';
         }
         return data.content || '';
     } catch (e: any) {
-        console.error(`Error in getSiteContent for key "${key}":`, e.message);
+        console.error(`Error in getSiteContent for key "${fullKey}":`, e.message);
         return '';
     }
 }
