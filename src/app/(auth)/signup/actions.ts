@@ -29,23 +29,22 @@ export async function signup(prevState: { error?: string, message?: string } | u
     };
   }
 
-  // Then, if the user was created successfully, update their profile.
-  // A trigger on the auth.users table should have already created a profile row.
+  // Then, if the user was created successfully, create their profile
+  // using an RPC call to ensure data consistency.
   if (authData.user) {
-    const { error: profileError } = await supabase.from('profiles').update({
-        phone: phone,
+    const { error: rpcError } = await supabase.rpc('create_user_profile', {
+        user_id: authData.user.id,
         email: email,
+        phone: phone,
         username: username,
-    }).eq('id', authData.user.id);
+    });
     
-    if(profileError) {
+    if(rpcError) {
         // Log the error but don't block the user from signing up.
-        // This could happen if the trigger hasn't run yet, for example.
         // The important part is that the auth user is created.
-        console.error('Error updating profile with phone, email and username:', profileError.message);
+        console.error('Error creating profile via RPC:', rpcError.message);
     }
   }
-
 
   return {
     message: 'Check your email for a confirmation link.',
