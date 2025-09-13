@@ -43,10 +43,6 @@ export default function NewsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        <PageHeader
-            title={text.news}
-            description={text.latestFromTheTrackDescription}
-        />
         {loading ? <NewsPageSkeleton /> : <NewsClientPage newsPosts={newsPosts} />}
     </div>
   );
