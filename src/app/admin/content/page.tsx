@@ -1,6 +1,5 @@
 
 
-
 import { PageHeader } from '@/components/page-header';
 import { getSiteContent } from '@/lib/server/data';
 import { AdminContentClient } from './_components/content-client';
@@ -21,26 +20,26 @@ export default async function AdminContentPage() {
     heroImage, 
     siteLogo, 
   ] = await Promise.all([
-    getSiteContent('about_history_bg'), getSiteContent('about_history_en'),
-    getSiteContent('about_mission_bg'), getSiteContent('about_mission_en'),
-    getSiteContent('about_team_text_bg'), getSiteContent('about_team_text_en'),
-    getSiteContent('terms_content_bg'), getSiteContent('terms_content_en'),
-    getSiteContent('privacy_content_bg'), getSiteContent('privacy_content_en'),
-    getSiteContent('slider_title_bg'), getSiteContent('slider_title_en'),
-    getSiteContent('slider_desc_bg'), getSiteContent('slider_desc_en'),
+    getSiteContent('about_history', 'bg'), getSiteContent('about_history', 'en'),
+    getSiteContent('about_mission', 'bg'), getSiteContent('about_mission', 'en'),
+    getSiteContent('about_team_text', 'bg'), getSiteContent('about_team_text', 'en'),
+    getSiteContent('terms_content', 'bg'), getSiteContent('terms_content', 'en'),
+    getSiteContent('privacy_content', 'bg'), getSiteContent('privacy_content', 'en'),
+    getSiteContent('slider_title', 'bg'), getSiteContent('slider_title', 'en'),
+    getSiteContent('slider_desc', 'bg'), getSiteContent('slider_desc', 'en'),
     getSiteContent('dev_banner_visible'),
     getSiteContent('hero_image_url'),
     getSiteContent('site_logo_url'),
   ]);
 
   const initialContent = {
-    about_history_bg, about_history_en,
-    about_mission_bg, about_mission_en,
-    about_team_text_bg, about_team_text_en,
-    terms_content_bg, terms_content_en,
-    privacy_content_bg, privacy_content_en,
-    slider_title_bg, slider_title_en,
-    slider_desc_bg, slider_desc_en,
+    about_history_bg: history_bg, about_history_en: history_en,
+    about_mission_bg: mission_bg, about_mission_en: mission_en,
+    about_team_text_bg: team_bg, about_team_text_en: team_en,
+    terms_content_bg: terms_bg, terms_content_en: terms_en,
+    privacy_content_bg: privacy_bg, privacy_content_en: privacy_en,
+    slider_title_bg: slider_title_bg, slider_title_en: slider_title_en,
+    slider_desc_bg: slider_desc_bg, slider_desc_en: slider_desc_en,
   };
 
   const initialDevBannerVisible = bannerVisible === 'true';
