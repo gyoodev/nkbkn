@@ -13,16 +13,24 @@ export default async function HomePage() {
   const posts: NewsPost[] = (newsData || []).map((post: any) => ({ ...post, href: `/news/${post.id}`}));
   
   // Fetch all data in parallel
-  const [heroImageUrl, heroTitle, heroSubtitle] = await Promise.all([
+  const [
+    heroImageUrl, 
+    heroTitleBg, 
+    heroTitleEn,
+    heroSubtitleBg,
+    heroSubtitleEn
+  ] = await Promise.all([
     getSiteContent('hero_image_url'),
-    getSiteContent('slider_title'),
-    getSiteContent('slider_desc')
+    getSiteContent('slider_title_bg'),
+    getSiteContent('slider_title_en'),
+    getSiteContent('slider_desc_bg'),
+    getSiteContent('slider_desc_en')
   ]);
 
   return <HomeClientPage 
             posts={posts} 
             heroImageUrl={heroImageUrl}
-            heroTitle={heroTitle}
-            heroSubtitle={heroSubtitle}
+            heroTitle={{ bg: heroTitleBg, en: heroTitleEn }}
+            heroSubtitle={{ bg: heroSubtitleBg, en: heroSubtitleEn }}
         />;
 }

@@ -13,8 +13,8 @@ import type { NewsPost } from '@/lib/types';
 interface HomeClientPageProps {
     posts: NewsPost[];
     heroImageUrl?: string;
-    heroTitle?: string;
-    heroSubtitle?: string;
+    heroTitle?: { bg: string; en: string };
+    heroSubtitle?: { bg: string; en: string };
 }
 
 export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }: HomeClientPageProps) {
@@ -23,6 +23,9 @@ export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }:
   const defaultHeroTitle = "СТРАСТ, АДРЕНАЛИН И ЛЮБОВ КЪМ КОНЕТЕ";
   const defaultHeroSubtitle = "Официалният дом на българските конни надбягвания.";
   const defaultHeroImage = "https://ekip7.bg/wp-content/uploads/2022/09/19-09-2022_kusii-3.jpg";
+
+  const currentTitle = (heroTitle?.[language] || heroTitle?.bg) || defaultHeroTitle;
+  const currentSubtitle = (heroSubtitle?.[language] || heroSubtitle?.bg) || defaultHeroSubtitle;
 
   if (!posts || posts.length === 0) {
     return <div>Loading...</div>; // Or a proper loading skeleton
@@ -56,10 +59,10 @@ export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }:
         <div className="relative z-10 flex h-full flex-col items-center justify-center p-4 text-center">
           <div className="max-w-4xl space-y-4 md:space-y-6">
             <h1 className="font-headline text-4xl font-extrabold uppercase leading-tight tracking-wide text-shadow-lg sm:text-5xl md:text-6xl lg:text-7xl">
-              {heroTitle || defaultHeroTitle}
+              {currentTitle}
             </h1>
             <p className="text-lg text-gray-200 sm:text-xl md:text-2xl">
-              {heroSubtitle || defaultHeroSubtitle}
+              {currentSubtitle}
             </p>
             <div className="flex flex-col gap-4 pt-4 sm:flex-row sm:justify-center">
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
