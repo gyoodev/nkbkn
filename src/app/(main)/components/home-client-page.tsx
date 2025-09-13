@@ -24,8 +24,8 @@ export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }:
   const defaultHeroSubtitle = "Официалният дом на българските конни надбягвания.";
   const defaultHeroImage = "https://ekip7.bg/wp-content/uploads/2022/09/19-09-2022_kusii-3.jpg";
 
-  const currentTitle = (heroTitle?.[language] || heroTitle?.bg) || defaultHeroTitle;
-  const currentSubtitle = (heroSubtitle?.[language] || heroSubtitle?.bg) || defaultHeroSubtitle;
+  const currentTitle = (heroTitle && (heroTitle[language] || heroTitle.bg)) || defaultHeroTitle;
+  const currentSubtitle = (heroSubtitle && (heroSubtitle[language] || heroSubtitle.bg)) || defaultHeroSubtitle;
 
   if (!posts || posts.length === 0) {
     return <div>Loading...</div>; // Or a proper loading skeleton
