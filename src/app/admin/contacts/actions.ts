@@ -100,11 +100,7 @@ export async function sendEmailReply(prevState: any, formData: FormData): Promis
         auth: {
             user: process.env.EMAIL_SERVER_USER,
             pass: process.env.EMAIL_SERVER_PASS,
-        },
-        tls: {
-            // do not fail on invalid certs
-            rejectUnauthorized: false,
-        },
+        }
     });
 
     const emailHtml = EmailTemplate({
