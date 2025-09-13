@@ -1,4 +1,3 @@
-
 'use client';
 
 import { signup } from './actions';
@@ -7,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useFormStatus } from 'react-dom';
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Terminal } from 'lucide-react';
+import { Eye, EyeOff, Terminal } from 'lucide-react';
 import Link from 'next/link';
 
 function SubmitButton() {
@@ -25,6 +24,7 @@ function SubmitButton() {
 export default function SignupPage() {
   const { text } = useLanguage();
   const [state, dispatch] = useActionState(signup, undefined);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="w-full max-w-md space-y-8">
@@ -69,9 +69,19 @@ export default function SignupPage() {
                     className="h-12 rounded-xl"
                 />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
                 <Label htmlFor="password">{text.password}</Label>
-                <Input id="password" name="password" type="password" required className="h-12 rounded-xl" />
+                <Input id="password" name="password" type={showPassword ? 'text' : 'password'} required className="h-12 rounded-xl pr-10"/>
+                <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-1 top-7 h-8 w-8 text-muted-foreground"
+                    onClick={() => setShowPassword(prev => !prev)}
+                    >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    <span className="sr-only">{showPassword ? 'Скрий паролата' : 'Покажи паролата'}</span>
+                </Button>
             </div>
              {state?.error && (
                 <Alert variant="destructive">
