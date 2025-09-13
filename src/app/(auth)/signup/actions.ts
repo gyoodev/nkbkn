@@ -2,6 +2,7 @@
 'use server';
 
 import { createServerClient } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 export async function signup(prevState: { error?: string, message?: string } | undefined, formData: FormData) {
   const supabase = createServerClient();
@@ -10,14 +11,11 @@ export async function signup(prevState: { error?: string, message?: string } | u
   const phone = formData.get('phone') as string;
   const username = formData.get('username') as string;
   
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
-
   // Attempt to sign up the user
   const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
     options: {
-        emailRedirectTo: `${siteUrl}/auth/callback`,
         data: {
             phone: phone,
             username: username,
@@ -29,7 +27,7 @@ export async function signup(prevState: { error?: string, message?: string } | u
   if (authError) {
     if (authError.message.includes('User already registered')) {
         return {
-            message: 'Потребител с този имейл вече съществува. Моля, проверете имейла си за линк за потвърждение или опитайте да влезете в системата.',
+            error: 'Потребител с този имейл вече съществува. Моля, опитайте да влезете в системата.',
         };
     }
     return {
@@ -38,25 +36,31 @@ export async function signup(prevState: { error?: string, message?: string } | u
   }
   
   if (authData.user) {
-     // If the user is new (identities is not empty), we create their profile.
-     // If they already exist but are unconfirmed, identities will be empty, and we don't need to do anything here.
-    if (authData.user.identities && authData.user.identities.length > 0) {
-        const { error: rpcError } = await supabase.rpc('create_user_profile', {
-            user_id: authData.user.id,
-            email: email,
-            phone: phone,
-            username: username,
-        });
+    const { error: rpcError } = await supabase.rpc('create_user_profile', {
+        user_id: authData.user.id,
+        email: email,
+        phone: phone,
+        username: username,
+    });
 
-        if (rpcError) {
-            console.error('Error creating profile via RPC after signup:', rpcError.message);
-            // Don't block the user, but log the issue. The confirmation email should still go out.
-        }
+    if (rpcError) {
+        console.error('Error creating profile via RPC after signup:', rpcError.message);
+        // We can still try to log the user in even if profile creation fails.
+        // It's better than blocking them completely.
     }
 
-    return {
-        message: 'Успешна регистрация! Моля, проверете имейла си за линк за потвърждение.',
+    // Since we are not requiring email confirmation, we can log the user in directly.
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      return { error: `Регистрацията беше успешна, но възникна грешка при вписване: ${signInError.message}` };
     }
+    
+    redirect('/profile');
+
   }
 
   // Fallback case
