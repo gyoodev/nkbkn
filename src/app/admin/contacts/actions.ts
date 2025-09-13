@@ -96,10 +96,13 @@ export async function sendEmailReply(prevState: any, formData: FormData): Promis
     const transporter = nodemailer.createTransport({
         host: process.env.EMAIL_SERVER_HOST,
         port: Number(process.env.EMAIL_SERVER_PORT || 465),
-        secure: true, // true for 465, false for other ports
+        secure: true, // true for 465
         auth: {
             user: process.env.EMAIL_SERVER_USER,
             pass: process.env.EMAIL_SERVER_PASS,
+        },
+        tls: {
+            minVersion: 'TLSv1.2',
         }
     });
 
