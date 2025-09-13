@@ -1,6 +1,5 @@
 
 
-
 import { getSiteContent } from '@/lib/server/data';
 import type { NewsPost } from '@/lib/types';
 import { HomeClientPage } from './components/home-client-page';
@@ -21,10 +20,10 @@ export default async function HomePage() {
     heroSubtitleEn
   ] = await Promise.all([
     getSiteContent('hero_image_url'),
-    getSiteContent('slider_title_bg'),
-    getSiteContent('slider_title_en'),
-    getSiteContent('slider_desc_bg'),
-    getSiteContent('slider_desc_en')
+    getSiteContent('slider_title', 'bg'),
+    getSiteContent('slider_title', 'en'),
+    getSiteContent('slider_desc', 'bg'),
+    getSiteContent('slider_desc', 'en')
   ]);
 
   return <HomeClientPage 
