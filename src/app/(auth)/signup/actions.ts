@@ -31,6 +31,11 @@ export async function signup(prevState: { error?: string, message?: string } | u
             error: 'Потребител с този имейл вече съществува. Моля, опитайте да влезете в системата.',
         };
     }
+     if (authError.message.includes('Email rate limit exceeded')) {
+        return {
+             error: 'Достигнат е лимитът за регистрации. Моля, опитайте отново по-късно.'
+        }
+    }
     return {
         error: authError.message,
     };
