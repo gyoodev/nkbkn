@@ -78,13 +78,21 @@ export async function signup(prevState: { error?: string, message?: string } | u
     };
   }
   
-  const user = authData.user;
-
-  // Then, if the user was created successfully, create their profile
-  // using an RPC call to ensure data consistency.
-  if (user) {
+  // If signUp is successful, authData should contain a user object.
+  // We need to handle the case where user might be null, or if the user
+  // already exists but is not confirmed.
+  if (authData.user) {
+    // Case 1: User already exists but is not confirmed. 
+    // `identities` will be an empty array.
+    if (authData.user.identities && authData.user.identities.length === 0) {
+        return {
+            message: 'Потребител с този имейл вече съществува, но не е потвърден. Моля, проверете имейла си за линк за потвърждение.',
+        };
+    }
+    
+    // Case 2: This is a new user, create their profile.
     const { error: rpcError } = await supabase.rpc('create_user_profile', {
-        user_id: user.id,
+        user_id: authData.user.id,
         email: email,
         phone: phone,
         username: username,
@@ -94,17 +102,16 @@ export async function signup(prevState: { error?: string, message?: string } | u
         // Log the error but don't block the user from signing up.
         // The important part is that the auth user is created.
         console.error('Error creating profile via RPC:', rpcError.message);
+        // Even with an error, the confirmation email should be sent.
     }
     
-     if (user.identities && user.identities.length > 0) {
-        return {
-            message: 'Check your email for a confirmation link.',
-        }
-     }
-
+    // For a new user, identities will not be empty.
+    return {
+        message: 'Успешна регистрация! Моля, проверете имейла си за линк за потвърждение.',
+    }
   }
 
   return {
-    error: 'An unexpected error occurred during signup.',
+    error: 'Възникна неочаквана грешка по време на регистрацията. Моля, опитайте отново.',
   }
 }
