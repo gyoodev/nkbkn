@@ -220,8 +220,12 @@ export async function getPartner(id: number): Promise<Partner | null> {
 export async function getSiteContent(key: string, lang?: 'bg' | 'en'): Promise<string> {
     const supabase = createServerClient();
     const cookieStore = cookies();
-    const finalLang = lang || cookieStore.get('NEXT_LOCALE')?.value || 'bg';
     
+    // Determine the language. If a specific lang is provided, use it.
+    // Otherwise, try to get it from the cookie. Default to 'bg'.
+    const finalLang = lang || cookieStore.get('NEXT_LOCALE')?.value || 'bg';
+
+    // Construct the full key only if the base key doesn't already have a language suffix.
     const fullKey = (key.endsWith('_bg') || key.endsWith('_en')) ? key : `${key}_${finalLang}`;
     
     try {
@@ -232,10 +236,26 @@ export async function getSiteContent(key: string, lang?: 'bg' | 'en'): Promise<s
             .single();
 
         if (error || !data) {
-            if (error && error.code !== 'PGRST116') { // 'PGRST116' means no rows found
+            // 'PGRST116' means no rows found, which is an expected case.
+            if (error && error.code !== 'PGRST116') { 
                 console.error(`Error fetching site content for key "${fullKey}":`, error.message);
             }
-            return '';
+            // If not found, try fetching with the base key, assuming it's not multilingual
+            if (key === fullKey) return ''; // Avoid infinite recursion
+            
+            const { data: baseData, error: baseError } = await supabase
+                .from('site_content')
+                .select('content')
+                .eq('key', key)
+                .single();
+
+            if (baseError || !baseData) {
+                 if (baseError && baseError.code !== 'PGRST116') {
+                    console.error(`Error fetching site content for base key "${key}":`, baseError.message);
+                 }
+                 return '';
+            }
+            return baseData.content || '';
         }
         return data.content || '';
     } catch (e: any) {
