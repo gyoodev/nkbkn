@@ -1,32 +1,53 @@
+
+'use client';
+
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getSiteContent } from '@/lib/server/data';
+import { getSiteContent } from '@/lib/client/data';
 import { Users, Goal, History } from 'lucide-react';
+import { useLanguage } from '@/hooks/use-language';
+import { useEffect, useState } from 'react';
 
 // Make the component async to fetch data on the server
-export default async function AboutPage() {
+export default function AboutPage() {
+  const { text } = useLanguage();
+  const [historyContent, setHistoryContent] = useState('');
+  const [missionContent, setMissionContent] = useState('');
+  const [teamContent, setTeamContent] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  // Fetch dynamic content
-  const historyContent = await getSiteContent('about_history');
-  const missionContent = await getSiteContent('about_mission');
-  const teamContent = await getSiteContent('about_team_text');
+  useEffect(() => {
+    async function fetchData() {
+        const [history, mission, team] = await Promise.all([
+            getSiteContent('about_history'),
+            getSiteContent('about_mission'),
+            getSiteContent('about_team_text'),
+        ]);
+        setHistoryContent(history);
+        setMissionContent(mission);
+        setTeamContent(team);
+        setLoading(false);
+    }
+    fetchData();
+  }, [])
+
 
   const sections = [
     {
       icon: <History className="h-10 w-10 text-primary" />,
-      title: 'Нашата история',
+      title: text.aboutHistoryTitle,
       content: historyContent,
       className: 'md:col-span-2',
     },
     {
       icon: <Goal className="h-10 w-10 text-primary" />,
-      title: 'Нашата мисия',
+      title: text.aboutMissionTitle,
       content: missionContent,
       className: 'md:col-span-1',
     },
     {
       icon: <Users className="h-10 w-10 text-primary" />,
-      title: 'Нашият екип',
+      title: text.aboutTeamTitle,
       content: teamContent,
       className: 'md:col-span-3',
     },
@@ -44,8 +65,8 @@ export default async function AboutPage() {
         />
       <div className="container mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8 relative z-10">
         <PageHeader
-          title="За комисията"
-          description="Научете повече за нашата история, мисия и хората, които стоят зад Националната комисия за български конни надбягвания."
+          title={text.aboutPageTitle}
+          description={text.aboutPageDescription}
           className="text-center mb-12"
         />
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
@@ -59,7 +80,7 @@ export default async function AboutPage() {
               </CardHeader>
               <CardContent className="p-6 pt-0 text-center">
                  {/* Use dangerouslySetInnerHTML for rich text from the history and mission sections */}
-                {section.title !== 'Нашият екип' ? (
+                {loading ? <p>Loading...</p> : section.title !== text.aboutTeamTitle ? (
                      <div className="text-base text-muted-foreground prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: section.content }} />
                 ) : (
                      <p className="text-base text-muted-foreground">{section.content}</p>

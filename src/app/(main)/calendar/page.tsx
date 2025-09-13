@@ -89,9 +89,9 @@ export default function CalendarPage() {
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
        <Alert variant="destructive" className="mb-8">
         <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Важно съобщение</AlertTitle>
+        <AlertTitle>{text.importantNotice}</AlertTitle>
         <AlertDescription>
-          В момента сме в процес на организиране на държавно първенство за 2026г. Очаквайте новини скоро!
+          {text.championship2026}
         </AlertDescription>
       </Alert>
       <PageHeader

@@ -31,22 +31,22 @@ export default function TracksPage() {
                 <p>{address}</p>
                  <div className="flex items-center gap-2 text-muted-foreground">
                     <TrendingUp className="h-5 w-5" />
-                    <span className="font-semibold">Дължина на пистата:</span>
+                    <span className="font-semibold">{text.trackLength}:</span>
                     <span>1200 метра</span>
                 </div>
                  <div className="flex items-center gap-2 text-muted-foreground">
                     <div className="h-5 w-5 flex items-center justify-center">
                         <div className="w-4 h-4 rounded-full bg-yellow-700/50" />
                     </div>
-                    <span className="font-semibold">Вид писта:</span>
-                    <span>Пясъчна</span>
+                    <span className="font-semibold">{text.trackType}:</span>
+                    <span>{text.trackTypeSand}</span>
                 </div>
             </CardContent>
             <CardFooter>
                  <Button asChild>
                     <Link href={googleMapsUrl} target="_blank">
                         <Navigation className="mr-2 h-4 w-4" />
-                        Навигиране към хиподрума
+                        {text.navigateToTrack}
                     </Link>
                 </Button>
             </CardFooter>

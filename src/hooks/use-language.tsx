@@ -80,6 +80,7 @@ const translations = {
     signingUp: 'Регистриране...',
     alreadyHaveAccount: 'Вече имате акаунт?',
     adminPanel: 'Админ панел',
+    rememberMe: 'Запомни ме',
 
 
     // Pages
@@ -87,7 +88,10 @@ const translations = {
     homeSubtitle: 'Официалният дом на българските конни надбягвания.',
     homeDescription: 'Разгледайте профили на жокеи, треньори и коне. Намерете информация за писти, разгледайте галерии от състезания и генерирайте прегледи на предстоящи събития.',
     aboutPageTitle: 'За комисията',
-    aboutPageDescription: 'Мисия, цели и структура на Националната комисия за български конни надбягвания.',
+    aboutPageDescription: 'Научете повече за нашата история, мисия и хората, които стоят зад Националната комисия за български конни надбягвания.',
+    aboutHistoryTitle: 'Нашата история',
+    aboutMissionTitle: 'Нашата мисия',
+    aboutTeamTitle: 'Нашият екип',
     exploreJockeys: 'Разгледайте жокеите',
     exploreTrainers: 'Разгледайте треньорите',
     viewGallery: 'Вижте галерията',
@@ -120,6 +124,15 @@ const translations = {
     fullName: 'Пълно име',
     website: 'Уебсайт',
     yourRole: 'Вашата роля',
+    resultsPageDescription: 'Официални резултати от последните състезания.',
+    latestResults: 'Последни резултати',
+    latestResultsDescription: 'Прегледайте класирането от последните проведени надбягвания.',
+    race: 'Състезание',
+    date: 'Дата',
+    trackName: 'Хиподрум',
+    winner: 'Победител',
+    jockey: 'Жокей',
+    time: 'Време',
 
     // Forms & Buttons
     submit: 'Изпрати',
@@ -162,6 +175,7 @@ const translations = {
     age: 'Възраст',
     sire: 'Баща',
     dam: 'Майка',
+    owner: 'Собственик',
     ownerContactEmail: 'Имейл за контакт със собственика',
     ownerContactPhone: 'Телефон за контакт със собственика',
 
@@ -190,12 +204,29 @@ const translations = {
     wins: 'Победи',
     mounts: 'Участия',
     winRate: 'Процент победи',
+    noJockeysAdded: 'Няма добавени жокеи',
+    noJockeysAddedDescription: 'В момента няма добавени профили на жокеи в системата.',
     
     // Trainers Page
     achievements: 'Постижения',
+    noTrainersAdded: 'Няма добавени треньори',
+    noTrainersAddedDescription: 'В момента няма добавени профили на треньори в системата.',
+
+    // Owners Page
+    noOwnersAdded: 'Няма добавени собственици',
+    noOwnersAddedDescription: 'В момента няма добавени профили на собственици в системата.',
+
+    // Horses Page
+    noHorsesRegistered: 'Няма регистрирани коне',
+    noHorsesRegisteredDescription: 'В момента няма регистрирани коне в системата.',
+
 
     // Tracks Page
     interactiveMapComingSoon: 'Интерактивна карта - скоро',
+    trackLength: 'Дължина на пистата',
+    trackType: 'Вид писта',
+    trackTypeSand: 'Пясъчна',
+    navigateToTrack: 'Навигиране към хиподрума',
 
     // News Post Page
     views: 'Прочитания',
@@ -211,6 +242,9 @@ const translations = {
     noRacesScheduled: 'Няма планирани състезания за тази дата.',
     selectDateWithRaces: 'Изберете дата с маркирани събития, за да видите състезанията.',
     participants: 'участници',
+    importantNotice: 'Важно съобщение',
+    championship2026: 'В момента сме в процес на организиране на държавно първенство за 2026г. Очаквайте новини скоро!',
+
 
     // Legal pages
     termsTitle: 'Условия и правила за ползване',
@@ -223,6 +257,17 @@ const translations = {
     privacyShort: 'Поверителност',
     faq: 'ЧЗВ',
     ourTrustedPartners: 'Нашите доверени партньори',
+    faq1_q: 'Как мога да регистрирам кон, жокей, треньор или собственик?',
+    faq1_a: 'Регистрацията се извършва изцяло онлайн. Отидете в секция "Формуляри", изберете типа заявка, който ви интересува (жокей, треньор, кон или собственик) и попълнете съответните данни. Нашата комисия ще прегледа кандидатурата ви и ще се свърже с вас.',
+    faq2_q: 'Къде мога да намеря правилниците и други официални документи?',
+    faq2_a: 'Всички официални документи, включително правилници за провеждане на състезания и формуляри за кандидатстване, могат да бъдат намерени и изтеглени от секция "Правилници и Формуляри" в главното меню на сайта.',
+    faq3_q: 'Как мога да видя резултати от минали състезания?',
+    faq3_a: 'Всички официални резултати се публикуват в секция "Резултати" на нашия уебсайт. Там можете да намерите подробна информация за класирането от проведените надбягвания.',
+    faq4_q: 'Какво е текущото състояние на хиподрума в с. Гецово?',
+    faq4_a: 'Хиподрумът в момента е в процес на планиране за възстановяване. Нашият екип работи активно, за да бъде готов за Държавното първенство през сезон 2026. Можете да следите напредъка в секция "Новини".',
+    faq5_q: 'Как се определят датите в състезателния календар?',
+    faq5_a: 'Състезателният календар се изготвя от комисията в началото на всяка година, като се вземат предвид климатичните условия, състоянието на пистите и международни събития. Календарът подлежи на промени, за които уведомяваме своевременно в секция "Календар" и "Новини".',
+
   },
   en: {
     // General
@@ -290,13 +335,17 @@ const translations = {
     signingUp: 'Signing up...',
     alreadyHaveAccount: 'Already have an account?',
     adminPanel: 'Admin Panel',
+    rememberMe: 'Remember me',
 
     // Pages
     homeTitle: 'Welcome to NCBHR',
     homeSubtitle: 'The official home of Bulgarian horse racing.',
     homeDescription: 'Explore profiles of jockeys, trainers, and horses. Find information on tracks, view race galleries, and generate previews for upcoming events.',
     aboutPageTitle: 'About the Commission',
-    aboutPageDescription: 'Mission, goals, and structure of the National Commission for Bulgarian Horse Racing.',
+    aboutPageDescription: 'Learn more about our history, mission, and the people behind the National Commission for Bulgarian Horse Racing.',
+    aboutHistoryTitle: 'Our History',
+    aboutMissionTitle: 'Our Mission',
+    aboutTeamTitle: 'Our Team',
     exploreJockeys: 'Explore Jockeys',
     exploreTrainers: 'Explore Trainers',
     viewGallery: 'View Gallery',
@@ -329,6 +378,16 @@ const translations = {
     fullName: 'Full Name',
     website: 'Website',
     yourRole: 'Your Role',
+    resultsPageDescription: 'Official results from the latest races.',
+    latestResults: 'Latest Results',
+    latestResultsDescription: 'Review the standings from the most recent races.',
+    race: 'Race',
+    date: 'Date',
+    trackName: 'Track',
+    winner: 'Winner',
+    jockey: 'Jockey',
+    time: 'Time',
+
 
     // Forms & Buttons
     submit: 'Submit',
@@ -400,12 +459,28 @@ const translations = {
     wins: 'Wins',
     mounts: 'Mounts',
     winRate: 'Win Rate',
+    noJockeysAdded: 'No Jockeys Added',
+    noJockeysAddedDescription: 'There are currently no jockey profiles in the system.',
 
     // Trainers Page
     achievements: 'Achievements',
+    noTrainersAdded: 'No Trainers Added',
+    noTrainersAddedDescription: 'There are currently no trainer profiles in the system.',
+
+    // Owners Page
+    noOwnersAdded: 'No Owners Added',
+    noOwnersAddedDescription: 'There are currently no owner profiles in the system.',
+
+    // Horses Page
+    noHorsesRegistered: 'No Horses Registered',
+    noHorsesRegisteredDescription: 'There are currently no registered horses in the system.',
 
     // Tracks Page
     interactiveMapComingSoon: 'Interactive Map - Coming Soon',
+    trackLength: 'Track Length',
+    trackType: 'Track Type',
+    trackTypeSand: 'Sand',
+    navigateToTrack: 'Navigate to Track',
 
     // News Post Page
     views: 'Views',
@@ -421,6 +496,8 @@ const translations = {
     noRacesScheduled: 'No races scheduled for this date.',
     selectDateWithRaces: 'Select a date with marked events to see the races.',
     participants: 'participants',
+    importantNotice: 'Important Notice',
+    championship2026: 'We are currently in the process of organizing the 2026 national championship. News coming soon!',
 
     // Legal pages
     termsTitle: 'Terms and Conditions',
@@ -433,6 +510,16 @@ const translations = {
     privacyShort: 'Privacy Policy',
     faq: 'FAQ',
     ourTrustedPartners: 'Our Trusted Partners',
+    faq1_q: 'How can I register a horse, jockey, trainer, or owner?',
+    faq1_a: 'Registration is done entirely online. Go to the "Forms" section, select the type of application you are interested in (jockey, trainer, horse, or owner) and fill in the relevant data. Our committee will review your application and contact you.',
+    faq2_q: 'Where can I find the rulebooks and other official documents?',
+    faq2_a: 'All official documents, including race regulations and application forms, can be found and downloaded from the "Regulations and Forms" section in the main menu of the site.',
+    faq3_q: 'How can I see results from past races?',
+    faq3_a: 'All official results are published in the "Results" section of our website. There you can find detailed information about the rankings from the races held.',
+    faq4_q: 'What is the current state of the racecourse in the village of Getsovo?',
+    faq4_a: 'The racecourse is currently being planned for restoration. Our team is working actively to have it ready for the 2026 National Championship. You can follow the progress in the "News" section.',
+    faq5_q: 'How are the dates in the race calendar determined?',
+    faq5_a: 'The race calendar is prepared by the committee at the beginning of each year, taking into account weather conditions, track conditions, and international events. The calendar is subject to change, which we announce promptly in the "Calendar" and "News" sections.',
   },
 };
 

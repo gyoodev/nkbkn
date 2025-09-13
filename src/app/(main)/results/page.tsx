@@ -71,27 +71,27 @@ export default function ResultsPage() {
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
       <PageHeader
         title={text.results}
-        description="Официални резултати от последните състезания."
+        description={text.resultsPageDescription}
       />
       <Card className="mt-8">
         <CardHeader>
             <CardTitle className="flex items-center gap-2">
                 <Trophy className="h-6 w-6 text-primary" />
-                Последни резултати
+                {text.latestResults}
             </CardTitle>
-            <CardDescription>Прегледайте класирането от последните проведени надбягвания.</CardDescription>
+            <CardDescription>{text.latestResultsDescription}</CardDescription>
         </CardHeader>
         <CardContent>
             {loading ? <ResultsTableSkeleton /> : (
                 <Table>
                     <TableHeader>
                     <TableRow>
-                        <TableHead>Състезание</TableHead>
-                        <TableHead>Дата</TableHead>
-                        <TableHead>Хиподрум</TableHead>
-                        <TableHead>Победител</TableHead>
-                        <TableHead>Жокей</TableHead>
-                        <TableHead className="text-right">Време</TableHead>
+                        <TableHead>{text.race}</TableHead>
+                        <TableHead>{text.date}</TableHead>
+                        <TableHead>{text.trackName}</TableHead>
+                        <TableHead>{text.winner}</TableHead>
+                        <TableHead>{text.jockey}</TableHead>
+                        <TableHead className="text-right">{text.time}</TableHead>
                     </TableRow>
                     </TableHeader>
                     <TableBody>
