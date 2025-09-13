@@ -229,7 +229,7 @@ export function MainLayoutClient({
           </div>
         </div>
 
-        <nav className="container mx-auto flex flex-col items-center justify-center px-4 py-1 relative">
+        <nav className="container mx-auto flex flex-col items-center justify-center px-4 relative">
            {/* Centered Logo */}
            <div className="flex justify-center w-full">
              <Link href="/" className="flex items-center gap-3">
