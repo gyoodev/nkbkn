@@ -16,6 +16,7 @@ export async function signup(prevState: { error?: string, message?: string } | u
     email,
     password,
     options: {
+        emailRedirectTo: `${new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000').origin}/auth/callback`,
         data: {
             phone: phone,
             username: username,
@@ -36,35 +37,22 @@ export async function signup(prevState: { error?: string, message?: string } | u
   }
   
   if (authData.user) {
+     // Create a profile for the new user.
     const { error: rpcError } = await supabase.rpc('create_user_profile', {
         user_id: authData.user.id,
         email: email,
         phone: phone,
         username: username,
     });
-
     if (rpcError) {
         console.error('Error creating profile via RPC after signup:', rpcError.message);
-        // We can still try to log the user in even if profile creation fails.
-        // It's better than blocking them completely.
+        // Do not block the user if profile creation fails, but log the error.
+        // We will show them the confirmation message anyway.
     }
-
-    // Since we are not requiring email confirmation, we can log the user in directly.
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (signInError) {
-      return { error: `Регистрацията беше успешна, но възникна грешка при вписване: ${signInError.message}` };
-    }
-    
-    redirect('/profile');
-
   }
 
   // Fallback case
   return {
-    error: 'Възникна неочаквана грешка по време на регистрацията. Моля, опитайте отново.',
+    message: 'Регистрацията е успешна! Моля, проверете имейла си, за да потвърдите своя акаунт.',
   }
 }
