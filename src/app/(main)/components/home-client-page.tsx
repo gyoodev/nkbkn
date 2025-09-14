@@ -20,15 +20,15 @@ interface HomeClientPageProps {
 export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }: HomeClientPageProps) {
   const { text, language } = useLanguage();
 
-  const defaultHeroTitle = "СТРАСТ, АДРЕНАЛИН И ЛЮБОВ КЪМ КОНЕТЕ";
-  const defaultHeroSubtitle = "Официалният дом на българските конни надбягвания.";
+  const defaultHeroTitle = text.heroTitle;
+  const defaultHeroSubtitle = text.heroSubtitle;
   const defaultHeroImage = "https://ekip7.bg/wp-content/uploads/2022/09/19-09-2022_kusii-3.jpg";
 
   const currentTitle = (heroTitle && (heroTitle[language] || heroTitle.bg)) || defaultHeroTitle;
   const currentSubtitle = (heroSubtitle && (heroSubtitle[language] || heroSubtitle.bg)) || defaultHeroSubtitle;
 
   if (!posts || posts.length === 0) {
-    return <div>Loading...</div>; // Or a proper loading skeleton
+    return <div>{text.loading}</div>; // Or a proper loading skeleton
   }
 
   const mainPost = posts[0];

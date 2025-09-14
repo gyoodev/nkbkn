@@ -175,8 +175,8 @@ const baseTranslations: Record<Language, Translations> = {
     ownersPageDescription: 'Разгледайте профилите на собствениците на коне в българските надбягвания.',
   },
   en: {
-    appName: 'BHC',
-    appNameFull: 'Bulgarian Horseracing Commission',
+    appName: 'NCBHR',
+    appNameFull: 'National Commission for Bulgarian Horse Racing',
     readMore: 'Read More',
     allRightsReserved: 'All rights reserved',
     developedBy: 'Developed by GKDEV',
@@ -341,12 +341,14 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const text = useMemo(() => {
-    if (language === 'bg') {
-      return baseTranslations.bg;
-    }
+    const translations = baseTranslations[language];
 
-    const base = baseTranslations[language] || {};
+    // If the language is Bulgarian, just return the base translations.
+    if (language === 'bg') {
+        return translations;
+    }
     
+    // For English or other languages, create a proxy for dynamic translation.
     const handler = {
       get: (target: Translations, prop: string) => {
         // 1. Return hardcoded translation if it exists
@@ -359,10 +361,11 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
           return dynamicTranslations[prop];
         }
         
-        // 3. Get source text from Bulgarian
+        // 3. Get source text from Bulgarian (our source of truth)
         const sourceText = baseTranslations.bg[prop];
         if (sourceText) {
-          // Immediately set to "Loading..."
+          // Set to "Loading..." immediately to prevent re-triggering.
+          // Using a microtask to batch state updates.
           setTimeout(() => {
              setDynamicTranslations(prev => ({...prev, [prop]: 'Loading...' }));
           }, 0);
@@ -383,12 +386,12 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
           return 'Loading...';
         }
         
-        // 5. Fallback for untranslatable keys
+        // 5. Fallback for untranslatable keys (e.g. if key doesn't exist in bg translations)
         return prop;
       }
     };
     
-    return new Proxy(base, handler);
+    return new Proxy(translations, handler);
 
   }, [language, dynamicTranslations]);
 

@@ -171,7 +171,7 @@ export function MainLayoutClient({
   const LanguageSelector = () => (
     <DropdownMenu>
         <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="text-xs font-medium uppercase transition-opacity hover:opacity-80 hover:bg-primary/20 h-auto p-1">
+            <Button variant="ghost" className="text-xs font-medium uppercase transition-opacity hover:opacity-80 hover:bg-primary/20 h-auto p-1 text-white">
                 <Languages className="mr-1.5 h-4 w-4" />
                 {language === 'bg' ? (
                     <span className="mr-1 font-bold">BG</span>
