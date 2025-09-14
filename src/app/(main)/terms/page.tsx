@@ -17,7 +17,7 @@ function TermsPageContent() {
         async function fetchData() {
             setLoading(true);
             // Always fetch the base Bulgarian content
-            const content = await getSiteContent('terms_content_bg');
+            const content = await getSiteContent('terms_content');
             setTermsContent(content);
             setLoading(false);
         }

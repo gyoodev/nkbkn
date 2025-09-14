@@ -161,7 +161,9 @@ function ContentCard({
 
   const handleSave = (lang: 'bg' | 'en') => {
     startTransition(async () => {
-      const { error } = await updateContent(`${contentKey}_${lang}`, content[lang]);
+      // Adjust key for BG to match DB schema (remove suffix)
+      const keyForDb = lang === 'bg' && !contentKey.includes('_bg') ? contentKey : `${contentKey}_${lang}`;
+      const { error } = await updateContent(keyForDb, content[lang]);
       if (error) {
         toast({
           variant: 'destructive',

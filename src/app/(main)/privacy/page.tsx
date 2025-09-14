@@ -16,7 +16,7 @@ function PrivacyPageContent() {
         async function fetchData() {
             setLoading(true);
             // Always fetch the base Bulgarian content
-            const content = await getSiteContent('privacy_content_bg');
+            const content = await getSiteContent('privacy_content');
             setPrivacyContent(content);
             setLoading(false);
         }
