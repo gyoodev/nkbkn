@@ -2,7 +2,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useLanguage } from '@/hooks/use-language';
+import { useLanguage, useDynamicTranslation } from '@/hooks/use-language';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,14 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import { useState, useTransition, useEffect } from 'react';
 import { likePost, incrementViews } from '../actions';
 import { useToast } from '@/hooks/use-toast';
+import { Skeleton } from '@/components/ui/skeleton';
+
+function TranslatedText({ text: textToTranslate }: { text: string }) {
+    const translatedText = useDynamicTranslation(textToTranslate);
+    if (translatedText === 'Loading...') return <Skeleton className="h-6 w-3/4" />;
+    return <>{translatedText}</>;
+}
+
 
 function LikeButton({ postId, initialLikes }: { postId: number, initialLikes: number }) {
     const [isPending, startTransition] = useTransition();
@@ -67,6 +75,10 @@ function LikeButton({ postId, initialLikes }: { postId: number, initialLikes: nu
 export function NewsPostClientPage({ post }: { post: NewsPost }) {
   const { language, text } = useLanguage();
   const [viewCount, setViewCount] = useState(post.views);
+  
+  const translatedTitle = useDynamicTranslation(post.title);
+  const translatedCategory = useDynamicTranslation(post.category);
+  const translatedContent = useDynamicTranslation(post.content, true);
 
   const editor = useEditor({
     extensions: [
@@ -76,7 +88,7 @@ export function NewsPostClientPage({ post }: { post: NewsPost }) {
         modestBranding: true,
       }),
     ],
-    content: post.content,
+    content: translatedContent,
     editable: false,
     editorProps: {
         attributes: {
@@ -84,6 +96,13 @@ export function NewsPostClientPage({ post }: { post: NewsPost }) {
         }
     }
   });
+
+   useEffect(() => {
+    if (editor && translatedContent !== editor.getHTML()) {
+      editor.commands.setContent(translatedContent);
+    }
+  }, [translatedContent, editor]);
+
 
   useEffect(() => {
     // This effect runs only on the client after hydration
@@ -121,9 +140,9 @@ export function NewsPostClientPage({ post }: { post: NewsPost }) {
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <article>
         <header className="mb-8">
-          <Badge className="mb-4">{post.category}</Badge>
+          <Badge className="mb-4">{translatedCategory}</Badge>
           <h1 className="font-headline text-3xl font-bold tracking-tight text-primary md:text-5xl">
-            {post.title}
+            {translatedTitle}
           </h1>
           <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
              <div className="flex items-center gap-1.5">

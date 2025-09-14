@@ -4,12 +4,20 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/hooks/use-language';
+import { useLanguage, useDynamicTranslation } from '@/hooks/use-language';
 import { ArrowRight, Eye, Heart, MessageCircle } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PageHeader } from '@/components/page-header';
 import type { NewsPost } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
+
+function TranslatedText({ text: textToTranslate }: { text: string }) {
+    const translatedText = useDynamicTranslation(textToTranslate);
+    if (translatedText === 'Loading...') return <Skeleton className="h-4 w-3/4" />;
+    return <>{translatedText}</>;
+}
+
 
 export function NewsClientPage({ newsPosts }: { newsPosts: Omit<NewsPost, 'comments' | 'content'>[] }) {
   const { language, text } = useLanguage();
@@ -34,21 +42,21 @@ export function NewsClientPage({ newsPosts }: { newsPosts: Omit<NewsPost, 'comme
             <Link href={post.href} className="block">
                 <div className="relative h-56 w-full">
                     <Image src={post.image_url} alt={post.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"/>
-                    <Badge className="absolute top-4 left-4">{post.category}</Badge>
+                    <Badge className="absolute top-4 left-4"><TranslatedText text={post.category} /></Badge>
                 </div>
             </Link>
             <div className="flex flex-1 flex-col p-6">
                 <CardHeader className="p-0">
                     <CardTitle className="text-xl font-bold text-primary hover:underline">
                         <Link href={post.href}>
-                            {post.title}
+                            <TranslatedText text={post.title} />
                         </Link>
                     </CardTitle>
                     <CardDescription>{formatDate(post.date)}</CardDescription>
                 </CardHeader>
                 <CardContent className="flex-1 p-0 pt-4">
                     <p className="text-base text-gray-600 dark:text-gray-300">
-                        {post.excerpt}
+                        <TranslatedText text={post.excerpt} />
                     </p>
                 </CardContent>
                 <CardFooter className="mt-4 flex justify-between p-0">

@@ -14,7 +14,7 @@ type LanguageContextType = {
   language: Language;
   toggleLanguage: () => void;
   text: Translations;
-  translateDynamic: (textToTranslate: string) => Promise<string>;
+  translateDynamic: (textToTranslate: string, isHtml?: boolean) => Promise<string>;
 };
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -348,7 +348,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [language]);
 
-  const translateDynamic = useCallback(async (textToTranslate: string): Promise<string> => {
+  const translateDynamic = useCallback(async (textToTranslate: string, isHtml: boolean = false): Promise<string> => {
     if (language === 'bg' || !textToTranslate) {
       return textToTranslate;
     }
@@ -364,7 +364,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-        const translated = await translateText({ text: textToTranslate, targetLang: language });
+        const translated = await translateText({ text: textToTranslate, targetLang: language, isHtml });
         if (translated) {
             setDynamicTranslations(prev => ({...prev, [cacheKey]: translated}));
             return translated;
@@ -436,7 +436,7 @@ export const useLanguage = () => {
 };
 
 // A new hook for translating dynamic content within components
-export const useDynamicTranslation = (textToTranslate: string | null | undefined): string => {
+export const useDynamicTranslation = (textToTranslate: string | null | undefined, isHtml: boolean = false): string => {
     const { language, translateDynamic } = useLanguage();
     const [translatedText, setTranslatedText] = useState(textToTranslate || '');
 
@@ -454,7 +454,7 @@ export const useDynamicTranslation = (textToTranslate: string | null | undefined
         let isMounted = true;
         setTranslatedText('Loading...');
 
-        translateDynamic(textToTranslate).then(result => {
+        translateDynamic(textToTranslate, isHtml).then(result => {
             if (isMounted) {
                 setTranslatedText(result);
             }
@@ -464,7 +464,7 @@ export const useDynamicTranslation = (textToTranslate: string | null | undefined
             isMounted = false;
         };
 
-    }, [textToTranslate, language, translateDynamic]);
+    }, [textToTranslate, language, translateDynamic, isHtml]);
 
     return translatedText;
 }

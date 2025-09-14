@@ -8,6 +8,7 @@ import * as deepl from 'deepl-node';
 const TranslateInputSchema = z.object({
   text: z.string().describe('The text to translate.'),
   targetLang: z.enum(['bg', 'en']).describe('The target language.'),
+  isHtml: z.boolean().optional().describe('Whether the text is HTML.'),
 });
 
 export type TranslateInput = z.infer<typeof TranslateInputSchema>;
@@ -22,7 +23,7 @@ const translateFlow = ai.defineFlow(
     inputSchema: TranslateInputSchema,
     outputSchema: z.string().nullable(),
   },
-  async ({ text, targetLang }) => {
+  async ({ text, targetLang, isHtml }) => {
     if (!process.env.DEEPL_API_KEY) {
       console.error('DEEPL_API_KEY is not set.');
       return `(Translation Disabled)`;
@@ -34,7 +35,9 @@ const translateFlow = ai.defineFlow(
 
     try {
       const translator = new deepl.Translator(process.env.DEEPL_API_KEY);
-      const result = await translator.translateText(text, 'bg', targetLang as deepl.TargetLanguageCode);
+      const result = await translator.translateText(text, 'bg', targetLang as deepl.TargetLanguageCode, {
+          tagHandling: isHtml ? 'html' : undefined,
+      });
       return result.text;
     } catch (error) {
       console.error('DeepL Translation Error:', error);
