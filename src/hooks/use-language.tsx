@@ -336,62 +336,75 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [dynamicTranslations, setDynamicTranslations] = useState<Translations>({});
 
   const toggleLanguage = useCallback(() => {
-    setLanguage((prevLang) => (prevLang === 'bg' ? 'en' : 'bg'));
+    const newLang = language === 'bg' ? 'en' : 'bg';
+    setLanguage(newLang);
+    // Clear the cache when language changes
+    if (newLang === 'en') {
+        document.cookie = `NEXT_LOCALE=en;path=/;max-age=31536000`;
+    } else {
+        document.cookie = `NEXT_LOCALE=bg;path=/;max-age=31536000`;
+    }
     setDynamicTranslations({});
-  }, []);
+  }, [language]);
 
   const text = useMemo(() => {
-    const translations = baseTranslations[language];
+    const currentTranslations = baseTranslations[language];
 
-    // If the language is Bulgarian, just return the base translations.
+    // If the language is Bulgarian (default), just return the hardcoded translations.
+    // No API calls needed.
     if (language === 'bg') {
-        return translations;
+        return currentTranslations;
     }
     
-    // For English or other languages, create a proxy for dynamic translation.
+    // For English (or other languages), create a Proxy to handle dynamic translation.
     const handler = {
       get: (target: Translations, prop: string) => {
-        // 1. Return hardcoded translation if it exists
+        // 1. Return hardcoded translation if it exists in the target language (e.g., 'en').
         if (prop in target && target[prop]) {
           return target[prop];
         }
 
-        // 2. Return from cache if it exists
+        // 2. Return from cache if it exists for the current language.
         if (prop in dynamicTranslations) {
           return dynamicTranslations[prop];
         }
         
-        // 3. Get source text from Bulgarian (our source of truth)
+        // 3. Get the source text from Bulgarian (our source of truth).
         const sourceText = baseTranslations.bg[prop];
+
+        // 4. If source text exists, trigger translation.
         if (sourceText) {
-          // Set to "Loading..." immediately to prevent re-triggering.
+          // Immediately set a "Loading..." state to prevent multiple requests for the same key.
           // Using a microtask to batch state updates.
           setTimeout(() => {
              setDynamicTranslations(prev => ({...prev, [prop]: 'Loading...' }));
           }, 0);
 
-          // 4. Fetch from API
+          // 5. Fetch translation from the API.
           translateText({ text: sourceText, targetLang: language })
             .then(translatedText => {
               if (translatedText) {
+                // Update cache with the successful translation.
                 setDynamicTranslations(prev => ({ ...prev, [prop]: translatedText }));
               } else {
-                 setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback to source on error
+                 // On error, fallback to the source Bulgarian text.
+                 setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText }));
               }
             })
             .catch(() => {
-                setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback to source on error
+                // On exception, also fallback to source text.
+                setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText }));
             });
             
-          return 'Loading...';
+          return 'Loading...'; // Return loading text for the initial render.
         }
         
-        // 5. Fallback for untranslatable keys (e.g. if key doesn't exist in bg translations)
+        // 6. Fallback for untranslatable keys (if key doesn't exist in 'bg' translations).
         return prop;
       }
     };
     
-    return new Proxy(translations, handler);
+    return new Proxy(currentTranslations, handler);
 
   }, [language, dynamicTranslations]);
 
