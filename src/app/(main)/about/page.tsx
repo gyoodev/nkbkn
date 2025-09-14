@@ -9,19 +9,18 @@ import { useLanguage } from '@/hooks/use-language';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function TranslatedHtmlContent({ text, useHtml }: { text: string, useHtml: boolean }) {
-    const translatedText = useDynamicTranslation(text, useHtml);
-    if (translatedText === 'Loading...') return <div className="space-y-2"><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-4/5" /></div>;
-    if (useHtml) {
-        return <div className="text-base text-muted-foreground prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: translatedText }} />;
-    }
-    return <p className="text-base text-muted-foreground">{translatedText}</p>;
+function HtmlContent({ htmlString, isLoading }: { htmlString: string, isLoading: boolean }) {
+    if (isLoading) return <div className="space-y-2"><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-4/5" /></div>;
+    return <div className="text-base text-muted-foreground prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: htmlString }} />;
 }
 
+function TextContent({ text, isLoading }: { text: string, isLoading: boolean }) {
+    if (isLoading) return <div className="space-y-2"><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-4/5" /></div>;
+    return <p className="text-base text-muted-foreground">{text}</p>;
+}
 
-// Make the component async to fetch data on the server
 export default function AboutPage() {
-  const { text } = useLanguage();
+  const { text, language } = useLanguage();
   const [historyContent, setHistoryContent] = useState('');
   const [missionContent, setMissionContent] = useState('');
   const [teamContent, setTeamContent] = useState('');
@@ -30,11 +29,10 @@ export default function AboutPage() {
   useEffect(() => {
     async function fetchData() {
         setLoading(true);
-        // Always fetch the Bulgarian content as the source of truth
         const [history, mission, team] = await Promise.all([
-            getSiteContent('about_history', 'bg'),
-            getSiteContent('about_mission', 'bg'),
-            getSiteContent('about_team_text', 'bg'),
+            getSiteContent(language === 'en' ? 'about_history_en' : 'about_history'),
+            getSiteContent(language === 'en' ? 'about_mission_en' : 'about_mission'),
+            getSiteContent(language === 'en' ? 'about_team_text_en' : 'about_team_text'),
         ]);
         setHistoryContent(history);
         setMissionContent(mission);
@@ -42,27 +40,27 @@ export default function AboutPage() {
         setLoading(false);
     }
     fetchData();
-  }, [])
+  }, [language]);
 
 
   const sections = [
     {
       icon: <History className="h-10 w-10 text-primary" />,
-      titleKey: 'aboutHistoryTitle',
+      titleKey: text.aboutHistoryTitle,
       content: historyContent,
       useHtml: true,
       className: 'md:col-span-2',
     },
     {
       icon: <Goal className="h-10 w-10 text-primary" />,
-      titleKey: 'aboutMissionTitle',
+      titleKey: text.aboutMissionTitle,
       content: missionContent,
       useHtml: true,
       className: 'md:col-span-1',
     },
     {
       icon: <Users className="h-10 w-10 text-primary" />,
-      titleKey: 'aboutTeamTitle',
+      titleKey: text.aboutTeamTitle,
       content: teamContent,
       useHtml: false,
       className: 'md:col-span-3',
@@ -92,11 +90,13 @@ export default function AboutPage() {
                 <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
                     {section.icon}
                 </div>
-                <CardTitle className="text-2xl font-bold">{section.title}</CardTitle>
+                <CardTitle className="text-2xl font-bold">{section.titleKey}</CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0 text-center">
-                 {loading ? <div className="space-y-2"><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-4/5" /></div> : (
-                    <TranslatedHtmlContent text={section.content} useHtml={section.useHtml} />
+                 {section.useHtml ? (
+                    <HtmlContent htmlString={section.content} isLoading={loading} />
+                 ) : (
+                    <TextContent text={section.content} isLoading={loading} />
                  )}
               </CardContent>
             </Card>
