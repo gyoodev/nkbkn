@@ -1,3 +1,4 @@
+
 import { PageHeader } from '@/components/page-header';
 import { getSiteContent } from '@/lib/server/data';
 import { AdminContentClient } from './_components/content-client';
@@ -10,8 +11,8 @@ export default async function AdminContentPage() {
     history_bg, history_en,
     mission_bg, mission_en,
     team_bg, team_en,
-    terms_bg, terms_en,
-    privacy_bg, privacy_en,
+    terms_content, terms_content_en,
+    privacy_content, privacy_content_en,
     slider_title_bg, slider_title_en,
     slider_desc_bg, slider_desc_en,
     bannerVisible, 
@@ -34,8 +35,8 @@ export default async function AdminContentPage() {
     about_history_bg: history_bg, about_history_en: history_en,
     about_mission_bg: mission_bg, about_mission_en: mission_en,
     about_team_text_bg: team_bg, about_team_text_en: team_en,
-    terms_content_bg: terms_bg, terms_content_en: terms_en,
-    privacy_content_bg: privacy_bg, privacy_content_en: privacy_en,
+    terms_content_bg: terms_content, terms_content_en: terms_content_en,
+    privacy_content_bg: privacy_content, privacy_content_en: privacy_content_en,
     slider_title_bg: slider_title_bg, slider_title_en: slider_title_en,
     slider_desc_bg: slider_desc_bg, slider_desc_en: slider_desc_en,
   };
