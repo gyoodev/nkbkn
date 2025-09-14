@@ -1,6 +1,5 @@
 
 
-
 'use client';
 
 import Link from 'next/link';
@@ -103,12 +102,12 @@ export default function AdminLayoutClient({ children, user }: { children: React.
                          <SidebarGroupContent>
                             {mainNavItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
-                                    <Link href={item.href} legacyBehavior passHref>
-                                        <SidebarMenuButton tooltip={item.label} isActive={isActive(item.href)}>
+                                    <SidebarMenuButton asChild tooltip={item.label} isActive={isActive(item.href)}>
+                                        <Link href={item.href}>
                                             {item.icon}
                                             <span>{item.label}</span>
-                                        </SidebarMenuButton>
-                                    </Link>
+                                        </Link>
+                                    </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
                         </SidebarGroupContent>
@@ -118,12 +117,12 @@ export default function AdminLayoutClient({ children, user }: { children: React.
                          <SidebarGroupContent>
                             {managementNavItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
-                                    <Link href={item.href} legacyBehavior passHref>
-                                        <SidebarMenuButton tooltip={item.label} isActive={isActive(item.href)}>
+                                    <SidebarMenuButton asChild tooltip={item.label} isActive={isActive(item.href)}>
+                                        <Link href={item.href}>
                                             {item.icon}
                                             <span>{item.label}</span>
-                                        </SidebarMenuButton>
-                                    </Link>
+                                        </Link>
+                                    </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
                         </SidebarGroupContent>
@@ -133,12 +132,12 @@ export default function AdminLayoutClient({ children, user }: { children: React.
                          <SidebarGroupContent>
                             {settingsNavItems.map((item) => (
                                 <SidebarMenuItem key={item.href}>
-                                    <Link href={item.href} legacyBehavior passHref>
-                                        <SidebarMenuButton tooltip={item.label} isActive={isActive(item.href)}>
+                                    <SidebarMenuButton asChild tooltip={item.label} isActive={isActive(item.href)}>
+                                        <Link href={item.href}>
                                             {item.icon}
                                             <span>{item.label}</span>
-                                        </SidebarMenuButton>
-                                    </Link>
+                                        </Link>
+                                    </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
                         </SidebarGroupContent>
@@ -148,12 +147,12 @@ export default function AdminLayoutClient({ children, user }: { children: React.
              <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                         <Link href="/" legacyBehavior passHref>
-                            <SidebarMenuButton tooltip="Към сайта">
+                        <SidebarMenuButton asChild tooltip="Към сайта">
+                            <Link href="/">
                                 <ExternalLink />
                                 <span>Към сайта</span>
-                            </SidebarMenuButton>
-                        </Link>
+                            </Link>
+                        </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarFooter>
