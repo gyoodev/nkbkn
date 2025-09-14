@@ -248,12 +248,32 @@ export async function getSubmissions(): Promise<Submission[]> {
     return data;
 }
 
-export async function getSiteContent(key: string, lang: 'bg' | 'en'): Promise<string> {
+export async function getSiteContent(key: string, lang?: 'bg' | 'en'): Promise<string> {
     const supabase = createBrowserClient();
+    let keyToFetch = key;
+
+    // Default to 'bg' if no lang is provided, but handle special cases.
+    const finalLang = lang || (document.cookie.includes('NEXT_LOCALE=en') ? 'en' : 'bg');
     
-    // Always fetch the bulgarian version, as it's the source of truth
-    const fullKey = `${key}_bg`;
-    
+    // Logic to handle keys with and without language suffixes
+    if (finalLang === 'en') {
+        if (!key.endsWith('_en')) {
+            keyToFetch = `${key}_en`;
+        }
+    } else { // finalLang is 'bg'
+         if (key.endsWith('_en')) {
+            keyToFetch = key.replace('_en', '');
+         }
+         // Special case for content from admin panel that might not have suffix yet
+         if (key === 'terms_content' || key === 'privacy_content' || key.startsWith('about_')) {
+            // It is already the correct key for bg
+         }
+    }
+    // For keys like slider_title, the bg version has no suffix.
+    if (finalLang === 'bg' && (key === 'slider_title_bg' || key === 'slider_desc_bg')) {
+        keyToFetch = key.replace('_bg', '');
+    }
+
     try {
         const { data, error } = await supabase
             .from('site_content')
@@ -265,10 +285,10 @@ export async function getSiteContent(key: string, lang: 'bg' | 'en'): Promise<st
             if (error && error.code !== 'PGRST116') { // 'PGRST116' means no rows found
                 console.error(`Error fetching site content for key "${keyToFetch}":`, error.message);
             }
-             // Fallback for EN version if it doesn't exist
+             // Fallback for EN version if it doesn't exist: fetch BG and let translation handle it.
             if (finalLang === 'en' && key.endsWith('_en')) {
                  const baseKey = key.replace('_en', '');
-                 return getSiteContent(baseKey, 'bg'); // Fetch BG and it will be translated
+                 return getSiteContent(baseKey, 'bg');
             }
             return '';
         }
@@ -278,6 +298,7 @@ export async function getSiteContent(key: string, lang: 'bg' | 'en'): Promise<st
         return '';
     }
 }
+
 
 export async function getContactSubmissions(): Promise<ContactSubmission[]> {
     const supabase = createBrowserClient();
