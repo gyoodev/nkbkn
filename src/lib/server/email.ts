@@ -23,7 +23,7 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
         },
         tls: {
             // do not fail on invalid certs
-            minVersion: 'TLSv1.2',
+            // minVersion: 'TLSv1.2', // Removed to allow negotiation
         },
     });
 
