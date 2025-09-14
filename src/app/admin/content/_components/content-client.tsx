@@ -18,13 +18,17 @@ import Image from 'next/image';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 type ContentState = {
-    about_history_bg: string; about_history_en: string;
-    about_mission_bg: string; about_mission_en: string;
-    about_team_text_bg: string; about_team_text_en: string;
-    terms_content_bg: string; terms_content_en: string;
-    privacy_content_bg: string; privacy_content_en: string;
-    slider_title_bg: string; slider_title_en: string;
-    slider_desc_bg: string; slider_desc_en: string;
+    about_history: string; about_history_en: string;
+    about_mission: string; about_mission_en: string;
+    about_team_text: string; about_team_text_en: string;
+    terms_content: string; terms_content_en: string;
+    privacy_content: string; privacy_content_en: string;
+    slider_title: string; slider_title_en: string;
+    slider_desc: string; slider_desc_en: string;
+    terms_title: string; terms_title_en: string;
+    terms_desc: string; terms_desc_en: string;
+    privacy_title: string; privacy_title_en: string;
+    privacy_desc: string; privacy_desc_en: string;
 }
 
 interface AdminContentClientProps {
@@ -159,8 +163,7 @@ function ContentCard({
 
   const handleSave = (lang: 'bg' | 'en') => {
     startTransition(async () => {
-      // Adjust key for BG to match DB schema (remove suffix)
-      const keyForDb = lang === 'bg' ? contentKey : `${contentKey}_en`;
+      const keyForDb = lang === 'en' ? `${contentKey}_en` : contentKey;
       const { error } = await updateContent(keyForDb, content[lang]);
       if (error) {
         toast({
@@ -281,8 +284,8 @@ export function AdminContentClient({
                 contentKey="slider_title"
                 title="Заглавие на началната страница"
                 description="Основното заглавие, което се показва на голямата снимка на началната страница."
-                content={{ bg: content.slider_title_bg, en: content.slider_title_en }}
-                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'slider_title_bg' : 'slider_title_en', newContent)}
+                content={{ bg: content.slider_title, en: content.slider_title_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'slider_title' : 'slider_title_en', newContent)}
                 useRichText={false}
             />
 
@@ -290,50 +293,82 @@ export function AdminContentClient({
                 contentKey="slider_desc"
                 title="Подзаглавие на началната страница"
                 description="Текстът под основното заглавие на началната страница."
-                content={{ bg: content.slider_desc_bg, en: content.slider_desc_en }}
-                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'slider_desc_bg' : 'slider_desc_en', newContent)}
+                content={{ bg: content.slider_desc, en: content.slider_desc_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'slider_desc' : 'slider_desc_en', newContent)}
                 useRichText={false}
             />
 
             <ContentCard
                 contentKey="about_history"
-                title="История"
+                title="История (За нас)"
                 description="Редактирайте съдържанието на секция 'Нашата история' в страница 'За нас'."
-                content={{ bg: content.about_history_bg, en: content.about_history_en }}
-                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'about_history_bg' : 'about_history_en', newContent)}
+                content={{ bg: content.about_history, en: content.about_history_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'about_history' : 'about_history_en', newContent)}
             />
             
             <ContentCard
                 contentKey="about_mission"
-                title="Мисия"
+                title="Мисия (За нас)"
                 description="Редактирайте съдържанието на секция 'Нашата мисия' в страница 'За нас'."
-                content={{ bg: content.about_mission_bg, en: content.about_mission_en }}
-                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'about_mission_bg' : 'about_mission_en', newContent)}
+                content={{ bg: content.about_mission, en: content.about_mission_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'about_mission' : 'about_mission_en', newContent)}
             />
 
             <ContentCard
                 contentKey="about_team_text"
-                title="Екип"
+                title="Екип (За нас)"
                 description="Текстът, който се показва в секция 'Екип' на страница 'За нас'."
-                content={{ bg: content.about_team_text_bg, en: content.about_team_text_en }}
-                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'about_team_text_bg' : 'about_team_text_en', newContent)}
+                content={{ bg: content.about_team_text, en: content.about_team_text_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'about_team_text' : 'about_team_text_en', newContent)}
                 useRichText={false}
             />
 
             <ContentCard
+                contentKey="terms_title"
+                title="Заглавие (Условия за ползване)"
+                description="Заглавието на страницата 'Условия за ползване'."
+                content={{ bg: content.terms_title, en: content.terms_title_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'terms_title' : 'terms_title_en', newContent)}
+                useRichText={false}
+            />
+            <ContentCard
+                contentKey="terms_desc"
+                title="Описание (Условия за ползване)"
+                description="Краткото описание под заглавието на страницата 'Условия за ползване'."
+                content={{ bg: content.terms_desc, en: content.terms_desc_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'terms_desc' : 'terms_desc_en', newContent)}
+                useRichText={false}
+            />
+            <ContentCard
                 contentKey="terms_content"
-                title="Условия и правила за ползване"
+                title="Съдържание (Условия за ползване)"
                 description="Редактирайте съдържанието на страницата 'Условия и правила за ползване'."
-                content={{ bg: content.terms_content_bg, en: content.terms_content_en }}
-                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'terms_content_bg' : 'terms_content_en', newContent)}
+                content={{ bg: content.terms_content, en: content.terms_content_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'terms_content' : 'terms_content_en', newContent)}
             />
 
             <ContentCard
+                contentKey="privacy_title"
+                title="Заглавие (Политика за поверителност)"
+                description="Заглавието на страницата 'Политика за поверителност'."
+                content={{ bg: content.privacy_title, en: content.privacy_title_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'privacy_title' : 'privacy_title_en', newContent)}
+                useRichText={false}
+            />
+             <ContentCard
+                contentKey="privacy_desc"
+                title="Описание (Политика за поверителност)"
+                description="Краткото описание под заглавието на страницата 'Политика за поверителност'."
+                content={{ bg: content.privacy_desc, en: content.privacy_desc_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'privacy_desc' : 'privacy_desc_en', newContent)}
+                useRichText={false}
+            />
+            <ContentCard
                 contentKey="privacy_content"
-                title="Политика за поверителност"
+                title="Съдържание (Политика за поверителност)"
                 description="Редактирайте съдържанието на страницата 'Политика за поверителност'."
-                content={{ bg: content.privacy_content_bg, en: content.privacy_content_en }}
-                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'privacy_content_bg' : 'privacy_content_en', newContent)}
+                content={{ bg: content.privacy_content, en: content.privacy_content_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'privacy_content' : 'privacy_content_en', newContent)}
             />
         </div>
   );
