@@ -30,12 +30,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getContactSubmissions } from '@/lib/client/data';
-import { deleteContactSubmission, updateContactStatus, sendEmailReply } from './actions';
+import { deleteContactSubmission, updateContactStatus } from './actions';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Input } from '@/components/ui/input';
+import Link from 'next/link';
 
 
 function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {
@@ -51,38 +52,12 @@ function SubmissionDetail({ label, value }: { label: string, value: string | num
 
 function ViewSubmissionDialog({ submission }: { submission: ContactSubmission }) {
     const { toast } = useToast();
-    const [open, setOpen] = useState(false);
-    const formRef = useRef<HTMLFormElement>(null);
-    const initialState = { success: false, message: '' };
-    const [state, formAction] = useActionState(sendEmailReply, initialState);
     
-    useEffect(() => {
-        if(state.message) {
-            toast({
-                variant: state.success ? 'default' : 'destructive',
-                title: state.success ? 'Успех' : 'Грешка',
-                description: state.message
-            });
-            if (state.success) {
-                setOpen(false);
-                formRef.current?.reset();
-            }
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state]);
-
-    function SubmitButton() {
-        const { pending } = useFormStatus();
-        return (
-            <Button type="submit" disabled={pending}>
-                {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {pending ? 'Изпращане...' : 'Изпрати отговор'}
-            </Button>
-        )
-    }
-
+    const subject = `Re: ${submission.topic || 'Запитване'}`;
+    const mailtoLink = `mailto:${submission.email}?subject=${encodeURIComponent(subject)}`;
+    
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog>
             <DialogTrigger asChild>
                 <Button variant="ghost" size="icon">
                     <Eye className="h-4 w-4" />
@@ -95,41 +70,31 @@ function ViewSubmissionDialog({ submission }: { submission: ContactSubmission })
                        Получено на {new Date(submission.created_at).toLocaleString('bg-BG')}
                     </DialogDescription>
                 </DialogHeader>
-                <form action={formAction} ref={formRef}>
-                     <input type="hidden" name="to" value={submission.email} />
-                     <input type="hidden" name="submissionId" value={submission.id} />
-                    <div className="space-y-4 py-4">
-                        <div className="space-y-2 rounded-md border p-4">
-                            <h4 className="font-semibold text-md">Детайли на запитването</h4>
-                            <Separator />
-                            <SubmissionDetail label="Име" value={submission.name} />
-                            <SubmissionDetail label="Имейл" value={submission.email} />
-                            <SubmissionDetail label="Телефон" value={submission.phone} />
-                            <SubmissionDetail label="Тема" value={submission.topic} />
-                            <div>
-                                <p className="text-sm font-semibold text-muted-foreground mt-2">Съобщение:</p>
-                                <p className="text-sm p-3 bg-muted rounded-md whitespace-pre-wrap mt-1">{submission.message}</p>
-                            </div>
-                        </div>
-                        
+                 <div className="space-y-4 py-4">
+                    <div className="space-y-2 rounded-md border p-4">
+                        <h4 className="font-semibold text-md">Детайли на запитването</h4>
                         <Separator />
-                        
-                        <div className="space-y-2">
-                             <Label htmlFor="subject">Тема на отговора</Label>
-                             <Input id="subject" name="subject" defaultValue={`Re: ${submission.topic || 'Запитване'}`} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="reply-message">Вашият отговор</Label>
-                            <Textarea id="reply-message" name="message" placeholder="Напишете вашия отговор тук..." rows={5} />
+                        <SubmissionDetail label="Име" value={submission.name} />
+                        <SubmissionDetail label="Имейл" value={submission.email} />
+                        <SubmissionDetail label="Телефон" value={submission.phone} />
+                        <SubmissionDetail label="Тема" value={submission.topic} />
+                        <div>
+                            <p className="text-sm font-semibold text-muted-foreground mt-2">Съобщение:</p>
+                            <p className="text-sm p-3 bg-muted rounded-md whitespace-pre-wrap mt-1">{submission.message}</p>
                         </div>
                     </div>
-                    <DialogFooter className="sm:justify-start gap-2">
-                        <SubmitButton />
-                        <DialogClose asChild>
-                            <Button type="button" variant="secondary">Отказ</Button>
-                        </DialogClose>
-                    </DialogFooter>
-                </form>
+                </div>
+                <DialogFooter className="sm:justify-start gap-2">
+                    <Button asChild>
+                        <Link href={mailtoLink}>
+                            <Reply className="mr-2 h-4 w-4" />
+                            Отговори по имейл
+                        </Link>
+                    </Button>
+                    <DialogClose asChild>
+                        <Button type="button" variant="secondary">Затвори</Button>
+                    </DialogClose>
+                </DialogFooter>
             </DialogContent>
         </Dialog>
     )

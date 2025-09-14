@@ -10,16 +10,6 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { MoreHorizontal, Mail, Shield, User, Loader2, AlertTriangle, Send } from 'lucide-react';
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog"
-import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
@@ -31,91 +21,11 @@ import {
     DropdownMenuPortal,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { updateUserRole, sendEmailToUser } from '../actions';
+import { updateUserRole } from '../actions';
 import type { UserProfile } from '@/lib/types';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { useLanguage } from '@/hooks/use-language';
-import { Input } from '@/components/ui/input';
+import Link from 'next/link';
 
-function EmailDialog({ user }: { user: UserProfile }) {
-    const { text } = useLanguage();
-    const [open, setOpen] = useState(false);
-    const formRef = useRef<HTMLFormElement>(null);
-    const { toast } = useToast();
-    const initialState = { success: false, message: '' };
-    const [state, formAction] = useActionState(sendEmailToUser, initialState);
-
-     useEffect(() => {
-        if(state.message) {
-            toast({
-                variant: state.success ? 'default' : 'destructive',
-                title: state.success ? 'Успех' : 'Грешка',
-                description: state.message
-            });
-            if (state.success) {
-                setOpen(false);
-                formRef.current?.reset();
-            }
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [state]);
-
-    function SubmitButton() {
-        const { pending } = useFormStatus();
-        return (
-             <Button type="submit" disabled={pending}>
-                {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {pending ? 'Изпращане...' : 'Изпрати съобщение'}
-            </Button>
-        )
-    }
-
-    return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
-                    <Mail className="mr-2 h-4 w-4" />
-                    {text.sendMessage}
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>{text.sendMessage} до {user.full_name || user.email}</DialogTitle>
-                    <DialogDescription>
-                       Съобщението ще бъде изпратено директно до {user.email}.
-                    </DialogDescription>
-                </DialogHeader>
-                <form action={formAction} ref={formRef}>
-                     <input type="hidden" name="to" value={user.email || ''} />
-                     <div className="space-y-4 py-4">
-                        <div className="text-sm"><strong>Телефон:</strong> {user.phone || 'Няма'}</div>
-                         <div className="space-y-2">
-                            <Label htmlFor="subject">Тема</Label>
-                            <Input id="subject" name="subject" defaultValue={`Съобщение от НКБКН`} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="email-message">{text.message}</Label>
-                            <Textarea 
-                                id="email-message"
-                                name="message"
-                                placeholder="Вашето съобщение тук..." 
-                                rows={6}
-                            />
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <SubmitButton />
-                        <DialogClose asChild>
-                            <Button type="button" variant="secondary">Отказ</Button>
-                        </DialogClose>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
-    )
-}
 
 function RoleChanger({ user }: { user: UserProfile }) {
     const [isPending, startTransition] = useTransition();
@@ -224,7 +134,12 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
                     </TableCell>
                     <TableCell>{formatDate(user.reg_date)}</TableCell>
                     <TableCell className="text-right flex items-center justify-end gap-2">
-                        <EmailDialog user={user} />
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={`mailto:${user.email}`}>
+                                <Mail className="mr-2 h-4 w-4" />
+                                Изпрати имейл
+                            </Link>
+                        </Button>
                         <RoleChanger user={user} />
                     </TableCell>
                     </TableRow>
