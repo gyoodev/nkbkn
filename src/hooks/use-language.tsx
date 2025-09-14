@@ -20,7 +20,6 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 const baseTranslations: Record<Language, Translations> = {
   bg: {
-    // General
     appName: 'НКБКН',
     appNameFull: 'Национална комисия за Български конни надбягвания',
     readMore: 'Прочети повече',
@@ -32,7 +31,6 @@ const baseTranslations: Record<Language, Translations> = {
     contact: 'Контакти',
     gallery: 'Галерия',
     loading: 'Зареждане...',
-    // Header & Nav
     aboutCommissionShort: 'За комисията',
     jockeys: 'Жокеи',
     trainers: 'Треньoри',
@@ -45,14 +43,12 @@ const baseTranslations: Record<Language, Translations> = {
     logout: 'Изход',
     profile: 'Профил',
     adminPanel: 'Админ панел',
-    // Home Page
     heroTitle: 'СТРАСТ, АДРЕНАЛИН И ЛЮБОВ КЪМ КОНЕТЕ',
     heroSubtitle: 'Официалният дом на българските конни надбягвания.',
     raceCalendar: 'Състезателен календар',
     latestNews: 'Последни новини',
     latestFromTheTrack: 'Най-новото от пистата',
     latestFromTheTrackDescription: 'Последни новини, събития и актуализации от света на конните надбягвания в България.',
-    // Footer
     aboutUs: 'За нас',
     history: 'История',
     mission: 'Мисия',
@@ -63,7 +59,6 @@ const baseTranslations: Record<Language, Translations> = {
     termsShort: 'Условия',
     privacyShort: 'Поверителност',
     faq: 'ЧЗВ',
-    // Auth Pages
     loginPrompt: 'Влезте в своя профил, за да получите достъп до всички функции.',
     email: 'Имейл',
     password: 'Парола',
@@ -74,7 +69,6 @@ const baseTranslations: Record<Language, Translations> = {
     signUpPrompt: 'Създайте своя акаунт, за да се възползвате от пълните възможности на платформата.',
     signingUp: 'Регистриране...',
     alreadyHaveAccount: 'Вече имате акаунт?',
-    // Profile Page
     updateProfile: 'Актуализирай профила',
     updatingProfile: 'Актуализиране...',
     profilePageDescription: 'Преглеждайте и актуализирайте информацията за вашия профил.',
@@ -82,13 +76,11 @@ const baseTranslations: Record<Language, Translations> = {
     fullName: 'Пълно име',
     website: 'Уебсайт',
     uploadAvatar: 'Качи аватар',
-    // About Page
     aboutPageTitle: 'За Националната комисия за Български конни надбягвания',
     aboutPageDescription: 'Научете повече за нашата история, мисия и екипа, който стои зад развитието на конните надбягвания в България.',
     aboutHistoryTitle: 'Нашата история',
     aboutMissionTitle: 'Нашата мисия',
     aboutTeamTitle: 'Нашият екип',
-    // Calendar Page
     calendarPageDescription: 'Прегледайте предстоящите състезателни дни и събития.',
     racesFor: 'Състезания за',
     noRacesScheduled: 'Няма планирани състезания за тази дата.',
@@ -96,17 +88,14 @@ const baseTranslations: Record<Language, Translations> = {
     selectDateWithRaces: 'Моля, изберете дата със събития, за да видите състезанията.',
     importantNotice: 'Важно съобщение!',
     championship2026: 'Републиканският шампионат за 2024 г. няма да се проведе. Очаквайте информация за сезон 2026!',
-    // Jockeys Page
     jockeysPageTitle: 'Нашите жокеи',
     jockeysPageDescription: 'Запознайте се с талантливите жокеи, които се състезават на пистите в България.',
     wins: 'Победи',
     mounts: 'Участия',
     winRate: '% победи',
-    // Trainers Page
     trainersPageTitle: 'Нашите треньори',
     trainersPageDescription: 'Открийте опитните треньори, които подготвят шампионите на пистата.',
     achievements: 'Постижения',
-    // Horses Page
     horsesPageTitle: 'Картотека на коне',
     horsesPageDescription: 'Разгледайте базата данни с всички регистрирани коне, участващи в надбягванията.',
     horseNameTable: 'Име на коня',
@@ -114,27 +103,22 @@ const baseTranslations: Record<Language, Translations> = {
     dam: 'Майка',
     age: 'Възраст',
     bestTime: 'Най-добро време',
-    // Tracks Page
     tracksPageDescription: 'Информация за хиподрумите в България.',
     trackLength: 'Дължина на пистата',
     trackType: 'Тип на настилката',
     trackTypeSand: 'Пясъчна',
     navigateToTrack: 'Навигация до пистата',
-    // Gallery Page
     galleryPageTitle: 'Галерия',
     galleryPageDescription: 'Разгледайте снимки от последните събития и състезания.',
-    // News Post Page
     views: 'Преглеждания',
     likes: 'Харесвания',
     like: 'Харесай',
-    // Contact Page
     contactPageTitle: 'Свържете се с нас',
     contactPageDescription: 'Имате въпроси или предложения? Използвайте формата по-долу или някой от другите методи за контакт.',
     sendMessage: 'Изпратете ни съобщение',
     submit: 'Изпрати',
     findUs: 'Намерете ни',
     followUs: 'Последвайте ни',
-    // FAQ Page
     faqTitle: 'Често задавани въпроси',
     faqDescription: 'Намерете отговори на най-често задаваните въпроси.',
     faq1_q: 'Как мога да регистрирам кон за участие?',
@@ -147,7 +131,6 @@ const baseTranslations: Record<Language, Translations> = {
     faq4_a: 'Състезателният сезон обикновено е през топлите месеци от годината. Моля, следете нашия "Календар" за актуална информация относно датите на провеждане.',
     faq5_q: 'Мога ли да залагам на състезанията?',
     faq5_a: 'Към момента комисията не организира и не регулира залози. Всяка информация относно залози ще бъде официално обявена на сайта.',
-    // Forms Page
     registrationForms: 'Формуляри за регистрация',
     registrationFormsDescription: 'Изберете типа регистрация, който желаете да направите, и попълнете необходимите данни.',
     jockeyApplication: 'Заявка за жокей',
@@ -177,28 +160,102 @@ const baseTranslations: Record<Language, Translations> = {
     passportNumber: 'Паспортен номер',
     ownerContactEmail: 'Имейл на собственика',
     ownerContactPhone: 'Телефон на собственика',
-    // Cookie Banner
     cookieBannerText: 'Този уебсайт използва "бисквитки", за да гарантира, че получавате най-доброто изживяване. Като продължавате да използвате сайта, вие се съгласявате с нашата политика за поверителност.',
     privacyPolicy: 'Политика за поверителност',
     accept: 'Приемам',
-    // Partners
     ourTrustedPartners: 'Нашите доверени партньори',
+    race: 'Състезание',
+    date: 'Дата',
+    trackName: 'Хиподрум',
+    winner: 'Победител',
+    time: 'Време',
+    latestResults: 'Последни резултати',
+    latestResultsDescription: 'Вижте победителите от последните проведени състезания.',
+    ownersPageTitle: 'Собственици',
+    ownersPageDescription: 'Разгледайте профилите на собствениците на коне в българските надбягвания.',
   },
   en: {
-    // English translations will be added here
+    // English translations are dynamically fetched.
   },
 };
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>('bg');
+  const [dynamicTranslations, setDynamicTranslations] = useState<Translations>({});
 
-  const toggleLanguage = () => {
+  const toggleLanguage = useCallback(() => {
     setLanguage((prevLang) => (prevLang === 'bg' ? 'en' : 'bg'));
-  };
+    // Reset dynamic translations when language changes
+    setDynamicTranslations({});
+  }, []);
 
   const text = useMemo(() => {
-    return baseTranslations[language];
-  }, [language]);
+    const base = baseTranslations[language] || {};
+    const allKeys = Object.keys(baseTranslations.bg);
+    
+    const handler = {
+      get: (target: Translations, prop: string) => {
+        // If it's a base translation, return it
+        if (prop in target) {
+          return target[prop as keyof typeof target];
+        }
+
+        // If we already fetched it dynamically, return it from cache
+        if (prop in dynamicTranslations) {
+          return dynamicTranslations[prop];
+        }
+        
+        // If the target language is 'bg', we don't need to translate
+        if (language === 'bg') {
+          return baseTranslations.bg[prop] || prop;
+        }
+
+        // The text is not in the base translations for the current language
+        // and not in the dynamic cache, so we need to translate it.
+        const sourceText = baseTranslations.bg[prop];
+        if (sourceText) {
+          // Immediately set a loading state
+          // Using a setTimeout to avoid React's batching and ensure re-render
+          setTimeout(() => {
+             setDynamicTranslations(prev => ({...prev, [prop]: 'Loading...' }));
+          }, 0);
+
+          translateText({ text: sourceText, targetLang: language })
+            .then(translatedText => {
+              if (translatedText) {
+                setDynamicTranslations(prev => ({ ...prev, [prop]: translatedText }));
+              } else {
+                 setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback to source
+              }
+            })
+            .catch(() => {
+                setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback to source
+            });
+            
+          return 'Loading...';
+        }
+        
+        // If the key doesn't exist anywhere, return the key itself
+        return prop;
+      }
+    };
+    
+    const proxy = new Proxy(base, handler);
+
+    // This is needed to make all keys available for iteration if necessary,
+    // although direct property access is the main use case.
+    allKeys.forEach(key => {
+        if (!(key in proxy)) {
+            Object.defineProperty(proxy, key, {
+                get: () => handler.get(base, key),
+                enumerable: true,
+                configurable: true,
+            });
+        }
+    });
+
+    return proxy;
+  }, [language, dynamicTranslations]);
 
   return (
     <LanguageContext.Provider value={{ language, toggleLanguage, text }}>
@@ -206,6 +263,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     </LanguageContext.Provider>
   );
 };
+
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);

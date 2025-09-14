@@ -25,16 +25,20 @@ const translateFlow = ai.defineFlow(
   async ({ text, targetLang }) => {
     if (!process.env.DEEPL_API_KEY) {
       console.error('DEEPL_API_KEY is not set.');
-      return `(Translation Disabled: Missing API Key)`;
+      return `(Translation Disabled)`;
+    }
+    
+    if (!text || targetLang === 'bg') {
+        return text;
     }
 
     try {
       const translator = new deepl.Translator(process.env.DEEPL_API_KEY);
-      const result = await translator.translateText(text, 'bg', targetLang);
+      const result = await translator.translateText(text, 'bg', targetLang as deepl.TargetLanguageCode);
       return result.text;
     } catch (error) {
       console.error('DeepL Translation Error:', error);
-      return `(Translation Error)`;
+      return null; // Return null on error to let the frontend handle fallback
     }
   }
 );
