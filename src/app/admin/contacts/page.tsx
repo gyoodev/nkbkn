@@ -54,7 +54,13 @@ function ViewSubmissionDialog({ submission }: { submission: ContactSubmission })
     const { toast } = useToast();
     
     const subject = `Re: ${submission.topic || 'Запитване'}`;
-    const mailtoLink = `mailto:${submission.email}?subject=${encodeURIComponent(subject)}`;
+    const body = `
+\n\n---
+Оригинално съобщение от ${submission.name} <${submission.email}> на ${new Date(submission.created_at).toLocaleString('bg-BG')}:
+\n
+${submission.message}
+    `;
+    const mailtoLink = `mailto:${submission.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     
     return (
         <Dialog>
