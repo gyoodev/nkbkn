@@ -16,7 +16,8 @@ function PrivacyPageContent() {
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            const content = await getSiteContent('privacy_content', language);
+            const contentKey = language === 'en' ? 'privacy_content_en' : 'privacy_content';
+            const content = await getSiteContent(contentKey);
             setPrivacyContent(content);
             setLoading(false);
         }
@@ -66,3 +67,4 @@ export default function PrivacyPage() {
     </div>
   );
 }
+
