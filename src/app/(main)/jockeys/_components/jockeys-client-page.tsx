@@ -1,0 +1,73 @@
+
+'use client';
+
+import Image from 'next/image';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLanguage } from '@/hooks/use-language';
+import { PageHeader } from '@/components/page-header';
+import type { Jockey } from '@/lib/types';
+import { User, UserX } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
+function JockeyCard({ jockey, text }: { jockey: Jockey, text: any }) {
+  return (
+    <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
+      <CardHeader className="p-0">
+        <div className="relative h-64 w-full bg-secondary">
+          {jockey.imageUrl ? (
+            <Image
+                src={jockey.imageUrl}
+                alt={jockey.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                data-ai-hint="portrait person"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-muted">
+                <User className="h-24 w-24 text-muted-foreground" />
+            </div>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="p-4">
+        <CardTitle className="font-headline text-xl text-primary">{jockey.name}</CardTitle>
+        <div className="mt-2 space-y-1 text-sm text-muted-foreground">
+          <p><strong>{text.wins}:</strong> {jockey.wins}</p>
+          <p><strong>{text.mounts}:</strong> {jockey.mounts}</p>
+          <p><strong>{text.winRate}:</strong> {jockey.winRate}</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function JockeysClientPage({ jockeys }: { jockeys: Jockey[] }) {
+    const { text } = useLanguage();
+
+    return (
+        <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
+            <PageHeader 
+                title={text.jockeysPageTitle}
+                description={text.jockeysPageDescription}
+            />
+            <div className="mt-8">
+                {jockeys.length === 0 ? (
+                    <Alert>
+                        <UserX className="h-4 w-4" />
+                        <AlertTitle>Няма добавени жокеи</AlertTitle>
+                        <AlertDescription>
+                            В момента няма добавени профили на жокеи в системата.
+                        </AlertDescription>
+                    </Alert>
+                ) : (
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {jockeys.map((jockey) => (
+                            <JockeyCard key={jockey.id} jockey={jockey} text={text} />
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

@@ -1,9 +1,4 @@
 
-
-
-
-
-
 import 'server-only';
 
 import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, NewsPost, UserProfile, Stats, Track, Owner } from '@/lib/types';
@@ -75,6 +70,33 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
         deletion_requested: profile.deletion_requested ?? false,
         phone: profile.phone ?? null,
     }));
+}
+
+export async function getJockeys(): Promise<Jockey[]> {
+    const supabase = createServerClient();
+    try {
+        const { data, error } = await supabase.from('jockeys').select('id, name, wins, mounts, image_url').order('name', { ascending: true });
+        if (error) {
+            console.error('Error fetching jockeys:', error.message);
+            return [];
+        }
+        return (data || []).map(jockey => {
+            const wins = jockey.wins || 0;
+            const mounts = jockey.mounts || 0;
+            const winRate = mounts > 0 ? ((wins / mounts) * 100).toFixed(1) + '%' : '0%';
+            return {
+                id: jockey.id,
+                name: jockey.name,
+                imageUrl: jockey.image_url,
+                wins: wins,
+                mounts: mounts,
+                winRate: winRate,
+            }
+        });
+    } catch (error: any) {
+        console.error('Error in getJockeys:', error.message);
+        return [];
+    }
 }
 
 
@@ -284,4 +306,28 @@ export async function getOwner(id: number): Promise<Owner | null> {
         return null;
     }
     return data;
+}
+
+export async function getTrainers(): Promise<Trainer[]> {
+    const supabase = createServerClient();
+    try {
+        const { data, error } = await supabase.from('trainers').select('*').order('name', { ascending: true });
+        if (error) {
+            console.error('Error fetching trainers:', error.message);
+            return [];
+        }
+        return (data || []).map(trainer => ({
+            id: trainer.id,
+            name: trainer.name,
+            image_url: trainer.image_url,
+            achievements: Array.isArray(trainer.achievements) ? trainer.achievements : (typeof trainer.achievements === 'string' ? trainer.achievements.split(',').map((s: string) => s.trim()) : []),
+            stats: {
+                wins: trainer.wins || 0,
+                mounts: trainer.mounts || 0,
+            }
+        }));
+    } catch (error: any) {
+        console.error('Error in getTrainers:', error.message);
+        return [];
+    }
 }
