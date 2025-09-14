@@ -4,6 +4,7 @@
 
 
 
+
 export interface Jockey {
   id: number;
   name: string;
@@ -190,9 +191,4 @@ export interface Owner {
     phone: string | null;
     image_url: string | null;
     horse_count: number | null;
-}
-
-export interface SmtpStatus {
-    success: boolean;
-    message: string;
 }

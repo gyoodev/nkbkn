@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 import type { Stats } from '@/lib/types';
 import type { User } from '@supabase/supabase-js';
 import { NewHorseIcon } from '@/components/icons/new-horse-icon';
-import { EmailStatus } from './email-status';
 
 
 export function DashboardContent({ stats, user }: { stats: Stats, user: User | null }) {
@@ -33,7 +32,6 @@ export function DashboardContent({ stats, user }: { stats: Stats, user: User | n
                     <h1 className="text-3xl font-bold tracking-tight">Добре дошли, {user?.user_metadata.full_name || user?.email}!</h1>
                     <p className="text-muted-foreground">Това е вашата статистика за днес.</p>
                 </div>
-                <EmailStatus />
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 {summaryStats.map((stat, index) => (
