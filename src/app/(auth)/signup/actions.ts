@@ -3,12 +3,9 @@
 import { createServerClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
-import * as nodemailer from 'nodemailer';
+import { sendEmail } from '@/lib/server/email';
 import { EmailTemplate } from '@/lib/email-template';
 import { getSiteContent } from '@/lib/server/data';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const SignupSchema = z.object({
   email: z.string().email({ message: 'Моля, въведете валиден имейл.' }),
@@ -19,19 +16,7 @@ const SignupSchema = z.object({
 
 async function sendWelcomeEmail(to: string, name: string) {
     const siteLogoUrl = await getSiteContent('site_logo_url', 'bg');
-    const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_SERVER_HOST,
-        port: Number(process.env.EMAIL_SERVER_PORT || 465),
-        secure: true,
-        auth: {
-            user: process.env.EMAIL_SERVER_USER,
-            pass: process.env.EMAIL_SERVER_PASS,
-        },
-        tls: {
-            minVersion: 'TLSv1.2',
-        }
-    });
-
+    
     const emailHtml = EmailTemplate({
         title: 'Добре дошли в НКБКН!',
         content: `Здравейте, ${name}!<br><br>Благодарим ви за регистрацията в сайта на Националната комисия за Български конни надбягвания. Вашият акаунт е успешно създаден и вече можете да използвате всички функционалности на платформата.<br><br>Поздрави,<br>Екипът на НКБКН`,
@@ -41,8 +26,7 @@ async function sendWelcomeEmail(to: string, name: string) {
     });
 
     try {
-        await transporter.sendMail({
-            from: `НКБКН <${process.env.EMAIL_FROM}>`,
+        await sendEmail({
             to,
             subject: 'Добре дошли в НКБКН!',
             html: emailHtml,

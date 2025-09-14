@@ -5,12 +5,9 @@ import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import type { ContactSubmission } from '@/lib/types';
 import { z } from 'zod';
-import * as nodemailer from 'nodemailer';
+import { sendEmail } from '@/lib/server/email';
 import { EmailTemplate } from '@/lib/email-template';
 import { getSiteContent } from '@/lib/server/data';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 async function checkAdmin() {
     const supabase = createServerClient();
@@ -93,19 +90,6 @@ export async function sendEmailReply(prevState: any, formData: FormData): Promis
     
     const siteLogoUrl = await getSiteContent('site_logo_url', 'bg'); // get bg version as default
 
-    const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_SERVER_HOST,
-        port: Number(process.env.EMAIL_SERVER_PORT || 465),
-        secure: true, // true for 465
-        auth: {
-            user: process.env.EMAIL_SERVER_USER,
-            pass: process.env.EMAIL_SERVER_PASS,
-        },
-        tls: {
-            minVersion: 'TLSv1.2',
-        }
-    });
-
     const emailHtml = EmailTemplate({
         title: subject,
         content: message,
@@ -115,8 +99,7 @@ export async function sendEmailReply(prevState: any, formData: FormData): Promis
     });
 
     try {
-        await transporter.sendMail({
-            from: `НКБКН <${process.env.EMAIL_FROM}>`,
+        await sendEmail({
             to,
             subject,
             html: emailHtml,
