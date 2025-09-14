@@ -1,48 +1,69 @@
-
+'use client';
 
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getSiteContent } from '@/lib/server/data';
+import { getSiteContent } from '@/lib/client/data';
+import { useLanguage, useDynamicTranslation } from '@/hooks/use-language';
+import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
 
-export default async function TermsPage() {
-    const termsContent = await getSiteContent('terms_content');
-    const defaultContent = `
-        <h2>1. Приемане на условията</h2>
-        <p>
-            Настоящите Общи условия уреждат отношенията между "Национална комисия за Български конни надбягвания" (наричано по-долу НКБКН) и потребителите на уебсайта. Използването на този сайт означава, че сте съгласни с тези условия. Ако не сте съгласни, моля, не използвайте този уебсайт.
-        </p>
-        <h2>2. Права и задължения на потребителите</h2>
-        <p>
-            Потребителите имат право да използват информацията на сайта за лични и нетърговски цели. Забранява се копирането, разпространението и промяната на съдържание без изричното писмено съгласие на НКБКН. Потребителите се задължават да не използват сайта за незаконни цели или по начин, който може да навреди на функционирането му.
-        </p>
-        <h2>3. Интелектуална собственост</h2>
-        <p>
-            Цялото съдържание на този уебсайт, включително текстове, изображения, лога и дизайн, е собственост на НКБКН и е защитено от закона за авторското право. Всяко неоторизирано използване представлява нарушение и подлежи на правни санкции.
-        </p>
-        <h2>4. Ограничение на отговорността</h2>
-        <p>
-            НКБКН не носи отговорност за точността и пълнотата на предоставената информация. Възможно е да има технически грешки или пропуски. Информацията подлежи на промяна без предварително уведомление. НКБКН не носи отговорност за вреди, произтичащи от използването или невъзможността за използване на сайта.
-        </p>
-         <h2>5. Промени в условията</h2>
-        <p>
-            НКБКН си запазва правото да променя настоящите Общи условия по всяко време. Промените влизат в сила от момента на публикуването им на сайта. Препоръчваме на потребителите редовно да преглеждат тази страница за актуализации.
-        </p>
-    `;
 
+function TermsPageContent() {
+    const { language } = useLanguage();
+    const [termsContent, setTermsContent] = useState('');
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            setLoading(true);
+            // Always fetch the base Bulgarian content
+            const content = await getSiteContent('terms_content_bg');
+            setTermsContent(content);
+            setLoading(false);
+        }
+        fetchData();
+    }, []);
+
+    const translatedContent = useDynamicTranslation(termsContent);
+
+    if (loading) {
+        return (
+             <Card className="mt-8">
+                <CardHeader>
+                    <Skeleton className="h-8 w-1/2" />
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                </CardContent>
+            </Card>
+        )
+    }
+
+    return (
+        <Card className="mt-8">
+            <CardHeader>
+                <CardTitle>
+                    <>{language === 'bg' ? 'Общи положения' : 'General Provisions'}</>
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="prose max-w-none dark:prose-invert">
+                <div dangerouslySetInnerHTML={{ __html: translatedContent }} />
+            </CardContent>
+        </Card>
+    );
+}
+
+export default function TermsPage() {
+  const { text } = useLanguage();
   return (
     <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <PageHeader
-        title="Условия и правила за ползване"
-        description="Моля, прочетете внимателно нашите условия и правила."
+        title={text.termsTitle}
+        description={text.termsDescription}
       />
-      <Card className="mt-8">
-        <CardHeader>
-          <CardTitle>Общи положения</CardTitle>
-        </CardHeader>
-        <CardContent className="prose max-w-none dark:prose-invert">
-            <div dangerouslySetInnerHTML={{ __html: termsContent || defaultContent }} />
-        </CardContent>
-      </Card>
+      <TermsPageContent />
     </div>
   );
 }

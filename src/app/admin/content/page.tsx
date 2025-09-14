@@ -1,5 +1,3 @@
-
-
 import { PageHeader } from '@/components/page-header';
 import { getSiteContent } from '@/lib/server/data';
 import { AdminContentClient } from './_components/content-client';
@@ -20,13 +18,13 @@ export default async function AdminContentPage() {
     heroImage, 
     siteLogo, 
   ] = await Promise.all([
-    getSiteContent('about_history', 'bg'), getSiteContent('about_history', 'en'),
-    getSiteContent('about_mission', 'bg'), getSiteContent('about_mission', 'en'),
-    getSiteContent('about_team_text', 'bg'), getSiteContent('about_team_text', 'en'),
-    getSiteContent('terms_content', 'bg'), getSiteContent('terms_content', 'en'),
-    getSiteContent('privacy_content', 'bg'), getSiteContent('privacy_content', 'en'),
-    getSiteContent('slider_title', 'bg'), getSiteContent('slider_title', 'en'),
-    getSiteContent('slider_desc', 'bg'), getSiteContent('slider_desc', 'en'),
+    getSiteContent('about_history_bg'), getSiteContent('about_history_en'),
+    getSiteContent('about_mission_bg'), getSiteContent('about_mission_en'),
+    getSiteContent('about_team_text_bg'), getSiteContent('about_team_text_en'),
+    getSiteContent('terms_content_bg'), getSiteContent('terms_content_en'),
+    getSiteContent('privacy_content_bg'), getSiteContent('privacy_content_en'),
+    getSiteContent('slider_title_bg'), getSiteContent('slider_title_en'),
+    getSiteContent('slider_desc_bg'), getSiteContent('slider_desc_en'),
     getSiteContent('dev_banner_visible'),
     getSiteContent('hero_image_url'),
     getSiteContent('site_logo_url'),
