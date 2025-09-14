@@ -8,10 +8,11 @@ import type { SmtpStatus } from '@/lib/types';
 dotenv.config();
 
 export async function checkSmtpStatus(): Promise<SmtpStatus> {
+    const port = Number(process.env.SMTP_SERVER_PORT || 465);
     const transporter = nodemailer.createTransport({
         host: process.env.SMTP_SERVER_HOST,
-        port: Number(process.env.SMTP_SERVER_PORT || 465),
-        secure: true,
+        port: port,
+        secure: port === 465, // true for 465, false for other ports
         auth: {
             user: process.env.SMTP_SERVER_USER,
             pass: process.env.SMTP_SERVER_PASS,
