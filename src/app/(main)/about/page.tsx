@@ -6,8 +6,19 @@ import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getSiteContent } from '@/lib/client/data';
 import { Users, Goal, History } from 'lucide-react';
-import { useLanguage } from '@/hooks/use-language';
+import { useLanguage, useDynamicTranslation } from '@/hooks/use-language';
 import { useEffect, useState } from 'react';
+import { Skeleton } from '@/components/ui/skeleton';
+
+function TranslatedHtmlContent({ text, useHtml }: { text: string, useHtml: boolean }) {
+    const translatedText = useDynamicTranslation(text, useHtml);
+    if (translatedText === 'Loading...') return <div className="space-y-2"><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-4/5" /></div>;
+    if (useHtml) {
+        return <div className="text-base text-muted-foreground prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: translatedText }} />;
+    }
+    return <p className="text-base text-muted-foreground">{translatedText}</p>;
+}
+
 
 // Make the component async to fetch data on the server
 export default function AboutPage() {
@@ -20,10 +31,11 @@ export default function AboutPage() {
   useEffect(() => {
     async function fetchData() {
         setLoading(true);
+        // Always fetch the Bulgarian content as the source of truth
         const [history, mission, team] = await Promise.all([
-            getSiteContent('about_history', language),
-            getSiteContent('about_mission', language),
-            getSiteContent('about_team_text', language),
+            getSiteContent('about_history', 'bg'),
+            getSiteContent('about_mission', 'bg'),
+            getSiteContent('about_team_text', 'bg'),
         ]);
         setHistoryContent(history);
         setMissionContent(mission);
@@ -31,7 +43,7 @@ export default function AboutPage() {
         setLoading(false);
     }
     fetchData();
-  }, [language])
+  }, [])
 
 
   const sections = [
@@ -39,18 +51,21 @@ export default function AboutPage() {
       icon: <History className="h-10 w-10 text-primary" />,
       title: text.aboutHistoryTitle,
       content: historyContent,
+      useHtml: true,
       className: 'md:col-span-2',
     },
     {
       icon: <Goal className="h-10 w-10 text-primary" />,
       title: text.aboutMissionTitle,
       content: missionContent,
+      useHtml: true,
       className: 'md:col-span-1',
     },
     {
       icon: <Users className="h-10 w-10 text-primary" />,
       title: text.aboutTeamTitle,
       content: teamContent,
+      useHtml: false,
       className: 'md:col-span-3',
     },
   ];
@@ -81,12 +96,9 @@ export default function AboutPage() {
                 <CardTitle className="text-2xl font-bold">{section.title}</CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0 text-center">
-                 {/* Use dangerouslySetInnerHTML for rich text from the history and mission sections */}
-                {loading ? <p>Loading...</p> : section.title !== text.aboutTeamTitle ? (
-                     <div className="text-base text-muted-foreground prose prose-sm max-w-none dark:prose-invert" dangerouslySetInnerHTML={{ __html: section.content }} />
-                ) : (
-                     <p className="text-base text-muted-foreground">{section.content}</p>
-                )}
+                 {loading ? <div className="space-y-2"><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-4/5" /></div> : (
+                    <TranslatedHtmlContent text={section.content} useHtml={section.useHtml} />
+                 )}
               </CardContent>
             </Card>
           ))}

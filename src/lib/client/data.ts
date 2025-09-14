@@ -1,6 +1,5 @@
 
 
-
 'use client';
 
 import type { Jockey, Trainer, Horse, Track, NewsPost, RaceEvent, Document, Result, Partner, Submission, SocialLink, ContactSubmission, Owner } from '@/lib/types';
@@ -249,18 +248,11 @@ export async function getSubmissions(): Promise<Submission[]> {
     return data;
 }
 
-export async function getSiteContent(key: string, lang?: 'bg' | 'en'): Promise<string> {
+export async function getSiteContent(key: string, lang: 'bg' | 'en'): Promise<string> {
     const supabase = createBrowserClient();
     
-    let finalLang = lang;
-    if (typeof window !== 'undefined') {
-        const cookieValue = document.cookie.split('; ').find(row => row.startsWith(`NEXT_LOCALE=`));
-        finalLang = lang || (cookieValue?.split('=')[1] as 'bg' | 'en') || 'bg';
-    } else {
-        finalLang = lang || 'bg';
-    }
-
-    const fullKey = (key.endsWith('_bg') || key.endsWith('_en')) ? key : `${key}_${finalLang}`;
+    // Always fetch the bulgarian version, as it's the source of truth
+    const fullKey = `${key}_bg`;
     
     try {
         const { data, error } = await supabase
