@@ -1,20 +1,19 @@
-
 'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { useLanguage } from '@/hooks/use-language';
+import { useLanguage, useDynamicTranslation } from '@/hooks/use-language';
 import { ArrowRight, Calendar, Newspaper } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { NewsPost } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
-interface HomeClientPageProps {
-    posts: NewsPost[];
-    heroImageUrl?: string;
-    heroTitle?: { bg: string; en: string };
-    heroSubtitle?: { bg: string; en: string };
+function TranslatedText({ text }: { text: string }) {
+    const translatedText = useDynamicTranslation(text);
+    if (translatedText === 'Loading...') return <Skeleton className="h-4 w-3/4" />;
+    return <>{translatedText}</>;
 }
 
 export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }: HomeClientPageProps) {
@@ -101,18 +100,18 @@ export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }:
                     <Link href={mainPost.href} className="block h-full">
                         <div className="relative h-64 sm:h-80 md:h-96">
                             <Image src={mainPost.image_url} alt={mainPost.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 66vw" data-ai-hint="horse race finish" />
-                            <Badge className="absolute top-4 left-4">{mainPost.category}</Badge>
+                            <Badge className="absolute top-4 left-4"><TranslatedText text={mainPost.category} /></Badge>
                         </div>
                         <CardHeader>
                             <CardTitle className="text-2xl font-bold text-primary hover:underline sm:text-3xl">
-                                {mainPost.title}
+                                <TranslatedText text={mainPost.title} />
                             </CardTitle>
                         </CardHeader>
                         <CardContent>
                             <p className="mb-2 text-sm text-muted-foreground">{formatDate(mainPost.date)}</p>
-                            <p className="text-base text-gray-600 dark:text-gray-300">
-                                {mainPost.excerpt}
-                            </p>
+                            <div className="text-base text-gray-600 dark:text-gray-300">
+                                <TranslatedText text={mainPost.excerpt} />
+                            </div>
                         </CardContent>
                         <CardFooter>
                              <span className="flex items-center font-semibold text-primary">
@@ -133,8 +132,8 @@ export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }:
                                         <Image src={post.image_url} alt={post.title} fill className="object-cover rounded-l-lg" sizes="(max-width: 1024px) 33vw, 10vw" data-ai-hint="jockey horse" />
                                     </div>
                                     <div className="col-span-2 p-4">
-                                        <Badge variant="secondary" className="mb-2">{post.category}</Badge>
-                                        <h3 className="font-semibold text-primary group-hover:underline">{post.title}</h3>
+                                        <Badge variant="secondary" className="mb-2"><TranslatedText text={post.category} /></Badge>
+                                        <h3 className="font-semibold text-primary group-hover:underline"><TranslatedText text={post.title} /></h3>
                                         <p className="mt-1 text-xs text-muted-foreground">{formatDate(post.date)}</p>
                                     </div>
                                 </div>
