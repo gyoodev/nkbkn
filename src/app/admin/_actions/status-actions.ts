@@ -18,7 +18,7 @@ export async function checkSmtpStatus(): Promise<SmtpStatus> {
             pass: process.env.SMTP_SERVER_PASS,
         },
         tls: {
-            // do not fail on invalid certs
+            rejectUnauthorized: false
         },
     });
 

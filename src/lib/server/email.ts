@@ -23,7 +23,7 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
             pass: process.env.SMTP_SERVER_PASS,
         },
         tls: {
-            // do not fail on invalid certs
+            rejectUnauthorized: false
         },
     });
 
