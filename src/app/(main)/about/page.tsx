@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { PageHeader } from '@/components/page-header';
@@ -22,7 +21,7 @@ function TranslatedHtmlContent({ text, useHtml }: { text: string, useHtml: boole
 
 // Make the component async to fetch data on the server
 export default function AboutPage() {
-  const { text, language } = useLanguage();
+  const { text } = useLanguage();
   const [historyContent, setHistoryContent] = useState('');
   const [missionContent, setMissionContent] = useState('');
   const [teamContent, setTeamContent] = useState('');
@@ -49,21 +48,21 @@ export default function AboutPage() {
   const sections = [
     {
       icon: <History className="h-10 w-10 text-primary" />,
-      title: text.aboutHistoryTitle,
+      titleKey: 'aboutHistoryTitle',
       content: historyContent,
       useHtml: true,
       className: 'md:col-span-2',
     },
     {
       icon: <Goal className="h-10 w-10 text-primary" />,
-      title: text.aboutMissionTitle,
+      titleKey: 'aboutMissionTitle',
       content: missionContent,
       useHtml: true,
       className: 'md:col-span-1',
     },
     {
       icon: <Users className="h-10 w-10 text-primary" />,
-      title: text.aboutTeamTitle,
+      titleKey: 'aboutTeamTitle',
       content: teamContent,
       useHtml: false,
       className: 'md:col-span-3',
