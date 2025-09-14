@@ -28,7 +28,7 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
     });
 
     const mailOptions = {
-        from: `НКБКН <${process.env.EMAIL_FROM}>`,
+        from: `НКБКН <${process.env.SMTP_SENDER_EMAIL}>`,
         to,
         subject,
         html,
