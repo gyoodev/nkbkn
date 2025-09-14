@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { PageHeader } from '@/components/page-header';
@@ -17,12 +16,12 @@ function PrivacyPageContent() {
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            const content = await getSiteContent('privacy_content');
+            const content = await getSiteContent('privacy_content', language);
             setPrivacyContent(content);
             setLoading(false);
         }
         fetchData();
-    }, []);
+    }, [language]);
 
     if (loading) {
         return (
@@ -67,5 +66,3 @@ export default function PrivacyPage() {
     </div>
   );
 }
-
-    

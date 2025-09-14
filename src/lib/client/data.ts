@@ -258,18 +258,23 @@ export async function getSiteContent(key: string, lang: 'bg' | 'en'): Promise<st
         const { data, error } = await supabase
             .from('site_content')
             .select('content')
-            .eq('key', fullKey)
+            .eq('key', keyToFetch)
             .single();
 
         if (error || !data) {
             if (error && error.code !== 'PGRST116') { // 'PGRST116' means no rows found
-                console.error(`Error fetching site content for key "${fullKey}":`, error.message);
+                console.error(`Error fetching site content for key "${keyToFetch}":`, error.message);
+            }
+             // Fallback for EN version if it doesn't exist
+            if (finalLang === 'en' && key.endsWith('_en')) {
+                 const baseKey = key.replace('_en', '');
+                 return getSiteContent(baseKey, 'bg'); // Fetch BG and it will be translated
             }
             return '';
         }
         return data.content || '';
     } catch (e: any) {
-        console.error(`Error in getSiteContent for key "${fullKey}":`, e.message);
+        console.error(`Error in getSiteContent for key "${keyToFetch}":`, e.message);
         return '';
     }
 }

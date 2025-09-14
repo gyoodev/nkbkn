@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { PageHeader } from '@/components/page-header';
@@ -18,12 +17,12 @@ function TermsPageContent() {
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            const content = await getSiteContent('terms_content');
+            const content = await getSiteContent('terms_content', language);
             setTermsContent(content);
             setLoading(false);
         }
         fetchData();
-    }, []);
+    }, [language]);
 
     if (loading) {
         return (
@@ -66,5 +65,3 @@ export default function TermsPage() {
     </div>
   );
 }
-
-    
