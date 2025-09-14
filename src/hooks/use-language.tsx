@@ -1,7 +1,7 @@
 
 'use client';
 
-import { createContext, useContext, useState, ReactNode, useMemo, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 import { translateText } from '@/ai/flows/translate-flow';
 
 type Language = 'bg' | 'en';
@@ -185,37 +185,31 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleLanguage = useCallback(() => {
     setLanguage((prevLang) => (prevLang === 'bg' ? 'en' : 'bg'));
-    // Reset dynamic translations when language changes
     setDynamicTranslations({});
   }, []);
 
   const text = useMemo(() => {
+    // If the selected language is the default language ('bg'),
+    // return the base translations directly without any proxy.
+    // This prevents any unnecessary translation API calls.
+    if (language === 'bg') {
+      return baseTranslations.bg;
+    }
+
     const base = baseTranslations[language] || {};
-    const allKeys = Object.keys(baseTranslations.bg);
     
     const handler = {
       get: (target: Translations, prop: string) => {
-        // If it's a base translation, return it
-        if (prop in target) {
-          return target[prop as keyof typeof target];
+        if (prop in target && target[prop]) {
+          return target[prop];
         }
 
-        // If we already fetched it dynamically, return it from cache
         if (prop in dynamicTranslations) {
           return dynamicTranslations[prop];
         }
         
-        // If the target language is 'bg', we don't need to translate
-        if (language === 'bg') {
-          return baseTranslations.bg[prop] || prop;
-        }
-
-        // The text is not in the base translations for the current language
-        // and not in the dynamic cache, so we need to translate it.
         const sourceText = baseTranslations.bg[prop];
         if (sourceText) {
-          // Immediately set a loading state
-          // Using a setTimeout to avoid React's batching and ensure re-render
           setTimeout(() => {
              setDynamicTranslations(prev => ({...prev, [prop]: 'Loading...' }));
           }, 0);
@@ -225,36 +219,22 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
               if (translatedText) {
                 setDynamicTranslations(prev => ({ ...prev, [prop]: translatedText }));
               } else {
-                 setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback to source
+                 setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback
               }
             })
             .catch(() => {
-                setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback to source
+                setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback
             });
             
           return 'Loading...';
         }
         
-        // If the key doesn't exist anywhere, return the key itself
         return prop;
       }
     };
     
-    const proxy = new Proxy(base, handler);
+    return new Proxy(base, handler);
 
-    // This is needed to make all keys available for iteration if necessary,
-    // although direct property access is the main use case.
-    allKeys.forEach(key => {
-        if (!(key in proxy)) {
-            Object.defineProperty(proxy, key, {
-                get: () => handler.get(base, key),
-                enumerable: true,
-                configurable: true,
-            });
-        }
-    });
-
-    return proxy;
   }, [language, dynamicTranslations]);
 
   return (
