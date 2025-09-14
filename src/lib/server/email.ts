@@ -18,6 +18,7 @@ export async function sendEmail({ to, subject, html }: SendEmailParams) {
         host: process.env.SMTP_SERVER_HOST,
         port: port,
         secure: port === 465, // true for 465, false for other ports
+        ignoreTLS: true,
         auth: {
             user: process.env.SMTP_SERVER_USER,
             pass: process.env.SMTP_SERVER_PASS,
