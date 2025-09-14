@@ -87,6 +87,12 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
         day: 'numeric',
     });
   };
+  
+  const createMailtoLink = (user: UserProfile) => {
+    const subject = "Съобщение от администратор на НКБКН";
+    const body = `Здравейте, ${user.full_name || user.username || 'потребител'},\n\nПишем ви от Национална комисия за Български конни надбягвания относно...\n\nПоздрави,\nЕкипът на НКБКН`;
+    return `mailto:${user.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
 
   return (
       <Card className="mt-8">
@@ -135,7 +141,7 @@ export function UsersClientPage({ initialUsers }: { initialUsers: UserProfile[] 
                     <TableCell>{formatDate(user.reg_date)}</TableCell>
                     <TableCell className="text-right flex items-center justify-end gap-2">
                         <Button variant="outline" size="sm" asChild>
-                            <Link href={`mailto:${user.email}`}>
+                            <Link href={createMailtoLink(user)}>
                                 <Mail className="mr-2 h-4 w-4" />
                                 Изпрати имейл
                             </Link>
