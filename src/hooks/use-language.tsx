@@ -175,7 +175,159 @@ const baseTranslations: Record<Language, Translations> = {
     ownersPageDescription: 'Разгледайте профилите на собствениците на коне в българските надбягвания.',
   },
   en: {
-    // English translations are dynamically fetched.
+    appName: 'BHC',
+    appNameFull: 'Bulgarian Horseracing Commission',
+    readMore: 'Read More',
+    allRightsReserved: 'All rights reserved',
+    developedBy: 'Developed by GKDEV',
+    home: 'Home',
+    about: 'About',
+    news: 'News',
+    contact: 'Contact',
+    gallery: 'Gallery',
+    loading: 'Loading...',
+    aboutCommissionShort: 'About Us',
+    jockeys: 'Jockeys',
+    trainers: 'Trainers',
+    owners: 'Owners',
+    horses: 'Horses',
+    tracks: 'Tracks',
+    forms: 'Forms',
+    calendar: 'Calendar',
+    login: 'Login',
+    logout: 'Logout',
+    profile: 'Profile',
+    adminPanel: 'Admin Panel',
+    heroTitle: 'PASSION, ADRENALINE AND LOVE FOR HORSES',
+    heroSubtitle: 'The official home of Bulgarian horse racing.',
+    raceCalendar: 'Race Calendar',
+    latestNews: 'Latest News',
+    latestFromTheTrack: 'Latest from the Track',
+    latestFromTheTrackDescription: 'Latest news, events, and updates from the world of horse racing in Bulgaria.',
+    aboutUs: 'About Us',
+    history: 'History',
+    mission: 'Mission',
+    team: 'Team',
+    races: 'Races',
+    results: 'Results',
+    resources: 'Resources',
+    termsShort: 'Terms',
+    privacyShort: 'Privacy',
+    faq: 'FAQ',
+    loginPrompt: 'Log in to your account to access all features.',
+    email: 'Email',
+    password: 'Password',
+    rememberMe: 'Remember me',
+    noAccount: "Don't have an account?",
+    signUp: 'Sign Up',
+    loggingIn: 'Logging in...',
+    signUpPrompt: 'Create your account to take full advantage of the platform.',
+    signingUp: 'Signing up...',
+    alreadyHaveAccount: 'Already have an account?',
+    updateProfile: 'Update Profile',
+    updatingProfile: 'Updating...',
+    profilePageDescription: 'View and update your profile information.',
+    username: 'Username',
+    fullName: 'Full Name',
+    website: 'Website',
+    uploadAvatar: 'Upload Avatar',
+    aboutPageTitle: 'About the National Commission for Bulgarian Horse Racing',
+    aboutPageDescription: 'Learn more about our history, mission, and the team behind the development of horse racing in Bulgaria.',
+    aboutHistoryTitle: 'Our History',
+    aboutMissionTitle: 'Our Mission',
+    aboutTeamTitle: 'Our Team',
+    calendarPageDescription: 'Browse upcoming race days and events.',
+    racesFor: 'Races for',
+    noRacesScheduled: 'No races scheduled for this date.',
+    participants: 'participants',
+    selectDateWithRaces: 'Please select a date with events to see the races.',
+    importantNotice: 'Important Notice!',
+    championship2026: 'The 2024 National Championship will not be held. Expect information for the 2026 season!',
+    jockeysPageTitle: 'Our Jockeys',
+    jockeysPageDescription: 'Meet the talented jockeys competing on the tracks in Bulgaria.',
+    wins: 'Wins',
+    mounts: 'Mounts',
+    winRate: 'Win Rate',
+    trainersPageTitle: 'Our Trainers',
+    trainersPageDescription: 'Discover the experienced trainers who prepare the champions on the track.',
+    achievements: 'Achievements',
+    horsesPageTitle: 'Horse Registry',
+    horsesPageDescription: 'Browse the database of all registered horses participating in the races.',
+    horseNameTable: 'Horse Name',
+    sire: 'Sire',
+    dam: 'Dam',
+    age: 'Age',
+    bestTime: 'Best Time',
+    tracksPageDescription: 'Information about the race tracks in Bulgaria.',
+    trackLength: 'Track Length',
+    trackType: 'Track Type',
+    trackTypeSand: 'Sand',
+    navigateToTrack: 'Navigate to Track',
+    galleryPageTitle: 'Gallery',
+    galleryPageDescription: 'Browse photos from the latest events and races.',
+    views: 'Views',
+    likes: 'Likes',
+    like: 'Like',
+    contactPageTitle: 'Contact Us',
+    contactPageDescription: 'Have questions or suggestions? Use the form below or one of the other contact methods.',
+    sendMessage: 'Send us a message',
+    submit: 'Submit',
+    findUs: 'Find Us',
+    followUs: 'Follow Us',
+    faqTitle: 'Frequently Asked Questions',
+    faqDescription: 'Find answers to the most frequently asked questions.',
+    faq1_q: 'How can I register a horse for participation?',
+    faq1_a: 'To register a horse, you must fill out the corresponding form from the "Forms" section and submit it to the commission. The horse must meet all veterinary and administrative requirements.',
+    faq2_q: 'Where can I find results from past races?',
+    faq2_a: 'Results from all held races can be found in the "Results" section of our website.',
+    faq3_q: 'What are the requirements to become a jockey?',
+    faq3_a: 'To become a licensed jockey, you must go through a training process and meet certain physical and practical standards. More information can be found in our regulations.',
+    faq4_q: 'Are races held during the winter?',
+    faq4_a: 'The racing season is usually during the warm months of the year. Please follow our "Calendar" for up-to-date information on dates.',
+    faq5_q: 'Can I bet on the races?',
+    faq5_a: 'Currently, the commission does not organize or regulate betting. Any information regarding betting will be officially announced on the site.',
+    registrationForms: 'Registration Forms',
+    registrationFormsDescription: 'Choose the type of registration you wish to make and fill in the required data.',
+    jockeyApplication: 'Jockey Application',
+    jockeyApplicationDescription: 'Fill out to apply for a jockey license.',
+    trainerApplication: 'Trainer Application',
+    trainerApplicationDescription: 'Fill out to apply for a trainer license.',
+    ownerApplication: 'Owner Application',
+    ownerApplicationDescription: 'Fill out to register as a horse owner.',
+    horseApplication: 'Horse Application',
+    horseApplicationDescription: 'Fill out to register a new horse in the system.',
+    submitApplication: 'Submit Application',
+    sending: 'Sending...',
+    firstName: 'First Name',
+    lastName: 'Last Name',
+    dateOfBirth: 'Date of Birth',
+    egn: 'Personal ID',
+    address: 'Address',
+    contactEmail: 'Contact Email',
+    contactPhone: 'Contact Phone',
+    horseCount: 'Number of Horses',
+    horseName: 'Horse Name',
+    gender: 'Gender',
+    selectGender: 'Select Gender',
+    mare: 'Mare',
+    stallion: 'Stallion',
+    gelding: 'Gelding',
+    passportNumber: 'Passport Number',
+    ownerContactEmail: "Owner's Contact Email",
+    ownerContactPhone: "Owner's Contact Phone",
+    cookieBannerText: 'This website uses cookies to ensure you get the best experience. By continuing to use the site, you agree to our privacy policy.',
+    privacyPolicy: 'Privacy Policy',
+    accept: 'Accept',
+    ourTrustedPartners: 'Our Trusted Partners',
+    race: 'Race',
+    date: 'Date',
+    trackName: 'Track',
+    winner: 'Winner',
+    time: 'Time',
+    latestResults: 'Latest Results',
+    latestResultsDescription: 'See the winners from the latest races.',
+    ownersPageTitle: 'Owners',
+    ownersPageDescription: 'Browse the profiles of horse owners in Bulgarian racing.',
   },
 };
 
@@ -189,9 +341,6 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const text = useMemo(() => {
-    // If the selected language is the default language ('bg'),
-    // return the base translations directly without any proxy.
-    // This prevents any unnecessary translation API calls.
     if (language === 'bg') {
       return baseTranslations.bg;
     }
@@ -200,35 +349,41 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     
     const handler = {
       get: (target: Translations, prop: string) => {
+        // 1. Return hardcoded translation if it exists
         if (prop in target && target[prop]) {
           return target[prop];
         }
 
+        // 2. Return from cache if it exists
         if (prop in dynamicTranslations) {
           return dynamicTranslations[prop];
         }
         
+        // 3. Get source text from Bulgarian
         const sourceText = baseTranslations.bg[prop];
         if (sourceText) {
+          // Immediately set to "Loading..."
           setTimeout(() => {
              setDynamicTranslations(prev => ({...prev, [prop]: 'Loading...' }));
           }, 0);
 
+          // 4. Fetch from API
           translateText({ text: sourceText, targetLang: language })
             .then(translatedText => {
               if (translatedText) {
                 setDynamicTranslations(prev => ({ ...prev, [prop]: translatedText }));
               } else {
-                 setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback
+                 setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback to source on error
               }
             })
             .catch(() => {
-                setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback
+                setDynamicTranslations(prev => ({ ...prev, [prop]: sourceText })); // Fallback to source on error
             });
             
           return 'Loading...';
         }
         
+        // 5. Fallback for untranslatable keys
         return prop;
       }
     };
