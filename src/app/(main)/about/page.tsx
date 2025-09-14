@@ -1,11 +1,12 @@
 
+
 'use client';
 
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getSiteContent } from '@/lib/client/data';
 import { Users, Goal, History } from 'lucide-react';
-import { useLanguage, useDynamicTranslation } from '@/hooks/use-language';
+import { useLanguage } from '@/hooks/use-language';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -106,3 +107,5 @@ export default function AboutPage() {
     </div>
   );
 }
+
+    

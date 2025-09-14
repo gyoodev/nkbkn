@@ -1,10 +1,11 @@
 
+
 'use client';
 
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getSiteContent } from '@/lib/client/data';
-import { useLanguage, useDynamicTranslation } from '@/hooks/use-language';
+import { useLanguage } from '@/hooks/use-language';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -16,15 +17,12 @@ function PrivacyPageContent() {
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            // Always fetch the base Bulgarian content
             const content = await getSiteContent('privacy_content');
             setPrivacyContent(content);
             setLoading(false);
         }
         fetchData();
     }, []);
-
-    const translatedContent = useDynamicTranslation(privacyContent);
 
     if (loading) {
         return (
@@ -49,7 +47,7 @@ function PrivacyPageContent() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="prose max-w-none dark:prose-invert">
-                <div dangerouslySetInnerHTML={{ __html: translatedContent }} />
+                <div dangerouslySetInnerHTML={{ __html: privacyContent }} />
             </CardContent>
         </Card>
     );
@@ -69,3 +67,5 @@ export default function PrivacyPage() {
     </div>
   );
 }
+
+    

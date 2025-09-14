@@ -1,10 +1,11 @@
 
+
 'use client';
 
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getSiteContent } from '@/lib/client/data';
-import { useLanguage, useDynamicTranslation } from '@/hooks/use-language';
+import { useLanguage } from '@/hooks/use-language';
 import { useEffect, useState } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -17,15 +18,12 @@ function TermsPageContent() {
     useEffect(() => {
         async function fetchData() {
             setLoading(true);
-            // Always fetch the base Bulgarian content
             const content = await getSiteContent('terms_content');
             setTermsContent(content);
             setLoading(false);
         }
         fetchData();
     }, []);
-
-    const translatedContent = useDynamicTranslation(termsContent);
 
     if (loading) {
         return (
@@ -50,7 +48,7 @@ function TermsPageContent() {
                 </CardTitle>
             </CardHeader>
             <CardContent className="prose max-w-none dark:prose-invert">
-                <div dangerouslySetInnerHTML={{ __html: translatedContent }} />
+                <div dangerouslySetInnerHTML={{ __html: termsContent }} />
             </CardContent>
         </Card>
     );
@@ -68,3 +66,5 @@ export default function TermsPage() {
     </div>
   );
 }
+
+    
