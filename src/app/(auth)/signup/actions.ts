@@ -27,6 +27,9 @@ async function sendWelcomeEmail(to: string, name: string) {
             user: process.env.EMAIL_SERVER_USER,
             pass: process.env.EMAIL_SERVER_PASS,
         },
+        tls: {
+            minVersion: 'TLSv1.2',
+        }
     });
 
     const emailHtml = EmailTemplate({
