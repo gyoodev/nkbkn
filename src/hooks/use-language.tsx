@@ -334,18 +334,12 @@ const baseTranslations: Record<Language, Translations> = {
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>('bg');
-  const [dynamicTranslations, setDynamicTranslations] = useState<Translations>({});
+  const [dynamicTranslations, setDynamicTranslations] = useState<Record<string, string>>({});
 
   const toggleLanguage = useCallback(() => {
     const newLang = language === 'bg' ? 'en' : 'bg';
     setLanguage(newLang);
-    // When language changes, we don't clear the dynamic translations cache
-    // as the keys contain the language, e.g., "en:Здравейте".
-    if (newLang === 'en') {
-        document.cookie = `NEXT_LOCALE=en;path=/;max-age=31536000`;
-    } else {
-        document.cookie = `NEXT_LOCALE=bg;path=/;max-age=31536000`;
-    }
+    document.cookie = `NEXT_LOCALE=${newLang};path=/;max-age=31536000`;
   }, [language]);
 
   const translateDynamic = useCallback(async (textToTranslate: string, isHtml: boolean = false): Promise<string> => {
@@ -354,14 +348,11 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     }
     
     const cacheKey = `${language}:${textToTranslate}`;
-    if (dynamicTranslations[cacheKey] && dynamicTranslations[cacheKey] !== 'Loading...') {
+    if (dynamicTranslations[cacheKey]) {
       return dynamicTranslations[cacheKey];
     }
     
-    // Set loading state to prevent multiple requests
-    if (dynamicTranslations[cacheKey] !== 'Loading...') {
-        setDynamicTranslations(prev => ({...prev, [cacheKey]: 'Loading...'}));
-    }
+    setDynamicTranslations(prev => ({...prev, [cacheKey]: 'Loading...'}));
 
     try {
         const translated = await translateText({ text: textToTranslate, targetLang: language, isHtml });
@@ -378,47 +369,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     return textToTranslate;
   }, [language, dynamicTranslations]);
 
-  const text = useMemo(() => {
-    const currentTranslations = baseTranslations[language];
-
-    // If the language is Bulgarian, just return the hardcoded translations.
-    if (language === 'bg') {
-        return currentTranslations;
-    }
-    
-    // For English, create a Proxy to handle dynamic translation for static UI texts.
-    const handler = {
-      get: (target: Translations, prop: string) => {
-        // 1. Return from hardcoded English translations if it exists.
-        if (prop in target && target[prop]) {
-          return target[prop];
-        }
-
-        // 2. Return from dynamic cache if it exists.
-        const cacheKey = `${language}:${prop}`;
-        if (cacheKey in dynamicTranslations) {
-          return dynamicTranslations[cacheKey];
-        }
-        
-        // 3. Get the source text from Bulgarian.
-        const sourceText = baseTranslations.bg[prop];
-
-        if (sourceText) {
-            // This part is mostly for static texts that were missed in the manual EN translation.
-            // For dynamic content from DB, use the `translateDynamic` function directly.
-            setTimeout(() => {
-                translateDynamic(sourceText).catch(console.error);
-            }, 0);
-          return 'Loading...';
-        }
-        
-        return prop;
-      }
-    };
-    
-    return new Proxy(currentTranslations, handler);
-
-  }, [language, dynamicTranslations, translateDynamic]);
+  const text = useMemo(() => baseTranslations[language], [language]);
 
   return (
     <LanguageContext.Provider value={{ language, toggleLanguage, text, translateDynamic }}>
@@ -435,7 +386,6 @@ export const useLanguage = () => {
   return context;
 };
 
-// A new hook for translating dynamic content within components
 export const useDynamicTranslation = (textToTranslate: string | null | undefined, isHtml: boolean = false): string => {
     const { language, translateDynamic } = useLanguage();
     const [translatedText, setTranslatedText] = useState(textToTranslate || '');

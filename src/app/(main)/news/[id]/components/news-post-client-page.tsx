@@ -17,9 +17,12 @@ import { likePost, incrementViews } from '../actions';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 
-function TranslatedText({ text: textToTranslate }: { text: string }) {
-    const translatedText = useDynamicTranslation(textToTranslate);
+function TranslatedText({ text: textToTranslate, isHtml = false }: { text: string, isHtml?: boolean }) {
+    const translatedText = useDynamicTranslation(textToTranslate, isHtml);
     if (translatedText === 'Loading...') return <Skeleton className="h-6 w-3/4" />;
+    if (isHtml) {
+        return <div dangerouslySetInnerHTML={{ __html: translatedText }} />;
+    }
     return <>{translatedText}</>;
 }
 
@@ -88,7 +91,7 @@ export function NewsPostClientPage({ post }: { post: NewsPost }) {
         modestBranding: true,
       }),
     ],
-    content: translatedContent,
+    content: '',
     editable: false,
     editorProps: {
         attributes: {
@@ -98,8 +101,11 @@ export function NewsPostClientPage({ post }: { post: NewsPost }) {
   });
 
    useEffect(() => {
-    if (editor && translatedContent !== editor.getHTML()) {
-      editor.commands.setContent(translatedContent);
+    if (editor && translatedContent) {
+        // Prevent setting content to 'Loading...'
+        if (translatedContent !== 'Loading...') {
+             editor.commands.setContent(translatedContent);
+        }
     }
   }, [translatedContent, editor]);
 
@@ -171,7 +177,7 @@ export function NewsPostClientPage({ post }: { post: NewsPost }) {
           />
         </div>
 
-        <EditorContent editor={editor} />
+        {translatedContent === 'Loading...' ? <Skeleton className="h-48 w-full" /> : <EditorContent editor={editor} />}
         
         <Separator className="my-8" />
 

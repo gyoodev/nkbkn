@@ -29,13 +29,15 @@ const translateFlow = ai.defineFlow(
       return `(Translation Disabled)`;
     }
     
+    // If there's no text, or we are already in the target language, return the original text.
     if (!text || targetLang === 'bg') {
         return text;
     }
 
     try {
       const translator = new deepl.Translator(process.env.DEEPL_API_KEY);
-      const result = await translator.translateText(text, 'bg', targetLang as deepl.TargetLanguageCode, {
+      // We assume the source is always Bulgarian ('bg')
+      const result = await translator.translateText(text, 'bg', 'en-GB', {
           tagHandling: isHtml ? 'html' : undefined,
       });
       return result.text;
