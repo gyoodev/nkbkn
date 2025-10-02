@@ -29,6 +29,7 @@ type ContentState = {
     terms_desc: string; terms_desc_en: string;
     privacy_title: string; privacy_title_en: string;
     privacy_desc: string; privacy_desc_en: string;
+    calendar_alert_bg: string; calendar_alert_en: string;
 }
 
 interface AdminContentClientProps {
@@ -295,6 +296,15 @@ export function AdminContentClient({
                 description="Текстът под основното заглавие на началната страница."
                 content={{ bg: content.slider_desc, en: content.slider_desc_en }}
                 onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'slider_desc' : 'slider_desc_en', newContent)}
+                useRichText={false}
+            />
+            
+            <ContentCard
+                contentKey="calendar_alert"
+                title="Съобщение в календара"
+                description="Важно съобщение, което се показва в червена лента над календара."
+                content={{ bg: content.calendar_alert_bg, en: content.calendar_alert_en }}
+                onContentChange={(lang, newContent) => handleContentChange(lang === 'bg' ? 'calendar_alert_bg' : 'calendar_alert_en', newContent)}
                 useRichText={false}
             />
 

@@ -19,6 +19,7 @@ export default async function AdminContentPage() {
     terms_desc, terms_desc_en,
     privacy_title, privacy_title_en,
     privacy_desc, privacy_desc_en,
+    calendar_alert_bg, calendar_alert_en,
     bannerVisible, 
     heroImage, 
     siteLogo, 
@@ -34,6 +35,7 @@ export default async function AdminContentPage() {
     getSiteContent('terms_desc'), getSiteContent('terms_desc_en'),
     getSiteContent('privacy_title'), getSiteContent('privacy_title_en'),
     getSiteContent('privacy_desc'), getSiteContent('privacy_desc_en'),
+    getSiteContent('calendar_alert_bg'), getSiteContent('calendar_alert_en'),
     getSiteContent('dev_banner_visible'),
     getSiteContent('hero_image_url'),
     getSiteContent('site_logo_url'),
@@ -51,6 +53,7 @@ export default async function AdminContentPage() {
     terms_desc, terms_desc_en,
     privacy_title, privacy_title_en,
     privacy_desc, privacy_desc_en,
+    calendar_alert_bg, calendar_alert_en,
   };
 
   const initialDevBannerVisible = bannerVisible === 'true';

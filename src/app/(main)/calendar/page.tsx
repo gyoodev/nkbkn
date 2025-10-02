@@ -6,7 +6,7 @@ import { useLanguage } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { getRaceEvents } from '@/lib/client/data';
+import { getRaceEvents, getSiteContent } from '@/lib/client/data';
 import type { RaceEvent } from '@/lib/types';
 import { format } from 'date-fns';
 import { bg, enUS } from 'date-fns/locale';
@@ -49,18 +49,23 @@ export default function CalendarPage() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [allEvents, setAllEvents] = useState<RaceEvent[]>([]);
   const [loading, setLoading] = useState(true);
+  const [alertMessage, setAlertMessage] = useState('');
 
   const locale = language === 'bg' ? bg : enUS;
 
   useEffect(() => {
-    async function fetchEvents() {
+    async function fetchPageData() {
         setLoading(true);
-        const events = await getRaceEvents();
+        const [events, alertMsg] = await Promise.all([
+            getRaceEvents(),
+            getSiteContent(language === 'en' ? 'calendar_alert_en' : 'calendar_alert_bg')
+        ]);
         setAllEvents(events);
+        setAlertMessage(alertMsg);
         setLoading(false);
     }
-    fetchEvents();
-  }, []);
+    fetchPageData();
+  }, [language]);
 
   const selectedEvent: RaceEvent | undefined = allEvents.find(
     (event) => format(new Date(event.date), 'yyyy-MM-dd') === (date ? format(date, 'yyyy-MM-dd') : '')
@@ -87,13 +92,15 @@ export default function CalendarPage() {
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-       <Alert variant="destructive" className="mb-8">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>{text.importantNotice}</AlertTitle>
-        <AlertDescription>
-          {text.championship2026}
-        </AlertDescription>
-      </Alert>
+       {alertMessage && (
+        <Alert variant="destructive" className="mb-8">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>{text.importantNotice}</AlertTitle>
+            <AlertDescription>
+                {alertMessage}
+            </AlertDescription>
+        </Alert>
+       )}
       <PageHeader
         title={text.calendar}
         description={text.calendarPageDescription}
