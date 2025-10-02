@@ -17,7 +17,12 @@ function TranslatedText({ text }: { text: string }) {
     return <>{translatedText}</>;
 }
 
-export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }: HomeClientPageProps) {
+export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }: { 
+  posts: NewsPost[],
+  heroImageUrl: string,
+  heroTitle: { bg: string, en: string },
+  heroSubtitle: { bg: string, en: string },
+}) {
   const { text, language } = useLanguage();
 
   const defaultHeroTitle = text.heroTitle;
@@ -66,7 +71,7 @@ export function HomeClientPage({ posts, heroImageUrl, heroTitle, heroSubtitle }:
             </p>
             <div className="flex flex-col gap-4 pt-4 sm:flex-row sm:justify-center">
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-                <Link href="#">
+                <Link href="/calendar">
                   <Calendar className="mr-2" />
                   {text.raceCalendar}
                 </Link>
