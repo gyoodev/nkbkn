@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useLanguage } from '@/hooks/use-language';
+import { useLanguage, useDynamicTranslation } from '@/hooks/use-language';
 import { PageHeader } from '@/components/page-header';
 import { Calendar } from '@/components/ui/calendar';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -17,6 +17,7 @@ export function CalendarClientPage({ allEvents, alertMessage }: { allEvents: Rac
   const [date, setDate] = useState<Date | undefined>(new Date());
   
   const locale = language === 'bg' ? bg : enUS;
+  const translatedAlertMessage = useDynamicTranslation(alertMessage);
 
   const selectedEvent: RaceEvent | undefined = allEvents.find(
     (event) => format(new Date(event.date), 'yyyy-MM-dd') === (date ? format(date, 'yyyy-MM-dd') : '')
@@ -31,12 +32,12 @@ export function CalendarClientPage({ allEvents, alertMessage }: { allEvents: Rac
   
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
-       {alertMessage && (
+       {translatedAlertMessage && (
         <Alert variant="destructive" className="mb-8">
             <AlertCircle className="h-4 w-4" />
             <AlertTitle>{text.importantNotice}</AlertTitle>
             <AlertDescription>
-                {alertMessage}
+                {translatedAlertMessage}
             </AlertDescription>
         </Alert>
        )}
