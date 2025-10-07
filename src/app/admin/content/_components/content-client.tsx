@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useEffect, useState, useTransition, useActionState } from 'react';
@@ -164,7 +165,10 @@ function ContentCard({
 
   const handleSave = (lang: 'bg' | 'en') => {
     startTransition(async () => {
-      const keyForDb = lang === 'en' ? `${contentKey}_en` : contentKey;
+      const keyForDb = contentKey.includes('_bg') || contentKey.includes('_en') 
+          ? contentKey.slice(0, -3) + `_${lang}`
+          : `${contentKey}_${lang}`;
+      
       const { error } = await updateContent(keyForDb, content[lang]);
       if (error) {
         toast({
