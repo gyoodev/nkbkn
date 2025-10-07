@@ -92,36 +92,6 @@ export async function getTracks(): Promise<Track[]> {
 export const galleryImages: { id: number; src: string; alt: string, hint: string }[] = [];
 
 
-export async function getRaceEvents(): Promise<RaceEvent[]> {
-    const supabase = createBrowserClient();
-    try {
-        const { data: events, error: eventsError } = await supabase
-            .from('race_events')
-            .select(`
-                *,
-                races (*)
-            `)
-            .order('date', { ascending: true });
-
-        if (eventsError) {
-            console.error('Error fetching race events:', eventsError.message);
-            return [];
-        }
-        
-        for (const event of events) {
-            if (event.races) {
-                event.races.sort((a, b) => a.time.localeCompare(b.time));
-            }
-        }
-
-        return events as RaceEvent[];
-    } catch (e: any) {
-        console.error('Error in getRaceEvents:', e.message);
-        return [];
-    }
-}
-
-
 export async function getDocuments(): Promise<Document[]> {
     const supabase = createBrowserClient();
     try {
