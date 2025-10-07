@@ -56,9 +56,10 @@ export default function CalendarPage() {
   useEffect(() => {
     async function fetchPageData() {
         setLoading(true);
+        const key = language === 'en' ? 'calendar_alert_en' : 'calendar_alert_bg';
         const [events, alertMsg] = await Promise.all([
             getRaceEvents(),
-            getSiteContent(language === 'en' ? 'calendar_alert_en' : 'calendar_alert_bg')
+            getSiteContent(key)
         ]);
         setAllEvents(events);
         setAlertMessage(alertMsg);
