@@ -69,6 +69,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     name: `${submission.first_name} ${submission.last_name}`,
                     wins: submission.wins || 0,
                     mounts: submission.mounts || 0,
+                    stats: [],
                     // A default placeholder image is needed as it's a required field.
                     image_url: 'https://picsum.photos/seed/jockey/400/600',
                 });

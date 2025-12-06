@@ -1,11 +1,4 @@
 
-
-
-
-
-
-
-
 export interface Jockey {
   id: number;
   name: string;
@@ -13,6 +6,7 @@ export interface Jockey {
   mounts: number;
   winRate: string;
   imageUrl: string;
+  stats: any[];
 }
 
 export interface Trainer {
