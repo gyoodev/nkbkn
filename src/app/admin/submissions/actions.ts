@@ -104,7 +104,6 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     address: submission.address,
                     email: submission.email,
                     phone: submission.phone,
-                    horse_count: submission.horse_count || 0,
                     // A default placeholder image is needed as it's a required field.
                     image_url: 'https://picsum.photos/seed/owner/400/400',
                 });
