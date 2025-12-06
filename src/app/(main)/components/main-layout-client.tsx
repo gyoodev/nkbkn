@@ -258,7 +258,7 @@ export function MainLayoutClient({
                   <SheetHeader>
                       <SheetTitle className="sr-only">Menu</SheetTitle>
                   </SheetHeader>
-                  <div className="mt-8 flex flex-col gap-4">
+                  <div className="mt-8 flex flex-col gap-4 overflow-y-auto">
                   {allNavItemsForMobile.map((item) => (
                       <Link key={item.href} href={item.href} passHref>
                           <Button 
