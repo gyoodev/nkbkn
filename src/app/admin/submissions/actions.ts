@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { createServerClient } from '@/lib/supabase/server';
@@ -81,6 +82,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     // A default placeholder image is needed as it's a required field.
                     image_url: 'https://picsum.photos/seed/trainer/400/600',
                     achievements: [], // Achievements can be added later via edit
+                    associated_horses: [], // Fix: Provide a default empty array
                 });
                 if (trainerError) throw trainerError;
                 break;
