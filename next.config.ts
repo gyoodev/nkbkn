@@ -76,6 +76,12 @@ const nextConfig: NextConfig = {
         hostname: 'nibznirtpecrenzfuhkl.supabase.co',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'connecto-eu-prod.fra1.cdn.digitaloceanspaces.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
