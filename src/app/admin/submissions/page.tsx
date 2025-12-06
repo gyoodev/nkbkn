@@ -1,13 +1,13 @@
 
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useTransition } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Eye, MoreHorizontal, Check, Archive, Trash2, FolderSync, Printer } from 'lucide-react';
+import { Mail, Eye, MoreHorizontal, Check, Archive, Trash2, FolderSync, Printer, Loader2 } from 'lucide-react';
 import type { Submission } from '@/lib/types';
 import {
   Dialog,
@@ -17,6 +17,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog"
 import {
     DropdownMenu,
@@ -32,6 +33,8 @@ import { getSubmissions } from '@/lib/client/data';
 import { DeleteButton } from './_components/delete-button';
 import { UpdateStatusButton } from './_components/update-status-button';
 import { usePrint } from '@/app/print/page';
+import { approveSubmission } from './actions';
+import { useToast } from '@/hooks/use-toast';
 
 function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {
     if (value === null || value === undefined || value === '') return null;
@@ -43,14 +46,30 @@ function SubmissionDetail({ label, value }: { label: string, value: string | num
     )
 }
 
-function ViewSubmissionDialog({ submission }: { submission: Submission }) {
+function ViewSubmissionDialog({ submission, onActionComplete }: { submission: Submission; onActionComplete: () => void }) {
     const { print } = usePrint();
     const printRef = useRef<HTMLDivElement>(null);
+    const { toast } = useToast();
+    const [isPending, startTransition] = useTransition();
+    const [isOpen, setIsOpen] = useState(false);
 
     const handlePrint = () => {
         if(printRef.current) {
             print(printRef.current.cloneNode(true));
         }
+    }
+
+    const handleApprove = () => {
+        startTransition(async () => {
+            const result = await approveSubmission(submission);
+            if (result.success) {
+                toast({ title: 'Успех!', description: result.message });
+                onActionComplete();
+                setIsOpen(false);
+            } else {
+                toast({ variant: 'destructive', title: 'Грешка!', description: result.message });
+            }
+        });
     }
 
     const PrintContent = (
@@ -128,7 +147,7 @@ function ViewSubmissionDialog({ submission }: { submission: Submission }) {
     );
 
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                 <Button variant="outline" size="sm">
                     <Eye className="mr-2 h-4 w-4" />
@@ -145,11 +164,22 @@ function ViewSubmissionDialog({ submission }: { submission: Submission }) {
                 <div className="space-y-3 py-4">
                    {PrintContent}
                 </div>
-                <DialogFooter>
-                    <Button variant="outline" onClick={handlePrint}>
-                        <Printer className="mr-2 h-4 w-4" />
-                        Принтирай
-                    </Button>
+                <DialogFooter className="sm:justify-between">
+                     <div>
+                        <Button variant="outline" onClick={handlePrint}>
+                            <Printer className="mr-2 h-4 w-4" />
+                            Принтирай
+                        </Button>
+                    </div>
+                    <div className="flex gap-2">
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">Затвори</Button>
+                        </DialogClose>
+                        <Button onClick={handleApprove} disabled={isPending}>
+                           {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                           Одобри заявката
+                        </Button>
+                    </div>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
@@ -217,13 +247,14 @@ export default function AdminSubmissionsPage() {
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
 
+  async function loadData() {
+    setLoading(true);
+    const data = await getSubmissions();
+    setSubmissions(data);
+    setLoading(false);
+  }
+
   useEffect(() => {
-    async function loadData() {
-        setLoading(true);
-        const data = await getSubmissions();
-        setSubmissions(data);
-        setLoading(false);
-    }
     loadData();
   }, []);
 
@@ -290,7 +321,7 @@ export default function AdminSubmissionsPage() {
                     </TableCell>
                     <TableCell>{formatDate(sub.created_at)}</TableCell>
                     <TableCell className="text-right flex items-center justify-end">
-                        <ViewSubmissionDialog submission={sub} />
+                        <ViewSubmissionDialog submission={sub} onActionComplete={loadData} />
                         <ActionsMenu submission={sub} />
                     </TableCell>
                     </TableRow>
