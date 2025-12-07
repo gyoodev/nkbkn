@@ -18,16 +18,12 @@ const ApplicationSchema = z.object({
   date_of_birth: z.string().optional(),
   egn: z.string().optional(),
   address: z.string().optional(),
-
-  // Trainer/Owner specific
-  horse_count: z.coerce.number().optional(),
   
   // Horse specific
   horse_name: z.string().optional(),
   age: z.coerce.number().optional(),
   sire: z.string().optional(),
   dam: z.string().optional(),
-  owner: z.string().optional(),
   mounts: z.coerce.number().optional(),
   wins: z.coerce.number().optional(),
   gender: z.enum(['Кобила', 'Жребец', 'Кастрат']).optional(),
@@ -61,12 +57,6 @@ export async function submitApplication(prevState: State, formData: FormData): P
             address: formData.get('address'),
         };
     }
-     if (formType === 'Треньор') {
-        // dataToValidate.wins = formData.get('wins');
-    }
-    if (formType === 'Треньор' || formType === 'Собственик') {
-        dataToValidate.horse_count = formData.get('horse_count');
-    }
     if (formType === 'Кон') {
         dataToValidate = {
             ...dataToValidate,
@@ -74,7 +64,6 @@ export async function submitApplication(prevState: State, formData: FormData): P
             age: formData.get('age'),
             sire: formData.get('sire'),
             dam: formData.get('dam'),
-            owner: formData.get('owner'),
             mounts: formData.get('mounts'),
             wins: formData.get('wins'),
             gender: formData.get('gender'),

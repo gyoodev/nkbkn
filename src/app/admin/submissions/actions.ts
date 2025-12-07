@@ -67,8 +67,8 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
             case 'Жокей':
                 const { error: jockeyError } = await supabase.from('jockeys').insert({
                     name: `${submission.first_name} ${submission.last_name}`,
-                    wins: submission.wins || 0,
-                    mounts: submission.mounts || 0,
+                    wins: 0,
+                    mounts: 0,
                     stats: [],
                     // A default placeholder image is needed as it's a required field.
                     image_url: 'https://picsum.photos/seed/jockey/400/600',
@@ -78,8 +78,8 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
             case 'Треньор':
                  const { error: trainerError } = await supabase.from('trainers').insert({
                     name: `${submission.first_name} ${submission.last_name}`,
-                    wins: submission.wins || 0,
-                    mounts: submission.mounts || 0,
+                    wins: 0,
+                    mounts: 0,
                     // A default placeholder image is needed as it's a required field.
                     image_url: 'https://picsum.photos/seed/trainer/400/600',
                     achievements: [], // Achievements can be added later via edit
@@ -93,7 +93,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     age: submission.age,
                     sire: submission.sire,
                     dam: submission.dam,
-                    owner: submission.owner,
+                    owner: 'N/A',
                     mounts: submission.mounts || 0,
                     wins: submission.wins || 0,
                 });
