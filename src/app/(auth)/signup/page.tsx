@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { useFormStatus } from 'react-dom';
 import { useActionState, useState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Eye, EyeOff, Terminal } from 'lucide-react';
+import { Eye, EyeOff, Terminal, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
 function SubmitButton() {
@@ -29,6 +29,12 @@ export default function SignupPage() {
 
   return (
     <div className="w-full max-w-md space-y-8">
+        <Button variant="ghost" asChild className="absolute top-4 left-4 md:top-8 md:left-8">
+            <Link href="/">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Назад към сайта
+            </Link>
+        </Button>
         <div>
             <h1 className="text-3xl font-bold tracking-tight">{text.signUp}</h1>
             <p className="mt-2 text-muted-foreground">
