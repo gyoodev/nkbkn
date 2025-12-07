@@ -62,7 +62,7 @@ export async function submitApplication(prevState: State, formData: FormData): P
         };
     }
      if (formType === 'Треньор') {
-        dataToValidate.wins = formData.get('wins');
+        // dataToValidate.wins = formData.get('wins');
     }
     if (formType === 'Треньор' || formType === 'Собственик') {
         dataToValidate.horse_count = formData.get('horse_count');

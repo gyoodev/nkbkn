@@ -154,7 +154,6 @@ function HorseForm() {
                   <div className="space-y-1.5"><Label htmlFor="age">{text.age}</Label><Input id="age" name="age" type="number" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="sire">{text.sire}</Label><Input id="sire" name="sire" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="dam">{text.dam}</Label><Input id="dam" name="dam" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="owner">{text.owner}</Label><Input id="owner" name="owner" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="mounts">{text.mounts}</Label><Input id="mounts" name="mounts" type="number" defaultValue={0} required /></div>
                   <div className="space-y-1.5"><Label htmlFor="wins">{text.wins}</Label><Input id="wins" name="wins" type="number" defaultValue={0} required /></div>
                   <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="email">{text.ownerContactEmail}</Label><Input id="email" name="email" type="email" required /></div>
