@@ -63,6 +63,7 @@ export async function signup(prevState: { error?: string } | undefined, formData
     password,
     options: {
         data: {
+            email: email, // Ensure email is in user_metadata
             phone: phone,
             username: username,
             full_name: username,
@@ -85,18 +86,8 @@ export async function signup(prevState: { error?: string } | undefined, formData
       return { error: 'Неуспешно създаване на потребител. Моля, опитайте отново.' };
   }
 
-  // Create a profile for the new user.
-  const { error: rpcError } = await supabase.rpc('create_user_profile', {
-      p_user_id: authData.user.id,
-      p_email: email,
-      p_phone: phone,
-      p_username: username,
-  });
-
-  if (rpcError) {
-      console.error('Error creating profile via RPC after signup:', rpcError.message);
-      // Even if profile creation fails, we can still proceed. The user exists.
-  }
+  // The profile is now created by a trigger in Supabase on new user creation.
+  // The RPC call is no longer needed.
 
   // Send a welcome email asynchronously. No need to await it.
   sendWelcomeEmail(email, username);
