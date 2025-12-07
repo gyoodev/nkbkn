@@ -34,11 +34,12 @@ function OwnerCardSkeleton() {
 }
 
 function OwnerCard({ owner, text }: { owner: Owner, text: any }) {
+  const imageUrl = owner.image_url || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png';
   return (
     <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
         <CardHeader className="flex flex-row items-center gap-4">
             <Avatar className="h-16 w-16">
-                <AvatarImage src={owner.image_url ?? undefined} alt={owner.name}/>
+                <AvatarImage src={imageUrl} alt={owner.name}/>
                 <AvatarFallback>
                     <User className="h-8 w-8" />
                 </AvatarFallback>

@@ -82,6 +82,12 @@ const nextConfig: NextConfig = {
         hostname: 'connecto-eu-prod.fra1.cdn.digitaloceanspaces.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'static.vecteezy.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

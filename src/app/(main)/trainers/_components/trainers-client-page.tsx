@@ -11,23 +11,18 @@ import { User, UserX } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 function TrainerCard({ trainer, text }: { trainer: Trainer; text: any }) {
+    const imageUrl = trainer.image_url || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png';
     return (
         <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-xl flex flex-col">
             <div className="relative h-56 w-full bg-secondary">
-                {trainer.image_url ? (
-                    <Image
-                        src={trainer.image_url}
-                        alt={trainer.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1280px) 33vw, 25vw"
-                        data-ai-hint="portrait person"
-                    />
-                ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-muted">
-                        <User className="h-24 w-24 text-muted-foreground" />
-                    </div>
-                )}
+                <Image
+                    src={imageUrl}
+                    alt={trainer.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 33vw, 25vw"
+                    data-ai-hint="portrait person"
+                />
             </div>
             <div className="flex flex-1 flex-col p-6">
                 <CardHeader className="p-0">
