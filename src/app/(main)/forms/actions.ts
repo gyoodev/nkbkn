@@ -61,7 +61,7 @@ export async function submitApplication(prevState: State, formData: FormData): P
             address: formData.get('address'),
         };
     }
-     if (formType === 'Жокей' || formType === 'Треньор') {
+     if (formType === 'Треньор') {
         dataToValidate.wins = formData.get('wins');
     }
     if (formType === 'Треньор' || formType === 'Собственик') {

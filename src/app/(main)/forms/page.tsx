@@ -60,7 +60,6 @@ function JockeyForm() {
                   <div className="space-y-1.5"><Label htmlFor="first_name">{text.firstName}</Label><Input id="first_name" name="first_name" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="last_name">{text.lastName}</Label><Input id="last_name" name="last_name" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="date_of_birth">{text.dateOfBirth}</Label><Input id="date_of_birth" name="date_of_birth" type="date" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="wins">{text.wins}</Label><Input id="wins" name="wins" type="number" defaultValue={0} required /></div>
                   <div className="space-y-1.5"><Label htmlFor="egn">{text.egn}</Label><Input id="egn" name="egn" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="address">{text.address}</Label><Input id="address" name="address" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="email">{text.contactEmail}</Label><Input id="email" name="email" type="email" required /></div>
