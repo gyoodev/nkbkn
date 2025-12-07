@@ -28,6 +28,9 @@ const ApplicationSchema = z.object({
   wins: z.coerce.number().optional(),
   gender: z.enum(['Кобила', 'Жребец', 'Кастрат']).optional(),
   passport_number: z.string().optional(),
+
+  // Owner specific
+  horse_count: z.coerce.number().optional(),
 });
 
 
@@ -56,6 +59,9 @@ export async function submitApplication(prevState: State, formData: FormData): P
             egn: formData.get('egn'),
             address: formData.get('address'),
         };
+    }
+     if (formType === 'Собственик') {
+        dataToValidate.horse_count = formData.get('horse_count');
     }
     if (formType === 'Кон') {
         dataToValidate = {

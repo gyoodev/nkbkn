@@ -1,5 +1,4 @@
 
-
 'use client';
 import { useActionState, useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -54,6 +53,7 @@ export function OwnerForm() {
                   <div className="space-y-1.5 sm:col-span-2"><Label htmlFor="address">{text.address}</Label><Input id="address" name="address" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="email">{text.contactEmail}</Label><Input id="email" name="email" type="email" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="phone">{text.contactPhone}</Label><Input id="phone" name="phone" required/></div>
+                  <div className="space-y-1.5"><Label htmlFor="horse_count">{text.horseCount}</Label><Input id="horse_count" name="horse_count" type="number" defaultValue={0} required /></div>
               </div>
               <SubmitButton />
             </div>
