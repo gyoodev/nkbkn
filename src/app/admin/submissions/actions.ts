@@ -71,7 +71,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     mounts: 0,
                     stats: [],
                     // A default placeholder image is needed as it's a required field.
-                    image_url: 'https://picsum.photos/seed/jockey/400/600',
+                    image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
                 });
                 if (jockeyError) throw jockeyError;
                 break;
@@ -81,7 +81,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     wins: 0,
                     mounts: 0,
                     // A default placeholder image is needed as it's a required field.
-                    image_url: 'https://picsum.photos/seed/trainer/400/600',
+                    image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
                     achievements: [], // Achievements can be added later via edit
                     associated_horses: [], // Fix: Provide a default empty array
                 });
@@ -109,7 +109,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     phone: submission.phone,
                     horse_count: submission.horse_count || 0,
                     // A default placeholder image is needed as it's a required field.
-                    image_url: 'https://picsum.photos/seed/owner/400/400',
+                    image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
                 });
                 if (ownerError) throw ownerError;
                 break;
