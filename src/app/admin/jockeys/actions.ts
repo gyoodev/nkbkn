@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 const FormSchema = z.object({
-  id: z.string().optional(),
+  id: z.coerce.number().optional(),
   name: z.string().min(1, 'Името е задължително'),
   wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
   mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
@@ -51,7 +51,7 @@ export async function upsertJockey(prevState: any, formData: FormData) {
     const { error } = await supabase
         .from('jockeys')
         .upsert({
-            id: id ? parseInt(id, 10) : undefined,
+            id: id || undefined,
             ...jockeyData
         });
 
