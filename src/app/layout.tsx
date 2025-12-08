@@ -10,6 +10,12 @@ import { getSiteContent } from '@/lib/server/data';
 export const metadata: Metadata = {
   title: 'НКБКН - Национална комисия за Български конни надбягвания',
   description: 'Official website of the National Commission for Bulgarian Horse Racing.',
+  icons: {
+    icon: '/img/favicon/favicon.ico',
+    shortcut: '/img/favicon/favicon-16x16.png',
+    apple: '/img/favicon/apple-touch-icon.png',
+  },
+  manifest: '/img/favicon/site.webmanifest',
 };
 
 async function getBannerVisibility() {
