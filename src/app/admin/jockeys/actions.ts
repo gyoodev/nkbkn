@@ -11,7 +11,7 @@ const FormSchema = z.object({
   name: z.string().min(1, 'Името е задължително'),
   wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
   mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
-  image_url: z.string().url('Въведете валиден URL адрес на изображение'),
+  imageUrl: z.string().url('Въведете валиден URL адрес на изображение').optional().or(z.literal('')),
 });
 
 async function checkAdmin() {
@@ -32,11 +32,11 @@ export async function upsertJockey(prevState: any, formData: FormData) {
     const supabase = createServerClient();
 
     const validatedFields = FormSchema.safeParse({
-        id: formData.get('id') || undefined,
+        id: formData.get('id'),
         name: formData.get('name'),
         wins: formData.get('wins'),
         mounts: formData.get('mounts'),
-        image_url: formData.get('imageUrl'),
+        imageUrl: formData.get('imageUrl'),
     });
 
     if (!validatedFields.success) {
@@ -46,12 +46,13 @@ export async function upsertJockey(prevState: any, formData: FormData) {
         };
     }
     
-    const { id, ...jockeyData } = validatedFields.data;
+    const { id, imageUrl, ...jockeyData } = validatedFields.data;
     
     const { error } = await supabase
         .from('jockeys')
         .upsert({
             id: id || undefined,
+            image_url: imageUrl || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
             ...jockeyData
         });
 

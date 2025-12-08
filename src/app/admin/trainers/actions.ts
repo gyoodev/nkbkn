@@ -9,8 +9,8 @@ import { redirect } from 'next/navigation';
 const FormSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(1, 'Името е задължително'),
-  image_url: z.string().url('Въведете валиден URL адрес на изображение'),
-  achievements: z.string().min(1, 'Въведете поне едно постижение'),
+  image_url: z.string().url('Въведете валиден URL адрес на изображение').optional().or(z.literal('')),
+  achievements: z.string().optional(),
   wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
   mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
 });
@@ -33,7 +33,7 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
     const supabase = createServerClient();
 
     const validatedFields = FormSchema.safeParse({
-        id: formData.get('id') || undefined,
+        id: formData.get('id'),
         name: formData.get('name'),
         image_url: formData.get('image_url'),
         achievements: formData.get('achievements'),
@@ -55,8 +55,8 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
         .upsert({
             id: id || undefined,
             name,
-            image_url,
-            achievements: achievements.split(',').map(s => s.trim()).filter(Boolean),
+            image_url: image_url || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
+            achievements: achievements ? achievements.split(',').map(s => s.trim()).filter(Boolean) : [],
             wins,
             mounts
         });
