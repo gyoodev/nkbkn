@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 const FormSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.string().optional(),
   name: z.string().min(1, 'Името е задължително'),
   image_url: z.string().url('Въведете валиден URL адрес на изображение'),
   achievements: z.string().min(1, 'Въведете поне едно постижение'),
@@ -33,7 +33,7 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
     const supabase = createServerClient();
 
     const validatedFields = FormSchema.safeParse({
-        id: formData.get('id'),
+        id: formData.get('id') || undefined,
         name: formData.get('name'),
         image_url: formData.get('image_url'),
         achievements: formData.get('achievements'),
@@ -53,7 +53,7 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
     const { error } = await supabase
         .from('trainers')
         .upsert({
-            id: id || undefined,
+            id: id ? parseInt(id, 10) : undefined,
             name,
             image_url,
             achievements: achievements.split(',').map(s => s.trim()).filter(Boolean),
