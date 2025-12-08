@@ -34,7 +34,7 @@ export function JockeyForm({ jockey }: { jockey?: Jockey }) {
 
   return (
     <form action={dispatch}>
-        <input type="hidden" name="id" value={jockey?.id} />
+        <input type="hidden" name="id" defaultValue={jockey?.id} />
       <Card>
         <CardHeader>
           <CardTitle>{isEditing ? 'Редактирай жокей' : 'Нов жокей'}</CardTitle>
