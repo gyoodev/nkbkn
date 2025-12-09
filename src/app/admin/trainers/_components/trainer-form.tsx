@@ -44,7 +44,7 @@ export function TrainerForm({ trainer }: { trainer?: Trainer }) {
 
   return (
     <form action={formActionWithEditor}>
-        <input type="hidden" name="id" defaultValue={trainer?.id} />
+        <input type="hidden" name="id" value={trainer?.id} />
       <Card>
         <CardHeader>
           <CardTitle>{isEditing ? 'Редактирай треньор' : 'Нов треньор'}</CardTitle>
