@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 const FormSchema = z.object({
-  id: z.string().optional(),
+  id: z.coerce.number().optional(),
   name: z.string().min(1, 'Името е задължително'),
   wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
   mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
@@ -47,15 +47,16 @@ export async function upsertJockey(prevState: any, formData: FormData) {
     }
     
     const { id, imageUrl, ...jockeyData } = validatedFields.data;
-    const jockeyId = id ? parseInt(id, 10) : undefined;
+    
+    const dataToUpsert = {
+        ...jockeyData,
+        image_url: imageUrl || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
+        id: id || undefined,
+    };
     
     const { error } = await supabase
         .from('jockeys')
-        .upsert({
-            id: jockeyId,
-            image_url: imageUrl || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
-            ...jockeyData
-        });
+        .upsert(dataToUpsert);
 
 
     if (error) {
@@ -65,8 +66,8 @@ export async function upsertJockey(prevState: any, formData: FormData) {
 
     revalidatePath('/admin/jockeys');
     revalidatePath('/jockeys');
-    if (jockeyId) {
-        revalidatePath(`/jockeys/${jockeyId}`);
+    if (id) {
+        revalidatePath(`/jockeys/${id}`);
     }
     redirect('/admin/jockeys');
 }
