@@ -51,7 +51,6 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
     const { id, name, image_url, achievements, wins, mounts } = validatedFields.data;
     
     const dataToUpsert = {
-        id: id || undefined,
         name,
         image_url: image_url || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
         achievements: achievements ? achievements.split(',').map(s => s.trim()).filter(Boolean) : [],
@@ -61,7 +60,7 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
 
     const { error } = await supabase
         .from('trainers')
-        .upsert(dataToUpsert);
+        .upsert({ ...dataToUpsert, id: id || undefined });
 
 
     if (error) {
