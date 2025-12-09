@@ -39,6 +39,8 @@ import { PartnersSection } from '@/components/partners-section';
 import type { Partner, SocialLink } from '@/lib/types';
 import type { Session, User as SupabaseUser } from '@supabase/supabase-js';
 import { createBrowserClient } from '@/lib/supabase/client';
+import { useState, useEffect } from 'react';
+
 
 function TiktokIcon(props: React.SVGProps<SVGSVGElement>) {
     return (
@@ -148,6 +150,11 @@ export function MainLayoutClient({
 }) {
   const pathname = usePathname();
   const { text, language, toggleLanguage } = useLanguage();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   
   const mainNavItems = [
     { href: '/about', label: text.aboutCommissionShort, icon: <Info /> },
@@ -223,8 +230,8 @@ export function MainLayoutClient({
                 </div>
             </div>
             <div className="flex-1 flex justify-end items-center gap-4">
-                <LanguageSelector />
-                 <AuthButton user={session?.user ?? null} isAdmin={isAdmin} />
+              {isMounted && <LanguageSelector />}
+              {isMounted && <AuthButton user={session?.user ?? null} isAdmin={isAdmin} />}
             </div>
           </div>
         </div>
@@ -248,30 +255,32 @@ export function MainLayoutClient({
 
           {/* Mobile Menu Trigger */}
           <div className="md:hidden absolute top-1/2 -translate-y-1/2 right-4">
+            {isMounted && (
               <Sheet>
-              <SheetTrigger asChild>
-                  <Button variant="outline" size="icon">
-                  <Menu />
-                  </Button>
-              </SheetTrigger>
-              <SheetContent className="flex flex-col overflow-y-auto">
-                  <SheetHeader>
-                      <SheetTitle className="sr-only">Menu</SheetTitle>
-                  </SheetHeader>
-                  <div className="mt-8 flex flex-col gap-4">
-                  {allNavItemsForMobile.map((item) => (
-                      <Link key={item.href} href={item.href} passHref>
-                          <Button 
-                              variant={item.exact ? pathname === item.href ? 'default' : 'ghost' : pathname.startsWith(item.href) ? 'default' : 'ghost'} 
-                              className="justify-start w-full"
-                          >
-                              {item.label}
-                          </Button>
-                      </Link>
-                  ))}
-                  </div>
-              </SheetContent>
+                <SheetTrigger asChild>
+                    <Button variant="outline" size="icon">
+                    <Menu />
+                    </Button>
+                </SheetTrigger>
+                <SheetContent className="flex flex-col overflow-y-auto">
+                    <SheetHeader>
+                        <SheetTitle className="sr-only">Menu</SheetTitle>
+                    </SheetHeader>
+                    <div className="mt-8 flex flex-col gap-4">
+                    {allNavItemsForMobile.map((item) => (
+                        <Link key={item.href} href={item.href} passHref>
+                            <Button 
+                                variant={item.exact ? pathname === item.href ? 'default' : 'ghost' : pathname.startsWith(item.href) ? 'default' : 'ghost'} 
+                                className="justify-start w-full"
+                            >
+                                {item.label}
+                            </Button>
+                        </Link>
+                    ))}
+                    </div>
+                </SheetContent>
               </Sheet>
+            )}
           </div>
         </nav>
       </header>
