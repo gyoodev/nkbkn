@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 const FormSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.string().optional(),
   name: z.string().min(1, 'Името е задължително'),
   image_url: z.string().url('Въведете валиден URL адрес на изображение').optional().or(z.literal('')),
   achievements: z.string().optional(),
@@ -33,7 +33,7 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
     const supabase = createServerClient();
 
     const validatedFields = FormSchema.safeParse({
-        id: formData.get('id'),
+        id: formData.get('id') || undefined,
         name: formData.get('name'),
         image_url: formData.get('image_url'),
         achievements: formData.get('achievements'),
@@ -49,11 +49,12 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
     }
     
     const { id, name, image_url, achievements, wins, mounts } = validatedFields.data;
+    const trainerId = id ? parseInt(id, 10) : undefined;
     
     const { error } = await supabase
         .from('trainers')
         .upsert({
-            id: id || undefined,
+            id: trainerId,
             name,
             image_url: image_url || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
             achievements: achievements ? achievements.split(',').map(s => s.trim()).filter(Boolean) : [],

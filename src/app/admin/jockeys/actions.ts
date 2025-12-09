@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 const FormSchema = z.object({
-  id: z.coerce.number().optional(),
+  id: z.string().optional(),
   name: z.string().min(1, 'Името е задължително'),
   wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
   mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
@@ -32,7 +32,7 @@ export async function upsertJockey(prevState: any, formData: FormData) {
     const supabase = createServerClient();
 
     const validatedFields = FormSchema.safeParse({
-        id: formData.get('id'),
+        id: formData.get('id') || undefined,
         name: formData.get('name'),
         wins: formData.get('wins'),
         mounts: formData.get('mounts'),
@@ -47,11 +47,12 @@ export async function upsertJockey(prevState: any, formData: FormData) {
     }
     
     const { id, imageUrl, ...jockeyData } = validatedFields.data;
+    const jockeyId = id ? parseInt(id, 10) : undefined;
     
     const { error } = await supabase
         .from('jockeys')
         .upsert({
-            id: id || undefined,
+            id: jockeyId,
             image_url: imageUrl || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
             ...jockeyData
         });
@@ -64,8 +65,8 @@ export async function upsertJockey(prevState: any, formData: FormData) {
 
     revalidatePath('/admin/jockeys');
     revalidatePath('/jockeys');
-    if (id) {
-        revalidatePath(`/jockeys/${id}`);
+    if (jockeyId) {
+        revalidatePath(`/jockeys/${jockeyId}`);
     }
     redirect('/admin/jockeys');
 }
