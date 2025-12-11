@@ -9,43 +9,40 @@ import { Badge } from '@/components/ui/badge';
 import type { Trainer } from '@/lib/types';
 import { User, UserX } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 function TrainerCard({ trainer, text }: { trainer: Trainer; text: any }) {
     const imageUrl = trainer.image_url || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png';
     return (
         <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-xl flex flex-col">
-            <div className="relative h-56 w-full bg-secondary">
-                <Image
-                    src={imageUrl}
-                    alt={trainer.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1280px) 33vw, 25vw"
-                    data-ai-hint="portrait person"
-                />
-            </div>
-            <div className="flex flex-1 flex-col p-6">
-                <CardHeader className="p-0">
-                     <CardTitle className="font-headline text-xl text-primary">{trainer.name}</CardTitle>
-                </CardHeader>
-                <CardContent className="flex-1 p-0 pt-4">
-                    <div className="space-y-4">
-                        <div>
-                             <h4 className="font-semibold text-sm mb-2">{text.achievements}:</h4>
-                            <div className="flex flex-wrap gap-1">
-                            {trainer.achievements.map((ach, index) => <Badge variant="secondary" key={index}>{ach}</Badge>)}
-                            </div>
-                        </div>
-                        <div>
-                            <h4 className="font-semibold text-sm mb-2">Статистика:</h4>
-                            <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                                <p><strong>{text.wins}:</strong> {trainer.stats.wins}</p>
-                                <p><strong>{text.mounts}:</strong> {trainer.stats.mounts}</p>
-                            </div>
+            <CardHeader className="flex flex-row items-center gap-4">
+                <Avatar className="h-16 w-16">
+                    <AvatarImage src={imageUrl} alt={trainer.name}/>
+                    <AvatarFallback>
+                        <User className="h-8 w-8" />
+                    </AvatarFallback>
+                </Avatar>
+                <div>
+                    <CardTitle className="font-headline text-xl text-primary">{trainer.name}</CardTitle>
+                </div>
+            </CardHeader>
+            <CardContent className="flex-1 pt-0">
+                <div className="space-y-4">
+                    <div>
+                         <h4 className="font-semibold text-sm mb-2">{text.achievements}:</h4>
+                        <div className="flex flex-wrap gap-1">
+                        {trainer.achievements.map((ach, index) => <Badge variant="secondary" key={index}>{ach}</Badge>)}
                         </div>
                     </div>
-                </CardContent>
-            </div>
+                    <div>
+                        <h4 className="font-semibold text-sm mb-2">Статистика:</h4>
+                        <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                            <p><strong>{text.wins}:</strong> {trainer.stats.wins}</p>
+                            <p><strong>{text.mounts}:</strong> {trainer.stats.mounts}</p>
+                        </div>
+                    </div>
+                </div>
+            </CardContent>
         </Card>
     );
 }

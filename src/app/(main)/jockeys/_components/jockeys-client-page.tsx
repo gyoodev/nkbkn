@@ -8,31 +8,30 @@ import { PageHeader } from '@/components/page-header';
 import type { Jockey } from '@/lib/types';
 import { User, UserX } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 function JockeyCard({ jockey, text }: { jockey: Jockey, text: any }) {
   const imageUrl = jockey.imageUrl || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png';
   return (
     <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
-      <CardHeader className="p-0">
-        <div className="relative h-64 w-full bg-secondary">
-            <Image
-                src={imageUrl}
-                alt={jockey.name}
-                fill
-                className="object-cover"
-                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
-                data-ai-hint="portrait person"
-            />
-        </div>
-      </CardHeader>
-      <CardContent className="p-4">
-        <CardTitle className="font-headline text-xl text-primary">{jockey.name}</CardTitle>
-        <div className="mt-2 space-y-1 text-sm text-muted-foreground">
-          <p><strong>{text.wins}:</strong> {jockey.wins}</p>
-          <p><strong>{text.mounts}:</strong> {jockey.mounts}</p>
-          <p><strong>{text.winRate}:</strong> {jockey.winRate}</p>
-        </div>
-      </CardContent>
+        <CardHeader className="flex flex-row items-center gap-4">
+            <Avatar className="h-16 w-16">
+                <AvatarImage src={imageUrl} alt={jockey.name}/>
+                <AvatarFallback>
+                    <User className="h-8 w-8" />
+                </AvatarFallback>
+            </Avatar>
+            <div>
+                <CardTitle className="font-headline text-xl text-primary">{jockey.name}</CardTitle>
+            </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+            <div className="mt-2 space-y-1 text-sm text-muted-foreground">
+                <p><strong>{text.wins}:</strong> {jockey.wins}</p>
+                <p><strong>{text.mounts}:</strong> {jockey.mounts}</p>
+                <p><strong>{text.winRate}:</strong> {jockey.winRate}</p>
+            </div>
+        </CardContent>
     </Card>
   );
 }
