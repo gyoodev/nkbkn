@@ -12,8 +12,6 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import type { Trainer } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
-import { MultiSelect } from '@/components/ui/multi-select';
-import { Achievement } from '@/lib/types';
 
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
@@ -36,10 +34,6 @@ export function TrainerForm({ trainer }: { trainer?: Trainer }) {
   const isEditing = !!trainer;
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useActionState(upsertTrainer, initialState);
-
-  const achievementOptions = Object.values(Achievement).map(ach => ({ value: ach, label: ach }));
-  const [selectedAchievements, setSelectedAchievements] = useState<string[]>(trainer?.achievements || []);
-
 
   return (
     <form action={dispatch}>
@@ -68,17 +62,6 @@ export function TrainerForm({ trainer }: { trainer?: Trainer }) {
             <Label htmlFor="mounts">Участия</Label>
             <Input id="mounts" name="mounts" type="number" defaultValue={trainer?.stats.mounts || 0} />
              {state.errors?.mounts && <p className="text-sm font-medium text-destructive">{state.errors.mounts}</p>}
-          </div>
-          <div className="space-y-1.5 md:col-span-2">
-            <Label>Постижения</Label>
-            <MultiSelect
-                options={achievementOptions}
-                selected={selectedAchievements}
-                onChange={setSelectedAchievements}
-                className="w-full"
-            />
-            <input type="hidden" name="achievements" value={selectedAchievements.join(',')} />
-            {state.errors?.achievements && <p className="text-sm font-medium text-destructive">{state.errors.achievements}</p>}
           </div>
         </CardContent>
         <CardFooter className="flex justify-between">

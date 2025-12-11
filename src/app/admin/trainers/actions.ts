@@ -6,19 +6,11 @@ import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { Achievement } from '@/lib/types';
 
 const FormSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(1, 'Името е задължително'),
   image_url: z.string().url('Въведете валиден URL адрес на изображение').optional().or(z.literal('')),
-  achievements: z.preprocess((arg) => {
-    if (typeof arg === 'string') {
-        const arr = arg.split(',').filter(Boolean);
-        return arr.length > 0 ? arr : [];
-    }
-    return [];
-  }, z.array(z.nativeEnum(Achievement)).optional()),
   wins: z.coerce.number().min(0, 'Победите трябва да е положително число'),
   mounts: z.coerce.number().min(0, 'Участията трябва да е положително число'),
 });
@@ -44,7 +36,6 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
         id: formData.get('id') || undefined,
         name: formData.get('name'),
         image_url: formData.get('image_url'),
-        achievements: formData.get('achievements'),
         wins: formData.get('wins'),
         mounts: formData.get('mounts'),
     });
@@ -62,7 +53,6 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
     const dataToSave = {
         ...trainerData,
         image_url: trainerData.image_url || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
-        achievements: trainerData.achievements || [],
     };
 
     let error;

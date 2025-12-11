@@ -82,8 +82,6 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     mounts: 0,
                     // A default placeholder image is needed as it's a required field.
                     image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
-                    achievements: [], // Achievements can be added later via edit
-                    associated_horses: [], // Fix: Provide a default empty array
                 });
                 if (trainerError) throw trainerError;
                 break;

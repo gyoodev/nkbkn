@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Image from 'next/image';
@@ -14,7 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 function TrainerCard({ trainer, text }: { trainer: Trainer; text: any }) {
     const imageUrl = trainer.image_url || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png';
     return (
-        <Card className="overflow-hidden transition-shadow duration-300 hover:shadow-xl flex flex-col">
+       <Card className="overflow-hidden transition-transform duration-300 hover:scale-105 hover:shadow-xl">
             <CardHeader className="flex flex-row items-center gap-4">
                 <Avatar className="h-16 w-16">
                     <AvatarImage src={imageUrl} alt={trainer.name}/>
@@ -26,14 +27,8 @@ function TrainerCard({ trainer, text }: { trainer: Trainer; text: any }) {
                     <CardTitle className="font-headline text-xl text-primary">{trainer.name}</CardTitle>
                 </div>
             </CardHeader>
-            <CardContent className="flex-1 pt-0">
-                <div className="space-y-4">
-                    <div>
-                         <h4 className="font-semibold text-sm mb-2">{text.achievements}:</h4>
-                        <div className="flex flex-wrap gap-1">
-                        {trainer.achievements.map((ach, index) => <Badge variant="secondary" key={index}>{ach}</Badge>)}
-                        </div>
-                    </div>
+            <CardContent>
+                <div className="mt-2 space-y-2 text-sm text-muted-foreground">
                     <div>
                         <h4 className="font-semibold text-sm mb-2">Статистика:</h4>
                         <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">

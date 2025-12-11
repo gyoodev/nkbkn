@@ -1,4 +1,5 @@
 
+
 import 'server-only';
 
 import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, NewsPost, UserProfile, Stats, Track, Owner } from '@/lib/types';
@@ -118,7 +119,8 @@ export async function getJockey(id: number): Promise<Jockey | null> {
         imageUrl: data.image_url,
         wins: wins,
         mounts: mounts,
-        winRate: winRate
+        winRate: winRate,
+        stats: []
     };
 }
 
@@ -135,7 +137,6 @@ export async function getTrainer(id: number): Promise<Trainer | null> {
         id: data.id,
         name: data.name,
         image_url: data.image_url,
-        achievements: Array.isArray(data.achievements) ? data.achievements : (typeof data.achievements === 'string' ? data.achievements.split(',').map((s: string) => s.trim()) : []),
         stats: {
             wins: data.wins || 0,
             mounts: data.mounts || 0,
@@ -320,7 +321,6 @@ export async function getTrainers(): Promise<Trainer[]> {
             id: trainer.id,
             name: trainer.name,
             image_url: trainer.image_url,
-            achievements: Array.isArray(trainer.achievements) ? trainer.achievements : (typeof trainer.achievements === 'string' ? trainer.achievements.split(',').map((s: string) => s.trim()) : []),
             stats: {
                 wins: trainer.wins || 0,
                 mounts: trainer.mounts || 0,
