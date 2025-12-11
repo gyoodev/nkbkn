@@ -1,4 +1,5 @@
 
+
 export interface Jockey {
   id: number;
   name: string;
@@ -9,10 +10,18 @@ export interface Jockey {
   stats: any[];
 }
 
+export enum Achievement {
+    Champion = "Шампион",
+    DerbyWinner = "Победител в Дерби",
+    TopTrainer = "Топ треньор на годината",
+    RecordBreaker = "Рекордьор",
+    InternationalSuccess = "Международен успех"
+}
+
 export interface Trainer {
   id: number;
   name: string;
-  achievements: string[];
+  achievements: Achievement[];
   stats: {
     wins: number;
     mounts: number;

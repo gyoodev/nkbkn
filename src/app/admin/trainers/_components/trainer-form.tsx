@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useActionState, useState } from 'react';
@@ -11,7 +12,9 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import type { Trainer } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
+import { MultiSelect } from '@/components/ui/multi-select';
+import { Achievement } from '@/lib/types';
+
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -32,18 +35,14 @@ function SubmitButton({ isEditing }: { isEditing: boolean }) {
 export function TrainerForm({ trainer }: { trainer?: Trainer }) {
   const isEditing = !!trainer;
   const initialState = { message: null, errors: {} };
-  
-  const [achievements, setAchievements] = useState(trainer?.achievements.join(', ') || '');
-  
   const [state, dispatch] = useActionState(upsertTrainer, initialState);
 
-  const formActionWithEditor = (formData: FormData) => {
-    formData.set('achievements', achievements);
-    dispatch(formData);
-  };
+  const achievementOptions = Object.values(Achievement).map(ach => ({ value: ach, label: ach }));
+  const [selectedAchievements, setSelectedAchievements] = useState<string[]>(trainer?.achievements || []);
+
 
   return (
-    <form action={formActionWithEditor}>
+    <form action={dispatch}>
         <input type="hidden" name="id" value={trainer?.id} />
       <Card>
         <CardHeader>
@@ -71,13 +70,14 @@ export function TrainerForm({ trainer }: { trainer?: Trainer }) {
              {state.errors?.mounts && <p className="text-sm font-medium text-destructive">{state.errors.mounts}</p>}
           </div>
           <div className="space-y-1.5 md:col-span-2">
-            <Label htmlFor="achievements">Постижения (разделени със запетая)</Label>
-            <Textarea 
-              id="achievements"
-              name="achievements" 
-              value={achievements}
-              onChange={e => setAchievements(e.target.value)}
+            <Label>Постижения</Label>
+            <MultiSelect
+                options={achievementOptions}
+                selected={selectedAchievements}
+                onChange={setSelectedAchievements}
+                className="w-full"
             />
+            <input type="hidden" name="achievements" value={selectedAchievements.join(',')} />
             {state.errors?.achievements && <p className="text-sm font-medium text-destructive">{state.errors.achievements}</p>}
           </div>
         </CardContent>

@@ -1,4 +1,5 @@
 
+
 'use server';
 
 import { z } from 'zod';
@@ -51,12 +52,22 @@ export async function upsertJockey(prevState: any, formData: FormData) {
     const dataToUpsert = {
         ...jockeyData,
         image_url: imageUrl || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
-        id: id || undefined,
     };
     
-    const { error } = await supabase
-        .from('jockeys')
-        .upsert(dataToUpsert);
+    let error;
+
+    if (id) {
+        // Update existing record
+        ({ error } = await supabase
+            .from('jockeys')
+            .update(dataToUpsert)
+            .eq('id', id));
+    } else {
+        // Create new record
+        ({ error } = await supabase
+            .from('jockeys')
+            .insert(dataToUpsert));
+    }
 
 
     if (error) {

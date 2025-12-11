@@ -1,18 +1,26 @@
 
+
 'use server';
 
 import { z } from 'zod';
 import { createServerClient } from '@/lib/supabase/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { Achievement } from '@/lib/types';
 
 const FormSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(1, 'Името е задължително'),
   image_url: z.string().url('Въведете валиден URL адрес на изображение').optional().or(z.literal('')),
-  achievements: z.string().optional(),
-  wins: z.coerce.number().min(0, 'Победите трябва да са положително число'),
-  mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
+  achievements: z.preprocess((arg) => {
+    if (typeof arg === 'string') {
+        const arr = arg.split(',').filter(Boolean);
+        return arr.length > 0 ? arr : [];
+    }
+    return [];
+  }, z.array(z.nativeEnum(Achievement)).optional()),
+  wins: z.coerce.number().min(0, 'Победите трябва да е положително число'),
+  mounts: z.coerce.number().min(0, 'Участията трябва да е положително число'),
 });
 
 async function checkAdmin() {
@@ -42,25 +50,34 @@ export async function upsertTrainer(prevState: any, formData: FormData) {
     });
 
     if (!validatedFields.success) {
+        console.log(validatedFields.error.flatten().fieldErrors);
         return {
             errors: validatedFields.error.flatten().fieldErrors,
             message: 'Моля, попълнете всички задължителни полета.',
         };
     }
     
-    const { id, name, image_url, achievements, wins, mounts } = validatedFields.data;
+    const { id, ...trainerData } = validatedFields.data;
     
-    const dataToUpsert = {
-        name,
-        image_url: image_url || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
-        achievements: achievements ? achievements.split(',').map(s => s.trim()).filter(Boolean) : [],
-        wins,
-        mounts
+    const dataToSave = {
+        ...trainerData,
+        image_url: trainerData.image_url || 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
+        achievements: trainerData.achievements || [],
     };
 
-    const { error } = await supabase
-        .from('trainers')
-        .upsert({ ...dataToUpsert, id: id || undefined });
+    let error;
+    if (id) {
+        // Update existing record
+        ({ error } = await supabase
+            .from('trainers')
+            .update(dataToSave)
+            .eq('id', id));
+    } else {
+        // Create new record
+        ({ error } = await supabase
+            .from('trainers')
+            .insert(dataToSave));
+    }
 
 
     if (error) {
