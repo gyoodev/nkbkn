@@ -36,6 +36,7 @@ export function HorseForm({ horse }: { horse?: Horse }) {
   
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
+  const origins = ["BG", "GER", "UK", "USA", "FR", "IT", "GR", "TR", "UAE"];
 
   return (
     <form action={dispatch}>
@@ -63,6 +64,20 @@ export function HorseForm({ horse }: { horse?: Horse }) {
                 </SelectContent>
             </Select>
             {state.errors?.age && <p className="text-sm font-medium text-destructive">{state.errors.age}</p>}
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="origin">Произход</Label>
+            <Select name="origin" defaultValue={horse?.origin || undefined}>
+                <SelectTrigger id="origin">
+                    <SelectValue placeholder="Изберете произход" />
+                </SelectTrigger>
+                <SelectContent>
+                    {origins.map(origin => (
+                        <SelectItem key={origin} value={origin}>{origin}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
+            {state.errors?.origin && <p className="text-sm font-medium text-destructive">{state.errors.origin}</p>}
           </div>
           <div className="space-y-1">
             <Label htmlFor="sire">Баща (Sire)</Label>

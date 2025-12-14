@@ -44,6 +44,8 @@ export function HorseForm() {
     
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
+    const origins = ["BG", "GER", "UK", "USA", "FR", "IT", "GR", "TR", "UAE"];
+
 
     return (
          <form action={dispatch} ref={formRef}>
@@ -51,20 +53,6 @@ export function HorseForm() {
             <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5"><Label htmlFor="horse_name">{text.horseName}</Label><Input id="horse_name" name="horse_name" required /></div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="gender">{text.gender}</Label>
-                    <Select name="gender" required>
-                        <SelectTrigger id="gender">
-                            <SelectValue placeholder={text.selectGender} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="Кобила">{text.mare}</SelectItem>
-                            <SelectItem value="Жребец">{text.stallion}</SelectItem>
-                            <SelectItem value="Кастрат">{text.gelding}</SelectItem>
-                        </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5"><Label htmlFor="passport_number">{text.passportNumber}</Label><Input id="passport_number" name="passport_number" required /></div>
                   <div className="space-y-1.5">
                     <Label htmlFor="age">Година на раждане</Label>
                     <Select name="age" required>
@@ -78,6 +66,33 @@ export function HorseForm() {
                         </SelectContent>
                     </Select>
                   </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="gender">{text.gender}</Label>
+                    <Select name="gender" required>
+                        <SelectTrigger id="gender">
+                            <SelectValue placeholder={text.selectGender} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="Кобила">{text.mare}</SelectItem>
+                            <SelectItem value="Жребец">{text.stallion}</SelectItem>
+                            <SelectItem value="Кастрат">{text.gelding}</SelectItem>
+                        </SelectContent>
+                    </Select>
+                  </div>
+                   <div className="space-y-1.5">
+                    <Label htmlFor="origin">Произход</Label>
+                    <Select name="origin">
+                        <SelectTrigger id="origin">
+                            <SelectValue placeholder="Изберете произход" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {origins.map(origin => (
+                                <SelectItem key={origin} value={origin}>{origin}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5"><Label htmlFor="passport_number">{text.passportNumber}</Label><Input id="passport_number" name="passport_number" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="sire">{text.sire}</Label><Input id="sire" name="sire" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="dam">{text.dam}</Label><Input id="dam" name="dam" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="mounts">{text.mounts}</Label><Input id="mounts" name="mounts" type="number" defaultValue={0} required /></div>

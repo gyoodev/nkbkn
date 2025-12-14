@@ -28,6 +28,7 @@ const ApplicationSchema = z.object({
   wins: z.coerce.number().optional(),
   gender: z.enum(['Кобила', 'Жребец', 'Кастрат']).optional(),
   passport_number: z.string().optional(),
+  origin: z.string().optional(),
 
   // Owner specific
   horse_count: z.coerce.number().optional(),
@@ -74,6 +75,7 @@ export async function submitApplication(prevState: State, formData: FormData): P
             wins: formData.get('wins'),
             gender: formData.get('gender'),
             passport_number: formData.get('passport_number'),
+            origin: formData.get('origin'),
         };
     }
 

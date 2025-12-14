@@ -29,6 +29,7 @@ export interface Horse {
   wins: number;
   mounts: number;
   bestTime: string | null;
+  origin: string | null;
 }
 
 export interface Track {
@@ -142,6 +143,7 @@ export interface Submission {
     owner?: string | null;
     gender?: 'Кобила' | 'Жребец' | 'Кастрат' | null;
     passport_number?: string | null;
+    origin?: string | null;
     
     // Shared stats for horse/jockey/trainer
     mounts?: number | null;

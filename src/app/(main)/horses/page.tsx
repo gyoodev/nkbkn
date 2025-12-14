@@ -34,6 +34,7 @@ function HorsesTableSkeleton() {
                 <TableHead className="text-center">{text.wins}</TableHead>
                  <TableHead className="text-center">{text.bestTime}</TableHead>
                 <TableHead className="text-center">{text.age}</TableHead>
+                <TableHead>Произход</TableHead>
                 <TableHead>{text.owner}</TableHead>
               </TableRow>
             </TableHeader>
@@ -47,6 +48,7 @@ function HorsesTableSkeleton() {
                         <TableCell className="text-center"><Skeleton className="h-4 w-10 mx-auto" /></TableCell>
                         <TableCell className="text-center"><Skeleton className="h-4 w-20 mx-auto" /></TableCell>
                         <TableCell className="text-center"><Skeleton className="h-4 w-10 mx-auto" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-10 mx-auto" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-40" /></TableCell>
                     </TableRow>
                 ))}
@@ -108,6 +110,7 @@ export default function HorsesPage() {
                     <TableHead className="text-center">{text.wins}</TableHead>
                      <TableHead className="text-center">{text.bestTime}</TableHead>
                     <TableHead className="text-center">{text.age}</TableHead>
+                    <TableHead>Произход</TableHead>
                     <TableHead>{text.owner}</TableHead>
                 </TableRow>
                 </TableHeader>
@@ -121,6 +124,7 @@ export default function HorsesPage() {
                     <TableCell className="text-center">{horse.wins || 0}</TableCell>
                     <TableCell className="text-center">{horse.bestTime || 'N/A'}</TableCell>
                     <TableCell className="text-center">{calculateAge(horse.age)}</TableCell>
+                    <TableCell>{horse.origin}</TableCell>
                     <TableCell>{horse.owner}</TableCell>
                     </TableRow>
                 ))}

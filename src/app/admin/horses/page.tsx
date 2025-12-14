@@ -22,7 +22,8 @@ function HorsesTableSkeleton() {
                 <TableRow>
                     <TableHead>Име</TableHead>
                     <TableHead>Собственик</TableHead>
-                    <TableHead>Възраст</TableHead>
+                    <TableHead>Година на раждане</TableHead>
+                    <TableHead>Произход</TableHead>
                     <TableHead>Участия</TableHead>
                     <TableHead>Победи</TableHead>
                     <TableHead>Най-добро време</TableHead>
@@ -34,6 +35,7 @@ function HorsesTableSkeleton() {
                     <TableRow key={i}>
                         <TableCell><Skeleton className="h-4 w-32" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-40" /></TableCell>
+                        <TableCell><Skeleton className="h-4 w-10" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-10" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-10" /></TableCell>
                         <TableCell><Skeleton className="h-4 w-10" /></TableCell>
@@ -92,7 +94,8 @@ export default function AdminHorsesPage() {
                 <TableRow>
                     <TableHead>Име</TableHead>
                     <TableHead>Собственик</TableHead>
-                    <TableHead>Възраст</TableHead>
+                    <TableHead>Година на раждане</TableHead>
+                    <TableHead>Произход</TableHead>
                     <TableHead>Участия</TableHead>
                     <TableHead>Победи</TableHead>
                     <TableHead>Най-добро време</TableHead>
@@ -107,6 +110,7 @@ export default function AdminHorsesPage() {
                     <TableCell className="font-medium">{horse.name}</TableCell>
                     <TableCell>{horse.owner}</TableCell>
                     <TableCell>{horse.age}</TableCell>
+                    <TableCell>{horse.origin}</TableCell>
                     <TableCell>{horse.mounts}</TableCell>
                     <TableCell>{horse.wins}</TableCell>
                     <TableCell>{horse.bestTime || 'N/A'}</TableCell>
