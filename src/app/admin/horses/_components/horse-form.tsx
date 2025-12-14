@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import type { Horse } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -32,6 +33,9 @@ export function HorseForm({ horse }: { horse?: Horse }) {
   const isEditing = !!horse;
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useActionState(upsertHorse, initialState);
+  
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
 
   return (
     <form action={dispatch}>
@@ -48,7 +52,16 @@ export function HorseForm({ horse }: { horse?: Horse }) {
           </div>
           <div className="space-y-1">
             <Label htmlFor="age">Година на раждане</Label>
-            <Input id="age" name="age" type="number" defaultValue={horse?.age} placeholder="ГГГГ" />
+            <Select name="age" defaultValue={horse?.age ? String(horse.age) : undefined}>
+                <SelectTrigger id="age">
+                    <SelectValue placeholder="Изберете година" />
+                </SelectTrigger>
+                <SelectContent>
+                    {years.map(year => (
+                        <SelectItem key={year} value={String(year)}>{year}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             {state.errors?.age && <p className="text-sm font-medium text-destructive">{state.errors.age}</p>}
           </div>
           <div className="space-y-1">

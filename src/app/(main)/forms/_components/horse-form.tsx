@@ -1,5 +1,4 @@
 
-
 'use client';
 import { useActionState, useEffect, useRef } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -42,6 +41,9 @@ export function HorseForm() {
             }
         }
     }, [state, toast]);
+    
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
 
     return (
          <form action={dispatch} ref={formRef}>
@@ -63,7 +65,19 @@ export function HorseForm() {
                     </Select>
                   </div>
                   <div className="space-y-1.5"><Label htmlFor="passport_number">{text.passportNumber}</Label><Input id="passport_number" name="passport_number" required /></div>
-                  <div className="space-y-1.5"><Label htmlFor="age">{text.age}</Label><Input id="age" name="age" type="number" required /></div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="age">Година на раждане</Label>
+                    <Select name="age" required>
+                        <SelectTrigger id="age">
+                            <SelectValue placeholder="Изберете година" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {years.map(year => (
+                                <SelectItem key={year} value={String(year)}>{year}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                  </div>
                   <div className="space-y-1.5"><Label htmlFor="sire">{text.sire}</Label><Input id="sire" name="sire" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="dam">{text.dam}</Label><Input id="dam" name="dam" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="mounts">{text.mounts}</Label><Input id="mounts" name="mounts" type="number" defaultValue={0} required /></div>
