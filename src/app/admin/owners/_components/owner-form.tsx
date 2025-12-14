@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import type { Owner } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
   const { pending } = useFormStatus();
@@ -34,6 +35,9 @@ export function OwnerForm({ owner }: { owner?: Owner }) {
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useActionState(upsertOwner, initialState);
 
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 80 }, (_, i) => currentYear - i - 18);
+
   return (
     <form action={dispatch}>
         <input type="hidden" name="id" value={owner?.id} />
@@ -48,8 +52,17 @@ export function OwnerForm({ owner }: { owner?: Owner }) {
             {state.errors?.name && <p className="text-sm font-medium text-destructive">{state.errors.name}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="date_of_birth">Дата на раждане</Label>
-            <Input id="date_of_birth" name="date_of_birth" type="date" defaultValue={owner?.date_of_birth?.toString()} />
+            <Label htmlFor="date_of_birth">Година на раждане</Label>
+            <Select name="date_of_birth" defaultValue={owner?.date_of_birth ? String(owner.date_of_birth) : undefined}>
+                <SelectTrigger id="date_of_birth">
+                    <SelectValue placeholder="Изберете година" />
+                </SelectTrigger>
+                <SelectContent>
+                    {years.map(year => (
+                        <SelectItem key={year} value={String(year)}>{year}</SelectItem>
+                    ))}
+                </SelectContent>
+            </Select>
             {state.errors?.date_of_birth && <p className="text-sm font-medium text-destructive">{state.errors.date_of_birth}</p>}
           </div>
           <div className="space-y-1">

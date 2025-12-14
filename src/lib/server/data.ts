@@ -120,7 +120,6 @@ export async function getJockey(id: number): Promise<Jockey | null> {
         wins: wins,
         mounts: mounts,
         winRate: winRate,
-        stats: []
     };
 }
 
