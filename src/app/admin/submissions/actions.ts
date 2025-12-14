@@ -77,7 +77,9 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                  const { error: trainerError } = await supabase.from('trainers').insert({
                     name: `${submission.first_name} ${submission.last_name}`,
                     image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
-                });
+                    wins: 0,
+                    mounts: 0,
+                 });
                 if (trainerError) throw trainerError;
                 break;
             case 'Кон':
