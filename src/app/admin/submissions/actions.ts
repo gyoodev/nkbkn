@@ -69,8 +69,6 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     name: `${submission.first_name} ${submission.last_name}`,
                     wins: 0,
                     mounts: 0,
-                    stats: [],
-                    // A default placeholder image is needed as it's a required field.
                     image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
                 });
                 if (jockeyError) throw jockeyError;
@@ -78,9 +76,6 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
             case 'Треньор':
                  const { error: trainerError } = await supabase.from('trainers').insert({
                     name: `${submission.first_name} ${submission.last_name}`,
-                    wins: 0,
-                    mounts: 0,
-                    // A default placeholder image is needed as it's a required field.
                     image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
                 });
                 if (trainerError) throw trainerError;
@@ -91,7 +86,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     age: submission.age,
                     sire: submission.sire,
                     dam: submission.dam,
-                    owner: 'N/A',
+                    owner: 'N/A', // Owner is not known at submission time
                     mounts: submission.mounts || 0,
                     wins: submission.wins || 0,
                 });
@@ -106,7 +101,6 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     email: submission.email,
                     phone: submission.phone,
                     horse_count: submission.horse_count || 0,
-                    // A default placeholder image is needed as it's a required field.
                     image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
                 });
                 if (ownerError) throw ownerError;
