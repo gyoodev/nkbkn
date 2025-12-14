@@ -91,6 +91,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     owner: 'N/A', // Owner is not known at submission time
                     mounts: submission.mounts || 0,
                     wins: submission.wins || 0,
+                    origin: submission.origin,
                 });
                 if (horseError) throw horseError;
                 break;
