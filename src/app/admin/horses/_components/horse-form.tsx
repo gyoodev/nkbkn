@@ -47,8 +47,8 @@ export function HorseForm({ horse }: { horse?: Horse }) {
             {state.errors?.name && <p className="text-sm font-medium text-destructive">{state.errors.name}</p>}
           </div>
           <div className="space-y-1">
-            <Label htmlFor="age">Възраст</Label>
-            <Input id="age" name="age" type="number" defaultValue={horse?.age} />
+            <Label htmlFor="age">Година на раждане</Label>
+            <Input id="age" name="age" type="number" defaultValue={horse?.age} placeholder="ГГГГ" />
             {state.errors?.age && <p className="text-sm font-medium text-destructive">{state.errors.age}</p>}
           </div>
           <div className="space-y-1">

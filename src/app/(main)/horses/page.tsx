@@ -70,6 +70,12 @@ export default function HorsesPage() {
     }
     loadHorses();
   }, []);
+  
+  const calculateAge = (birthYear: number) => {
+    if (!birthYear) return '-';
+    const currentYear = new Date().getFullYear();
+    return currentYear - birthYear;
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 sm:px-6 lg:px-8">
@@ -114,7 +120,7 @@ export default function HorsesPage() {
                     <TableCell className="text-center">{horse.mounts || 0}</TableCell>
                     <TableCell className="text-center">{horse.wins || 0}</TableCell>
                     <TableCell className="text-center">{horse.bestTime || 'N/A'}</TableCell>
-                    <TableCell className="text-center">{horse.age}</TableCell>
+                    <TableCell className="text-center">{calculateAge(horse.age)}</TableCell>
                     <TableCell>{horse.owner}</TableCell>
                     </TableRow>
                 ))}

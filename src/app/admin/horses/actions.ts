@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation';
 const FormSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(1, 'Името е задължително'),
-  age: z.coerce.number().min(0, 'Възрастта трябва да е положително число'),
+  age: z.coerce.number().min(1980, 'Въведете валидна година.').max(new Date().getFullYear(), 'Годината не може да бъде в бъдещето.'),
   sire: z.string().min(1, 'Бащата е задължителен'),
   dam: z.string().min(1, 'Майката е задължителна'),
   owner: z.string().min(1, 'Собственикът е задължителен'),
@@ -36,7 +36,7 @@ export async function upsertHorse(prevState: any, formData: FormData) {
     const supabase = createServerClient();
 
     const validatedFields = FormSchema.safeParse({
-        id: formData.get('id'),
+        id: formData.get('id') || undefined,
         name: formData.get('name'),
         age: formData.get('age'),
         sire: formData.get('sire'),
@@ -56,13 +56,20 @@ export async function upsertHorse(prevState: any, formData: FormData) {
     
     const { id, ...horseData } = validatedFields.data;
     
-    const { error } = await supabase
-        .from('horses')
-        .upsert({
-            id: id || undefined,
-            ...horseData
-        });
+    let error;
 
+    if (id) {
+        // Update existing record
+        ({ error } = await supabase
+            .from('horses')
+            .update(horseData)
+            .eq('id', id));
+    } else {
+        // Create new record
+        ({ error } = await supabase
+            .from('horses')
+            .insert(horseData));
+    }
 
     if (error) {
         console.error('Supabase error:', error);
