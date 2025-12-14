@@ -115,10 +115,7 @@ function ViewSubmissionDialog({ submission, onActionComplete }: { submission: Su
                     <SubmissionDetail label="Дата на раждане" value={submission.date_of_birth} />
                     <SubmissionDetail label="ЕГН" value={submission.egn} />
                     <SubmissionDetail label="Адрес" value={submission.address} />
-                    {(submission.type === 'Жокей' || submission.type === 'Треньор') && (
-                        <SubmissionDetail label="Победи" value={submission.wins} />
-                    )}
-                    {submission.type === 'Треньор' && (
+                    {submission.type === 'Собственик' && (
                         <SubmissionDetail label="Брой коне" value={submission.horse_count} />
                     )}
                 </div>
@@ -128,10 +125,12 @@ function ViewSubmissionDialog({ submission, onActionComplete }: { submission: Su
                      <h4>Данни за коня</h4>
                      <hr />
                      <SubmissionDetail label="Име на коня" value={submission.horse_name} />
-                     <SubmissionDetail label="Възраст" value={submission.age} />
+                     <SubmissionDetail label="Година на раждане" value={submission.age} />
+                     <SubmissionDetail label="Пол" value={submission.gender} />
+                     <SubmissionDetail label="Произход" value={submission.origin} />
+                     <SubmissionDetail label="Паспортен номер" value={submission.passport_number} />
                      <SubmissionDetail label="Баща" value={submission.sire} />
                      <SubmissionDetail label="Майка" value={submission.dam} />
-                     <SubmissionDetail label="Собственик" value={submission.owner} />
                      <SubmissionDetail label="Участия" value={submission.mounts} />
                      <SubmissionDetail label="Победи" value={submission.wins} />
                 </div>
