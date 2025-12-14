@@ -128,7 +128,7 @@ export interface Submission {
     // Person-specific
     first_name?: string | null;
     last_name?: string | null;
-    date_of_birth?: number | null;
+    date_of_birth?: string | null;
     egn?: string | null;
     address?: string | null;
 
@@ -180,7 +180,7 @@ export interface Owner {
     id: number;
     created_at: string;
     name: string;
-    date_of_birth: number | null;
+    date_of_birth: string | null;
     egn: string | null;
     address: string | null;
     email: string | null;

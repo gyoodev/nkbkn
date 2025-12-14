@@ -43,9 +43,6 @@ export function TrainerForm() {
         }
     }, [state, toast]);
 
-    const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: 70 }, (_, i) => currentYear - i - 18);
-
     return (
          <form action={dispatch} ref={formRef}>
             <input type="hidden" name="type" value="Треньор" />
@@ -54,17 +51,8 @@ export function TrainerForm() {
                   <div className="space-y-1.5"><Label htmlFor="first_name">{text.firstName}</Label><Input id="first_name" name="first_name" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="last_name">{text.lastName}</Label><Input id="last_name" name="last_name" required /></div>
                   <div className="space-y-1.5">
-                    <Label htmlFor="date_of_birth">Година на раждане</Label>
-                     <Select name="date_of_birth" required>
-                        <SelectTrigger id="date_of_birth">
-                            <SelectValue placeholder="Изберете година" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {years.map(year => (
-                                <SelectItem key={year} value={String(year)}>{year}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <Label htmlFor="date_of_birth">Дата на раждане</Label>
+                    <Input id="date_of_birth" name="date_of_birth" type="date" required />
                   </div>
                   <div className="space-y-1.5"><Label htmlFor="egn">{text.egn}</Label><Input id="egn" name="egn" required /></div>
                   <div className="space-y-1.5"><Label htmlFor="address">{text.address}</Label><Input id="address" name="address" required /></div>

@@ -15,7 +15,7 @@ const ApplicationSchema = z.object({
   // Jockey/Trainer/Owner fields
   first_name: z.string().optional(),
   last_name: z.string().optional(),
-  date_of_birth: z.coerce.number().optional(),
+  date_of_birth: z.string().optional(),
   egn: z.string().optional(),
   address: z.string().optional(),
   

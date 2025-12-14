@@ -10,7 +10,7 @@ import { redirect } from 'next/navigation';
 const FormSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(1, 'Името е задължително'),
-  date_of_birth: z.coerce.number().nullable().optional(),
+  date_of_birth: z.string().nullable().optional(),
   egn: z.string().nullable().optional(),
   address: z.string().nullable().optional(),
   email: z.string().email('Въведете валиден имейл').nullable().optional(),
