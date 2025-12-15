@@ -15,6 +15,7 @@ export interface Trainer {
   wins: number;
   mounts: number;
   image_url: string;
+  associated_horses: string[];
 }
 
 export interface Horse {
@@ -118,7 +119,7 @@ export interface Submission {
     id: number;
     created_at: string;
     type: 'Жокей' | 'Треньор' | 'Кон' | 'Собственик';
-    status: 'new' | 'read' | 'archived';
+    status: 'new' | 'read' | 'archived' | 'approved' | 'rejected';
     name: string | null;
 
     // Shared Contact

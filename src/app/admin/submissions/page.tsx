@@ -1,13 +1,14 @@
 
+
 'use client';
 
-import { useEffect, useState, useRef, useTransition } from 'react';
+import { useEffect, useState, useRef, useTransition, useMemo } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Mail, Eye, MoreHorizontal, Check, Archive, Trash2, FolderSync, Printer, Loader2 } from 'lucide-react';
+import { Mail, Eye, MoreHorizontal, Check, Archive, Trash2, FolderSync, Printer, Loader2, XCircle } from 'lucide-react';
 import type { Submission } from '@/lib/types';
 import {
   Dialog,
@@ -27,14 +28,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getSubmissions } from '@/lib/client/data';
 import { DeleteButton } from './_components/delete-button';
 import { UpdateStatusButton } from './_components/update-status-button';
 import { usePrint } from '@/app/print/page';
-import { approveSubmission } from './actions';
+import { approveSubmission, rejectSubmission } from './actions';
 import { useToast } from '@/hooks/use-toast';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 function SubmissionDetail({ label, value }: { label: string, value: string | number | null | undefined }) {
     if (value === null || value === undefined || value === '') return null;
@@ -50,7 +51,8 @@ function ViewSubmissionDialog({ submission, onActionComplete }: { submission: Su
     const { print } = usePrint();
     const printRef = useRef<HTMLDivElement>(null);
     const { toast } = useToast();
-    const [isPending, startTransition] = useTransition();
+    const [approvePending, startApproveTransition] = useTransition();
+    const [rejectPending, startRejectTransition] = useTransition();
     const [isOpen, setIsOpen] = useState(false);
 
     const handlePrint = () => {
@@ -60,7 +62,7 @@ function ViewSubmissionDialog({ submission, onActionComplete }: { submission: Su
     }
 
     const handleApprove = () => {
-        startTransition(async () => {
+        startApproveTransition(async () => {
             const result = await approveSubmission(submission);
             if (result.success) {
                 toast({ title: 'Успех!', description: result.message });
@@ -70,6 +72,19 @@ function ViewSubmissionDialog({ submission, onActionComplete }: { submission: Su
                 toast({ variant: 'destructive', title: 'Грешка!', description: result.message });
             }
         });
+    }
+    
+    const handleReject = () => {
+        startRejectTransition(async () => {
+            const result = await rejectSubmission(submission.id);
+             if (result.success) {
+                toast({ title: 'Успех!', description: result.message });
+                onActionComplete();
+                setIsOpen(false);
+            } else {
+                toast({ variant: 'destructive', title: 'Грешка!', description: result.message });
+            }
+        })
     }
 
     const PrintContent = (
@@ -163,26 +178,95 @@ function ViewSubmissionDialog({ submission, onActionComplete }: { submission: Su
                 <div className="space-y-3 py-4">
                    {PrintContent}
                 </div>
-                <DialogFooter className="sm:justify-between">
+                <DialogFooter className="sm:justify-between flex-col-reverse sm:flex-row gap-2">
                      <div>
                         <Button variant="outline" onClick={handlePrint}>
                             <Printer className="mr-2 h-4 w-4" />
                             Принтирай
                         </Button>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 justify-end">
                         <DialogClose asChild>
                             <Button type="button" variant="secondary">Затвори</Button>
                         </DialogClose>
-                        <Button onClick={handleApprove} disabled={isPending}>
-                           {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                           Одобри заявката
-                        </Button>
+                        {submission.status === 'new' || submission.status === 'read' ? (
+                            <>
+                                <Button variant="destructive" onClick={handleReject} disabled={rejectPending}>
+                                    {rejectPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    Отхвърли
+                                </Button>
+                                <Button onClick={handleApprove} disabled={approvePending}>
+                                    {approvePending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    Одобри
+                                </Button>
+                            </>
+                        ) : null}
                     </div>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
     )
+}
+
+function SubmissionsTable({ submissions, onActionComplete }: { submissions: Submission[], onActionComplete: () => void }) {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString('bg-BG', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+  };
+
+  const getStatusVariant = (status: Submission['status']) => {
+      switch (status) {
+          case 'new': return 'default';
+          case 'read': return 'secondary';
+          case 'approved': return 'default';
+          case 'rejected': return 'destructive';
+          case 'archived': return 'outline';
+          default: return 'secondary';
+      }
+  }
+
+  const statusTranslations: Record<Submission['status'], string> = {
+      new: 'Нова',
+      read: 'Прочетена',
+      archived: 'Архивирана',
+      approved: 'Одобрена',
+      rejected: 'Отхвърлена',
+  }
+
+   return (
+       <Table>
+            <TableHeader>
+            <TableRow>
+                <TableHead>Име</TableHead>
+                <TableHead>Тип</TableHead>
+                <TableHead>Статус</TableHead>
+                <TableHead>Дата</TableHead>
+                <TableHead className="text-right">Действия</TableHead>
+            </TableRow>
+            </TableHeader>
+            <TableBody>
+            {submissions.map((sub) => (
+                <TableRow key={sub.id}>
+                <TableCell className="font-medium">{sub.name}</TableCell>
+                <TableCell>{sub.type}</TableCell>
+                <TableCell>
+                    <Badge variant={getStatusVariant(sub.status)}>{statusTranslations[sub.status]}</Badge>
+                </TableCell>
+                <TableCell>{formatDate(sub.created_at)}</TableCell>
+                <TableCell className="text-right flex items-center justify-end">
+                    <ViewSubmissionDialog submission={sub} onActionComplete={onActionComplete} />
+                    <ActionsMenu submission={sub} />
+                </TableCell>
+                </TableRow>
+            ))}
+            </TableBody>
+        </Table>
+   )
 }
 
 function SubmissionsTableSkeleton() {
@@ -257,30 +341,12 @@ export default function AdminSubmissionsPage() {
     loadData();
   }, []);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('bg-BG', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-  };
-
-  const getStatusVariant = (status: Submission['status']) => {
-      switch (status) {
-          case 'new': return 'default';
-          case 'read': return 'secondary';
-          case 'archived': return 'outline';
-          default: return 'secondary';
-      }
-  }
-
-  const statusTranslations: Record<Submission['status'], string> = {
-      new: 'Нова',
-      read: 'Прочетена',
-      archived: 'Архивирана'
-  }
+  const filteredSubmissions = useMemo(() => {
+      const newSubs = submissions.filter(s => s.status === 'new' || s.status === 'read');
+      const historySubs = submissions.filter(s => s.status === 'approved' || s.status === 'rejected');
+      const archivedSubs = submissions.filter(s => s.status === 'archived');
+      return { newSubs, historySubs, archivedSubs };
+  }, [submissions]);
 
   return (
     <div>
@@ -299,35 +365,22 @@ export default function AdminSubmissionsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {loading ? <SubmissionsTableSkeleton /> : (
-            <Table>
-                <TableHeader>
-                <TableRow>
-                    <TableHead>Име</TableHead>
-                    <TableHead>Тип</TableHead>
-                    <TableHead>Статус</TableHead>
-                    <TableHead>Дата</TableHead>
-                    <TableHead className="text-right">Действия</TableHead>
-                </TableRow>
-                </TableHeader>
-                <TableBody>
-                {submissions.map((sub) => (
-                    <TableRow key={sub.id}>
-                    <TableCell className="font-medium">{sub.name}</TableCell>
-                    <TableCell>{sub.type}</TableCell>
-                    <TableCell>
-                        <Badge variant={getStatusVariant(sub.status)}>{statusTranslations[sub.status]}</Badge>
-                    </TableCell>
-                    <TableCell>{formatDate(sub.created_at)}</TableCell>
-                    <TableCell className="text-right flex items-center justify-end">
-                        <ViewSubmissionDialog submission={sub} onActionComplete={loadData} />
-                        <ActionsMenu submission={sub} />
-                    </TableCell>
-                    </TableRow>
-                ))}
-                </TableBody>
-            </Table>
-          )}
+          <Tabs defaultValue="new">
+             <TabsList>
+                <TabsTrigger value="new">Нови ({filteredSubmissions.newSubs.length})</TabsTrigger>
+                <TabsTrigger value="history">История ({filteredSubmissions.historySubs.length})</TabsTrigger>
+                <TabsTrigger value="archived">Архивирани ({filteredSubmissions.archivedSubs.length})</TabsTrigger>
+            </TabsList>
+            <TabsContent value="new" className="mt-4">
+                {loading ? <SubmissionsTableSkeleton /> : <SubmissionsTable submissions={filteredSubmissions.newSubs} onActionComplete={loadData} />}
+            </TabsContent>
+            <TabsContent value="history" className="mt-4">
+                {loading ? <SubmissionsTableSkeleton /> : <SubmissionsTable submissions={filteredSubmissions.historySubs} onActionComplete={loadData} />}
+            </TabsContent>
+            <TabsContent value="archived" className="mt-4">
+                {loading ? <SubmissionsTableSkeleton /> : <SubmissionsTable submissions={filteredSubmissions.archivedSubs} onActionComplete={loadData} />}
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>

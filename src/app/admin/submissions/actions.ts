@@ -115,11 +115,15 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                 return { success: false, message: 'Невалиден тип заявка.' };
         }
 
-        // After successful insertion, delete the submission
-        const { error: deleteError } = await supabase.from('submissions').delete().eq('id', submission.id);
-        if (deleteError) {
-            // Log the error but don't fail the whole operation, as the main task is done
-            console.error(`Failed to delete submission ${submission.id} after approval:`, deleteError);
+        // After successful insertion, update submission status to 'approved'
+        const { error: updateError } = await supabase
+            .from('submissions')
+            .update({ status: 'approved' })
+            .eq('id', submission.id);
+
+        if (updateError) {
+            console.error(`Failed to update submission ${submission.id} status after approval:`, updateError);
+            // Not failing the whole operation, but this is an inconsistent state.
         }
 
         revalidatePath('/admin/submissions');
@@ -138,4 +142,27 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
         console.error('Error approving submission:', error);
         return { success: false, message: `Грешка при одобряване на заявката: ${error.message}` };
     }
+}
+
+
+export async function rejectSubmission(id: number): Promise<{ success: boolean; message: string }> {
+    try {
+        await checkAdmin();
+    } catch (error: any) {
+        return { success: false, message: error.message };
+    }
+    const supabase = createServerClient();
+
+    const { error } = await supabase
+        .from('submissions')
+        .update({ status: 'rejected' })
+        .eq('id', id);
+    
+    if (error) {
+        console.error(`Error rejecting submission ${id}:`, error);
+        return { success: false, message: `Грешка при отхвърляне на заявката: ${error.message}` };
+    }
+
+    revalidatePath('/admin/submissions');
+    return { success: true, message: 'Заявката беше отхвърлена.' };
 }
