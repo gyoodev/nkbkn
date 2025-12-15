@@ -17,6 +17,8 @@ const FormSchema = z.object({
   mounts: z.coerce.number().min(0, 'Участията трябва да са положително число'),
   bestTime: z.string().optional().nullable(),
   origin: z.string().optional().nullable(),
+  gender: z.enum(['Кобила', 'Жребец', 'Кастрат']).optional().nullable(),
+  passport_number: z.string().optional().nullable(),
 });
 
 async function checkAdmin() {
@@ -47,6 +49,8 @@ export async function upsertHorse(prevState: any, formData: FormData) {
         mounts: formData.get('mounts'),
         bestTime: formData.get('bestTime'),
         origin: formData.get('origin'),
+        gender: formData.get('gender'),
+        passport_number: formData.get('passport_number'),
     });
 
     if (!validatedFields.success) {

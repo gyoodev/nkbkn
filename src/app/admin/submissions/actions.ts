@@ -89,7 +89,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     age: submission.age,
                     sire: submission.sire,
                     dam: submission.dam,
-                    owner: 'N/A', // Owner is not known at submission time
+                    owner: submission.name, // Use the name of the submitter as the owner
                     mounts: submission.mounts || 0,
                     wins: submission.wins || 0,
                     origin: submission.origin,

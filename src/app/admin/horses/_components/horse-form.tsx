@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useActionState } from 'react';
@@ -66,6 +65,20 @@ export function HorseForm({ horse }: { horse?: Horse }) {
             {state.errors?.age && <p className="text-sm font-medium text-destructive">{state.errors.age}</p>}
           </div>
           <div className="space-y-1">
+            <Label htmlFor="gender">Пол</Label>
+            <Select name="gender" defaultValue={horse?.gender ?? undefined}>
+              <SelectTrigger id="gender">
+                <SelectValue placeholder="Избери пол" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Кобила">Кобила</SelectItem>
+                <SelectItem value="Жребец">Жребец</SelectItem>
+                <SelectItem value="Кастрат">Кастрат</SelectItem>
+              </SelectContent>
+            </Select>
+            {state.errors?.gender && <p className="text-sm font-medium text-destructive">{state.errors.gender}</p>}
+          </div>
+          <div className="space-y-1">
             <Label htmlFor="origin">Произход</Label>
             <Select name="origin" defaultValue={horse?.origin || undefined}>
                 <SelectTrigger id="origin">
@@ -78,6 +91,11 @@ export function HorseForm({ horse }: { horse?: Horse }) {
                 </SelectContent>
             </Select>
             {state.errors?.origin && <p className="text-sm font-medium text-destructive">{state.errors.origin}</p>}
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="passport_number">Паспортен номер</Label>
+            <Input id="passport_number" name="passport_number" defaultValue={horse?.passport_number ?? ''} />
+            {state.errors?.passport_number && <p className="text-sm font-medium text-destructive">{state.errors.passport_number}</p>}
           </div>
           <div className="space-y-1">
             <Label htmlFor="sire">Баща (Sire)</Label>
