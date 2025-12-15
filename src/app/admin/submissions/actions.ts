@@ -69,7 +69,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     name: `${submission.first_name} ${submission.last_name}`,
                     wins: 0,
                     mounts: 0,
-                    image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
+                    imageUrl: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
                 });
                 if (jockeyError) throw jockeyError;
                 break;
@@ -79,7 +79,6 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
                     wins: 0,
                     mounts: 0,
-                    associated_horses: 0,
                  });
                 if (trainerError) throw trainerError;
                 break;
