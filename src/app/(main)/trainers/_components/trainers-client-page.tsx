@@ -30,7 +30,6 @@ function TrainerCard({ trainer, text }: { trainer: Trainer; text: any }) {
             <CardContent>
                 <div className="mt-2 space-y-2 text-sm text-muted-foreground">
                     <div>
-                        <h4 className="font-semibold text-sm mb-2">Статистика:</h4>
                         <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
                             <p><strong>{text.wins}:</strong> {trainer.wins}</p>
                             <p><strong>{text.mounts}:</strong> {trainer.mounts}</p>
