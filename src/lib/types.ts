@@ -12,10 +12,8 @@ export interface Jockey {
 export interface Trainer {
   id: number;
   name: string;
-  stats: {
-    wins: number;
-    mounts: number;
-  };
+  wins: number;
+  mounts: number;
   image_url: string;
 }
 
@@ -30,6 +28,8 @@ export interface Horse {
   mounts: number;
   bestTime: string | null;
   origin: string | null;
+  gender: 'Кобила' | 'Жребец' | 'Кастрат' | null;
+  passport_number: string | null;
 }
 
 export interface Track {

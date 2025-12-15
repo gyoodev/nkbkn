@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -93,8 +94,8 @@ export default function AdminTrainersPage() {
                 {trainers.map((trainer) => (
                     <TableRow key={trainer.id}>
                     <TableCell className="font-medium">{trainer.name}</TableCell>
-                    <TableCell>{trainer.stats.wins}</TableCell>
-                    <TableCell>{trainer.stats.mounts}</TableCell>
+                    <TableCell>{trainer.wins}</TableCell>
+                    <TableCell>{trainer.mounts}</TableCell>
                     <TableCell>
                         <DropdownMenu>
                         <DropdownMenuTrigger asChild>

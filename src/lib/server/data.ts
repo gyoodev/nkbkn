@@ -136,10 +136,8 @@ export async function getTrainer(id: number): Promise<Trainer | null> {
         id: data.id,
         name: data.name,
         image_url: data.image_url,
-        stats: {
-            wins: data.wins || 0,
-            mounts: data.mounts || 0,
-        }
+        wins: data.wins || 0,
+        mounts: data.mounts || 0,
     };
 }
 
@@ -316,15 +314,7 @@ export async function getTrainers(): Promise<Trainer[]> {
             console.error('Error fetching trainers:', error.message);
             return [];
         }
-        return (data || []).map(trainer => ({
-            id: trainer.id,
-            name: trainer.name,
-            image_url: trainer.image_url,
-            stats: {
-                wins: trainer.wins || 0,
-                mounts: trainer.mounts || 0,
-            }
-        }));
+        return data || [];
     } catch (error: any) {
         console.error('Error in getTrainers:', error.message);
         return [];

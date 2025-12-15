@@ -41,16 +41,7 @@ export async function getTrainers(): Promise<Trainer[]> {
             console.error('Error fetching trainers:', error.message);
             return [];
         }
-        return (data || []).map(trainer => ({
-            id: trainer.id,
-            name: trainer.name,
-            image_url: trainer.image_url,
-            achievements: Array.isArray(trainer.achievements) ? trainer.achievements : (typeof trainer.achievements === 'string' ? trainer.achievements.split(',').map((s: string) => s.trim()) : []),
-            stats: {
-                wins: trainer.wins || 0,
-                mounts: trainer.mounts || 0,
-            }
-        }));
+        return data || [];
     } catch (error: any) {
         console.error('Error in getTrainers:', error.message);
         return [];
