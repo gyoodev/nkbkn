@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useLanguage } from "@/hooks/use-language";
@@ -12,6 +11,8 @@ export function PartnersSection({ partners }: { partners: Partner[] }) {
         return null;
     }
 
+    const validPartners = partners.filter(p => p.logo_url && (p.logo_url.startsWith('http://') || p.logo_url.startsWith('https://')));
+
     return (
         <section className="py-12 bg-white dark:bg-gray-950">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,8 +24,8 @@ export function PartnersSection({ partners }: { partners: Partner[] }) {
                  <div
                   className="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]"
                 >
-                    <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-[scroll_40s_linear_infinite]" style={{'--logo-count': partners.length} as React.CSSProperties}>
-                        {[...partners, ...partners].map((p, index) => (
+                    <ul className="flex items-center justify-center md:justify-start [&_li]:mx-8 [&_img]:max-w-none animate-[scroll_40s_linear_infinite]" style={{'--logo-count': validPartners.length} as React.CSSProperties}>
+                        {[...validPartners, ...validPartners].map((p, index) => (
                             <li key={`${p.id}-${index}`} className="flex flex-col items-center gap-2">
                                 <Image
                                     src={p.logo_url}
