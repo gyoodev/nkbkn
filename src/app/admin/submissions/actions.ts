@@ -69,7 +69,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     name: `${submission.first_name} ${submission.last_name}`,
                     wins: 0,
                     mounts: 0,
-                    imageUrl: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
+                    image_url: 'https://static.vecteezy.com/system/resources/thumbnails/028/087/760/small/user-avatar-icon-doodle-style-png.png',
                 });
                 if (jockeyError) throw jockeyError;
                 break;
@@ -89,7 +89,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
                     age: submission.age,
                     sire: submission.sire,
                     dam: submission.dam,
-                    owner: submission.email, // Use email as owner
+                    owner: submission.email,
                     mounts: submission.mounts || 0,
                     wins: submission.wins || 0,
                     origin: submission.origin,

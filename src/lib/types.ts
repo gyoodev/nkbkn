@@ -6,7 +6,7 @@ export interface Jockey {
   wins: number;
   mounts: number;
   winRate: string;
-  imageUrl: string;
+  image_url: string;
 }
 
 export interface Trainer {
