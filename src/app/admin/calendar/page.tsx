@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState, useTransition, useMemo } from 'react';
@@ -33,7 +34,7 @@ const parseLocalDate = (dateString: string) => {
     return new Date(year, month - 1, day);
 };
 
-function DeleteButton({ id, onDeleted }: { id: number, onDeleted: () => void }) {
+function DeleteButton({ id, onDeleted }: { id: number, onDeleted: (id: number) => void }) {
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
@@ -42,7 +43,7 @@ function DeleteButton({ id, onDeleted }: { id: number, onDeleted: () => void }) 
         const result = await deleteRaceEvent(id);
         if (result.success) {
             toast({ title: 'Успех', description: result.message });
-            onDeleted();
+            onDeleted(id);
         } else {
             toast({ variant: 'destructive', title: 'Грешка', description: result.message });
         }
@@ -80,14 +81,17 @@ export default function AdminCalendarPage() {
   const [allEvents, setAllEvents] = useState<RaceEvent[]>([]);
   const locale = language === 'bg' ? bg : enUS;
 
-  const fetchEvents = async () => {
-    const events = await getRaceEvents();
-    setAllEvents(events);
-  };
-
   useEffect(() => {
+    const fetchEvents = async () => {
+      const events = await getRaceEvents();
+      setAllEvents(events);
+    };
     fetchEvents();
   }, []);
+
+  const handleEventDeleted = (deletedId: number) => {
+    setAllEvents(currentEvents => currentEvents.filter(event => event.id !== deletedId));
+  };
   
   const upcomingEvents = useMemo(() => {
     const today = new Date();
@@ -162,7 +166,7 @@ export default function AdminCalendarPage() {
                                 <span className="sr-only">Редактирай</span>
                             </Link>
                           </Button>
-                          <DeleteButton id={event.id} onDeleted={fetchEvents} />
+                          <DeleteButton id={event.id} onDeleted={handleEventDeleted} />
                         </TableCell>
                       </TableRow>
                     ))}
