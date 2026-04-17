@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useActionState, useMemo } from 'react';
+import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { upsertResult } from '../actions';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,6 @@ import Link from 'next/link';
 import type { Result } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { tracks } from '@/lib/client/data';
 
 
 function SubmitButton({ isEditing }: { isEditing: boolean }) {
@@ -31,11 +30,10 @@ function SubmitButton({ isEditing }: { isEditing: boolean }) {
   );
 }
 
-export function ResultsForm({ result }: { result?: Result }) {
+export function ResultsForm({ result, trackNames }: { result?: Result, trackNames: string[] }) {
   const isEditing = !!result;
   const initialState = { message: null, errors: {} };
   const [state, dispatch] = useActionState(upsertResult, initialState);
-  const trackNames = useMemo(() => tracks.map(t => t.name), []);
 
   return (
     <form action={dispatch}>

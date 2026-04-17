@@ -1,5 +1,7 @@
 
 
+'use server';
+
 import 'server-only';
 
 import type { Jockey, Trainer, Horse, RaceEvent, Result, Partner, NewsPost, UserProfile, Stats, Track, Owner } from '@/lib/types';
@@ -88,7 +90,7 @@ export async function getJockeys(): Promise<Jockey[]> {
             return {
                 id: jockey.id,
                 name: jockey.name,
-                imageUrl: jockey.image_url,
+                image_url: jockey.image_url,
                 wins: wins,
                 mounts: mounts,
                 winRate: winRate,
@@ -116,7 +118,7 @@ export async function getJockey(id: number): Promise<Jockey | null> {
      return {
         id: data.id,
         name: data.name,
-        imageUrl: data.image_url,
+        image_url: data.image_url,
         wins: wins,
         mounts: mounts,
         winRate: winRate,
@@ -138,6 +140,7 @@ export async function getTrainer(id: number): Promise<Trainer | null> {
         image_url: data.image_url,
         wins: data.wins || 0,
         mounts: data.mounts || 0,
+        associated_horses: data.associated_horses || [],
     };
 }
 
@@ -292,6 +295,21 @@ export async function getTrack(id: number): Promise<Track | null> {
         return null;
     }
     return data;
+}
+
+export async function getTracks(): Promise<Track[]> {
+    const supabase = createServerClient();
+    try {
+        const { data, error } = await supabase.from('tracks').select('*').order('name', { ascending: true });
+        if (error) {
+            console.error('Error fetching tracks:', error.message);
+            return [];
+        }
+        return data || [];
+    } catch(e: any) {
+        console.error('Error fetching tracks:', e.message);
+        return [];
+    }
 }
 
 export async function getOwner(id: number): Promise<Owner | null> {

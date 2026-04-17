@@ -1,13 +1,11 @@
 
-'use client';
-
 import { PageHeader } from '@/components/page-header';
 import { EventForm } from '../_components/event-form';
-import { tracks } from '@/lib/client/data';
-import { useMemo } from 'react';
+import { getTracks } from '@/lib/server/data';
 
-export default function NewEventPage() {
-  const trackNames = useMemo(() => tracks.map(t => t.name), []);
+export default async function NewEventPage() {
+  const tracks = await getTracks();
+  const trackNames = tracks.map(t => t.name);
 
   return (
     <div>

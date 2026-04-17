@@ -2,14 +2,19 @@
 import { notFound } from 'next/navigation';
 import { PageHeader } from '@/components/page-header';
 import { ResultsForm } from '../../_components/results-form';
-import { getResult } from '@/lib/server/data';
+import { getResult, getTracks } from '@/lib/server/data';
 
 export default async function EditResultPage({ params }: { params: { id: string } }) {
-  const result = await getResult(Number(params.id));
+  const [result, tracks] = await Promise.all([
+    getResult(Number(params.id)),
+    getTracks()
+  ]);
 
   if (!result) {
     return notFound();
   }
+
+  const trackNames = tracks.map(t => t.name);
 
   return (
     <div>
@@ -18,7 +23,7 @@ export default async function EditResultPage({ params }: { params: { id: string 
         description="Променете данните за резултата по-долу."
       />
       <div className="mt-8">
-        <ResultsForm result={result} />
+        <ResultsForm result={result} trackNames={trackNames} />
       </div>
     </div>
   );
