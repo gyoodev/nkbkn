@@ -86,16 +86,19 @@ export default function AdminCalendarPage() {
 
   const selectedEvents: RaceEvent[] = allEvents.filter(
     (event) => {
-        // Adjust for timezone when comparing dates
-        const eventDate = new Date(event.date);
-        const localEventDate = new Date(eventDate.getUTCFullYear(), eventDate.getUTCMonth(), eventDate.getUTCDate());
-        return format(localEventDate, 'yyyy-MM-dd') === (date ? format(date, 'yyyy-MM-dd') : '')
+        if (!date) return false;
+        // Compare date strings directly to avoid timezone issues.
+        // The date from the database is a 'YYYY-MM-DD' string.
+        return event.date === format(date, 'yyyy-MM-dd');
     }
   );
 
   const eventDays = allEvents.map(event => {
-    const eventDate = new Date(event.date);
-    return new Date(eventDate.getUTCFullYear(), eventDate.getUTCMonth(), eventDate.getUTCDate());
+    // To handle dates correctly across timezones for the calendar modifier,
+    // we need to parse the date string manually to create a Date object in the local timezone.
+    const [year, month, day] = event.date.split('-').map(Number);
+    // new Date(year, month - 1, day) creates a date at midnight in the local timezone.
+    return new Date(year, month - 1, day);
   });
 
   return (
