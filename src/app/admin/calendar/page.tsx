@@ -1,7 +1,6 @@
-
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState, useTransition, useMemo } from 'react';
 import { PageHeader } from '@/components/page-header';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -26,6 +25,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 
 function DeleteButton({ id, onDeleted }: { id: number, onDeleted: () => void }) {
@@ -83,15 +83,20 @@ export default function AdminCalendarPage() {
   useEffect(() => {
     fetchEvents();
   }, []);
+  
+  const upcomingEvents = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize today's date
 
-  const selectedEvents: RaceEvent[] = allEvents.filter(
-    (event) => {
-        if (!date) return false;
-        // Compare date strings directly to avoid timezone issues.
-        // The date from the database is a 'YYYY-MM-DD' string.
-        return event.date === format(date, 'yyyy-MM-dd');
-    }
-  );
+    return allEvents
+        .filter(event => {
+            const [year, month, day] = event.date.split('-').map(Number);
+            const eventDate = new Date(year, month - 1, day);
+            return eventDate >= today;
+        })
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  }, [allEvents]);
+
 
   const eventDays = allEvents.map(event => {
     // To handle dates correctly across timezones for the calendar modifier,
@@ -107,8 +112,8 @@ export default function AdminCalendarPage() {
         title="Управление на календара"
         description="Добавяйте, редактирайте и изтривайте събития от състезателния календар."
       />
-      <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-3">
-        <div className="md:col-span-1">
+      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
+        <div className="lg:col-span-1">
           <Card>
              <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Календар</CardTitle>
@@ -132,27 +137,30 @@ export default function AdminCalendarPage() {
             </CardContent>
           </Card>
         </div>
-        <div className="md:col-span-2">
+        <div className="lg:col-span-2">
           <Card className="min-h-[400px]">
             <CardHeader>
-              <CardTitle>
-                Събития за {date ? format(date, 'PPP', { locale }) : ''}
-              </CardTitle>
-              <CardDescription>
-                {selectedEvents.length > 0 ? `Намерени са ${selectedEvents.length} събития.` : 'Няма намерени събития за тази дата.'}
-              </CardDescription>
+              <CardTitle>Предстоящи събития</CardTitle>
+              <CardDescription>Списък с всички събития от днес нататък.</CardDescription>
             </CardHeader>
             <CardContent>
-              {selectedEvents.length > 0 ? (
-                <div className="space-y-4">
-                  {selectedEvents.map((event) => (
-                    <Card key={event.id}>
-                      <CardHeader className="flex flex-row items-center justify-between">
-                        <div>
-                          <CardTitle className="text-lg">{event.track}</CardTitle>
-                          <CardDescription>{event.races.length} състезания</CardDescription>
-                        </div>
-                        <div className="flex items-center gap-2">
+              {upcomingEvents.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Дата</TableHead>
+                      <TableHead>Хиподрум</TableHead>
+                      <TableHead>Състезания</TableHead>
+                      <TableHead className="text-right">Действия</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {upcomingEvents.map((event) => (
+                      <TableRow key={event.id}>
+                        <TableCell>{format(new Date(event.date.split('-').map(Number)[0], event.date.split('-').map(Number)[1] - 1, event.date.split('-').map(Number)[2]), 'PPP', { locale })}</TableCell>
+                        <TableCell>{event.track}</TableCell>
+                        <TableCell>{event.races.length}</TableCell>
+                        <TableCell className="text-right flex items-center justify-end gap-2">
                           <Button variant="outline" size="icon" asChild>
                             <Link href={`/admin/calendar/${event.id}/edit`}>
                                 <Edit className="h-4 w-4" />
@@ -160,26 +168,19 @@ export default function AdminCalendarPage() {
                             </Link>
                           </Button>
                           <DeleteButton id={event.id} onDeleted={fetchEvents} />
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <ul className="list-disc pl-5 text-sm text-muted-foreground">
-                            {event.races.map((race, index) => (
-                                <li key={index}>{race.time} - {race.name} ({race.participants} участници)</li>
-                            ))}
-                        </ul>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               ) : (
                 <div className="flex flex-col items-center justify-center rounded-lg border border-dashed shadow-sm h-[300px]">
                   <div className="flex flex-col items-center gap-1 text-center">
                     <h3 className="text-2xl font-bold tracking-tight">
-                      Няма събития
+                      Няма предстоящи събития
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      Изберете друга дата или добавете ново събитие.
+                      Добавете ново събитие, за да го видите тук.
                     </p>
                     <Button className="mt-4" asChild>
                         <Link href="/admin/calendar/new">
