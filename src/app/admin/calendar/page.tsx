@@ -27,6 +27,11 @@ import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
+// Helper to parse date string as local date to avoid timezone issues
+const parseLocalDate = (dateString: string) => {
+    const [year, month, day] = dateString.split('-').map(Number);
+    return new Date(year, month - 1, day);
+};
 
 function DeleteButton({ id, onDeleted }: { id: number, onDeleted: () => void }) {
   const [isPending, startTransition] = useTransition();
@@ -86,25 +91,15 @@ export default function AdminCalendarPage() {
   
   const upcomingEvents = useMemo(() => {
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // Normalize today's date
+    today.setHours(0, 0, 0, 0);
 
     return allEvents
-        .filter(event => {
-            const [year, month, day] = event.date.split('-').map(Number);
-            const eventDate = new Date(year, month - 1, day);
-            return eventDate >= today;
-        })
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        .filter(event => parseLocalDate(event.date) >= today)
+        .sort((a, b) => parseLocalDate(a.date).getTime() - parseLocalDate(b.date).getTime());
   }, [allEvents]);
 
 
-  const eventDays = allEvents.map(event => {
-    // To handle dates correctly across timezones for the calendar modifier,
-    // we need to parse the date string manually to create a Date object in the local timezone.
-    const [year, month, day] = event.date.split('-').map(Number);
-    // new Date(year, month - 1, day) creates a date at midnight in the local timezone.
-    return new Date(year, month - 1, day);
-  });
+  const eventDays = useMemo(() => allEvents.map(event => parseLocalDate(event.date)), [allEvents]);
 
   return (
     <div>
@@ -157,7 +152,7 @@ export default function AdminCalendarPage() {
                   <TableBody>
                     {upcomingEvents.map((event) => (
                       <TableRow key={event.id}>
-                        <TableCell>{format(new Date(event.date.split('-').map(Number)[0], event.date.split('-').map(Number)[1] - 1, event.date.split('-').map(Number)[2]), 'PPP', { locale })}</TableCell>
+                        <TableCell>{format(parseLocalDate(event.date), 'PPP', { locale })}</TableCell>
                         <TableCell>{event.track}</TableCell>
                         <TableCell>{event.races.length}</TableCell>
                         <TableCell className="text-right flex items-center justify-end gap-2">

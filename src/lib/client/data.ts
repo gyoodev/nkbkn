@@ -21,7 +21,7 @@ export async function getJockeys(): Promise<Jockey[]> {
             return {
                 id: jockey.id,
                 name: jockey.name,
-                imageUrl: jockey.image_url,
+                image_url: jockey.image_url,
                 wins: wins,
                 mounts: mounts,
                 winRate: winRate,
@@ -139,6 +139,34 @@ export async function getPartners(): Promise<Partner[]> {
     }
 }
 
+export async function getRaceEvents(): Promise<RaceEvent[]> {
+    const supabase = createBrowserClient();
+    try {
+        const { data: events, error: eventsError } = await supabase
+            .from('race_events')
+            .select(`
+                *,
+                races (*)
+            `)
+            .order('date', { ascending: true });
+
+        if (eventsError) {
+            console.error('Error fetching race events:', eventsError.message);
+            return [];
+        }
+        
+        for (const event of events) {
+            if (event.races) {
+                event.races.sort((a, b) => a.time.localeCompare(b.time));
+            }
+        }
+
+        return (events as RaceEvent[]) || [];
+    } catch (e: any) {
+        console.error('Error in getRaceEvents:', e.message);
+        return [];
+    }
+}
 
 export async function getDashboardStats() {
     const supabase = createBrowserClient();
