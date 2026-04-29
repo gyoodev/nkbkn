@@ -19,13 +19,7 @@ const FormSchema = z.object({
 
     // Case 1: Creating a new post
     if (!data.id) {
-        if (!isFile) {
-            ctx.addIssue({
-                code: z.ZodIssueCode.custom,
-                message: "Изображението е задължително",
-                path: ['image_file'],
-            });
-        } else if (!imageFile.type.startsWith('image/')) {
+        if (isFile && !imageFile.type.startsWith('image/')) {
              ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: "Моля, качете валиден файл с изображение.",
@@ -93,7 +87,8 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
         // If editing and there's a current image, delete the old one
         if (id && current_image_url) {
             const oldFileName = current_image_url.split('/').pop();
-            if (oldFileName) {
+            // Don't delete if it's the default image
+            if (oldFileName && current_image_url !== '/news.webp') {
                 const { error: deleteError } = await supabase.storage.from('news-images').remove([oldFileName]);
                 if (deleteError) {
                     console.error('Error deleting old image:', deleteError.message);
@@ -118,12 +113,9 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
         imageUrl = publicUrl;
     }
 
-
+    // Default image if none provided
     if (!imageUrl) {
-         return {
-            errors: { image_file: ['Изображението е задължително.'] },
-            message: 'Моля, качете изображение.',
-        };
+        imageUrl = '/news.webp';
     }
 
     // Create a plain text excerpt from HTML content
@@ -203,7 +195,7 @@ export async function DeleteNewsPost(id: number) {
 
     // Optional: Delete the image from storage as well
     const { data: post, error: fetchError } = await supabase.from('news_posts').select('image_url').eq('id', id).single();
-    if (post && post.image_url) {
+    if (post && post.image_url && post.image_url !== '/news.webp') {
         const fileName = post.image_url.split('/').pop();
         if (fileName) {
             await supabase.storage.from('news-images').remove([fileName]);
