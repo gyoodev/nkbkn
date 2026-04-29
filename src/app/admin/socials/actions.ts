@@ -11,7 +11,7 @@ type State = {
 };
 
 async function checkAdmin() {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -36,7 +36,7 @@ export async function updateSocialLinks(
     return { success: false, message: error.message };
   }
 
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const entries = Array.from(formData.entries());
 
   const linksToUpdate = entries.map(([key, value]) => ({

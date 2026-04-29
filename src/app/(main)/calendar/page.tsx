@@ -9,7 +9,7 @@ import { cookies } from 'next/headers';
 export const dynamic = 'force-dynamic';
 
 async function getRaceEvents(): Promise<RaceEvent[]> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     try {
         const { data: events, error: eventsError } = await supabase
             .from('race_events')

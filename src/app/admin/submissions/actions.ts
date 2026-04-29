@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import type { Submission } from '@/lib/types';
 
 async function checkAdmin() {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Authentication required');
 
@@ -21,7 +21,7 @@ export async function deleteSubmission(id: number) {
     } catch (error: any) {
         return { message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     const { error } = await supabase.from('submissions').delete().eq('id', id);
     if (error) {
@@ -39,7 +39,7 @@ export async function updateSubmissionStatus(id: number, status: Submission['sta
     } catch (error: any) {
         return { message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     
     const { error } = await supabase
         .from('submissions')
@@ -60,7 +60,7 @@ export async function approveSubmission(submission: Submission): Promise<{ succe
     } catch (error: any) {
         return { success: false, message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     try {
         switch (submission.type) {
@@ -152,7 +152,7 @@ export async function rejectSubmission(id: number): Promise<{ success: boolean; 
     } catch (error: any) {
         return { success: false, message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     const { error } = await supabase
         .from('submissions')

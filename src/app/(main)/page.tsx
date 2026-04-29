@@ -7,7 +7,7 @@ import { createServerClient } from '@/lib/supabase/server';
 
 
 export default async function HomePage() {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const { data: newsData, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
   const posts: NewsPost[] = (newsData || []).map((post: any) => ({ ...post, href: `/news/${post.id}`}));
   

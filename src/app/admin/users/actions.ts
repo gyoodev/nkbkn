@@ -9,7 +9,7 @@ import { EmailTemplate } from '@/lib/email-template';
 import { getSiteContent } from '@/lib/server/data';
 
 async function checkAdmin() {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Authentication required');
 
@@ -26,7 +26,7 @@ export async function updateUserRole(userId: string, role: 'admin' | 'user'): Pr
         return { error: e.message };
     }
 
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     const { error } = await supabase
         .from('profiles')

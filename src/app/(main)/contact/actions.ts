@@ -18,7 +18,7 @@ type State = {
 }
 
 export async function submitContactForm(prevState: State, formData: FormData): Promise<State> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     const validatedFields = ContactSchema.safeParse({
         name: formData.get('name'),

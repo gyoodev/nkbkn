@@ -47,7 +47,7 @@ const FormSchema = z.object({
 
 
 async function checkAdmin() {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Authentication required');
 
@@ -64,7 +64,7 @@ export async function upsertNewsPost(prevState: any, formData: FormData) {
     } catch (error: any) {
         return { message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     
      const validatedFields = FormSchema.safeParse({
         id: formData.get('id') || undefined,
@@ -199,7 +199,7 @@ export async function DeleteNewsPost(id: number) {
     } catch (error: any) {
         return { message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     // Optional: Delete the image from storage as well
     const { data: post, error: fetchError } = await supabase.from('news_posts').select('image_url').eq('id', id).single();

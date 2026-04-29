@@ -10,7 +10,7 @@ type LikeState = {
 }
 
 export async function likePost(postId: number): Promise<LikeState> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     // 1. Get current likes
     const { data: post, error: fetchError } = await supabase
@@ -43,7 +43,7 @@ export async function likePost(postId: number): Promise<LikeState> {
 
 
 export async function incrementViews(postId: number) {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     
     // In a real-world scenario, you might want to prevent spamming views.
     // For this app, a simple increment is sufficient.

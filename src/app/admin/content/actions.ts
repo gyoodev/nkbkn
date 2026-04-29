@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 async function checkAdmin() {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -23,7 +23,7 @@ async function checkAdmin() {
 }
 
 async function upsertSiteContent(key: string, content: string): Promise<{ error: string | null }> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     // First, try to update
     const { error: updateError, count } = await supabase
@@ -102,7 +102,7 @@ async function handleImageUpload(prevState: any, formData: FormData, contentKey:
     } catch (error: any) {
         return { message: error.message, success: false };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     const validatedFields = ImageSchema.safeParse({
         image: formData.get('image'),

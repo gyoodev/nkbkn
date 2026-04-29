@@ -17,7 +17,7 @@ const FormSchema = z.object({
 });
 
 async function checkAdmin() {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Authentication required');
 
@@ -31,7 +31,7 @@ export async function uploadDocument(prevState: any, formData: FormData) {
   } catch (error: any) {
     return { message: error.message };
   }
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
 
   const validatedFields = FormSchema.safeParse({
     name: formData.get('name'),
@@ -81,7 +81,7 @@ export async function deleteDocument(id: number): Promise<{ success: boolean; me
     } catch (error: any) {
         return { success: false, message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     // First get the document path
     const { data: doc, error: fetchError } = await supabase.from('documents').select('path').eq('id', id).single();

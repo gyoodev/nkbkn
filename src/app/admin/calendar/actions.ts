@@ -21,7 +21,7 @@ const EventSchema = z.object({
 });
 
 async function checkAdmin() {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Authentication required');
 
@@ -35,7 +35,7 @@ export async function upsertRaceEvent(prevState: any, formData: FormData) {
   } catch (error: any) {
     return { message: error.message };
   }
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   
   const raceCount = Array.from(formData.keys()).filter(key => key.startsWith('race-name-')).length;
   const races = [];
@@ -130,7 +130,7 @@ export async function deleteRaceEvent(id: number): Promise<{ success: boolean; m
     } catch (error: any) {
         return { success: false, message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     // Must delete races first due to foreign key constraint
     const { error: racesError } = await supabase.from('races').delete().eq('event_id', id);

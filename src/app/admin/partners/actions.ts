@@ -13,7 +13,7 @@ const FormSchema = z.object({
 });
 
 async function checkAdmin() {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Authentication required');
 
@@ -27,7 +27,7 @@ export async function upsertPartner(prevState: any, formData: FormData) {
     } catch (error: any) {
         return { message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     const validatedFields = FormSchema.safeParse({
         id: formData.get('id'),
@@ -69,7 +69,7 @@ export async function deletePartner(id: number): Promise<{ success: boolean; mes
     } catch (error: any) {
         return { success: false, message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     const { error } = await supabase.from('partners').delete().eq('id', id);
 

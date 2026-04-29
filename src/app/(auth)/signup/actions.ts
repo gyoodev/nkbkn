@@ -39,7 +39,7 @@ async function sendWelcomeEmail(to: string, name: string) {
 
 
 export async function signup(prevState: { error?: string } | undefined, formData: FormData) {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   
   const validatedFields = SignupSchema.safeParse({
     email: formData.get('email'),

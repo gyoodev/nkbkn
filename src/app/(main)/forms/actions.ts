@@ -41,7 +41,7 @@ type State = {
 }
 
 export async function submitApplication(prevState: State, formData: FormData): Promise<State> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     const formType = formData.get('type');
     let dataToValidate: { [key: string]: any } = {

@@ -18,7 +18,7 @@ type State = {
 };
 
 export async function updateProfile(prevState: State, formData: FormData): Promise<State> {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
@@ -68,7 +68,7 @@ export async function updateProfile(prevState: State, formData: FormData): Promi
 
 
 export async function requestAccountDeletion(): Promise<State> {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {

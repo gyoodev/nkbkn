@@ -10,7 +10,7 @@ import { EmailTemplate } from '@/lib/email-template';
 import { getSiteContent } from '@/lib/server/data';
 
 async function checkAdmin() {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Authentication required');
 
@@ -24,7 +24,7 @@ export async function deleteContactSubmission(id: number): Promise<{ success: bo
     } catch (error: any) {
         return { success: false, message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
 
     const { error } = await supabase.from('contact_submissions').delete().eq('id', id);
     if (error) {
@@ -42,7 +42,7 @@ export async function updateContactStatus(id: number, status: ContactSubmission[
     } catch (error: any) {
         return { message: error.message };
     }
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     
     const { error } = await supabase
         .from('contact_submissions')

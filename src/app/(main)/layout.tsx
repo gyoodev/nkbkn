@@ -14,7 +14,7 @@ export default async function MainLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   
   // Fetch all data in parallel
   const { data: { session } } = await supabase.auth.getSession();

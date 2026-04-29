@@ -10,7 +10,7 @@ import { cookies } from 'next/headers';
 
 
 export async function getDashboardStats(): Promise<Stats> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     try {
         const [
             { count: horses },
@@ -47,7 +47,7 @@ export async function getDashboardStats(): Promise<Stats> {
 }
 
 export async function getUserProfiles(): Promise<UserProfile[]> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -76,7 +76,7 @@ export async function getUserProfiles(): Promise<UserProfile[]> {
 }
 
 export async function getJockeys(): Promise<Jockey[]> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     try {
         const { data, error } = await supabase.from('jockeys').select('id, name, wins, mounts, image_url').order('name', { ascending: true });
         if (error) {
@@ -104,7 +104,7 @@ export async function getJockeys(): Promise<Jockey[]> {
 
 
 export async function getJockey(id: number): Promise<Jockey | null> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase.from('jockeys').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
@@ -126,7 +126,7 @@ export async function getJockey(id: number): Promise<Jockey | null> {
 }
 
 export async function getTrainer(id: number): Promise<Trainer | null> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase.from('trainers').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
@@ -145,7 +145,7 @@ export async function getTrainer(id: number): Promise<Trainer | null> {
 }
 
 export async function getHorse(id: number): Promise<Horse | null> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase.from('horses').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
@@ -158,7 +158,7 @@ export async function getHorse(id: number): Promise<Horse | null> {
 
 
 export async function getRaceEvent(id: number): Promise<RaceEvent | null> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase.from('race_events').select('*, races (*)').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
@@ -175,7 +175,7 @@ export async function getRaceEvent(id: number): Promise<RaceEvent | null> {
 }
 
 export async function getNewsPosts(): Promise<NewsPost[]> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     try {
         const { data, error } = await supabase.from('news_posts').select('*').order('date', { ascending: false });
         if (error) {
@@ -194,7 +194,7 @@ export async function getNewsPosts(): Promise<NewsPost[]> {
 }
 
 export async function getNewsPost(id: string): Promise<NewsPost | null> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     
     const { data, error } = await supabase
         .from('news_posts')
@@ -218,7 +218,7 @@ export async function getNewsPost(id: string): Promise<NewsPost | null> {
 
 
 export async function getResult(id: number): Promise<Result | null> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase.from('results').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
@@ -230,7 +230,7 @@ export async function getResult(id: number): Promise<Result | null> {
 }
 
 export async function getPartner(id: number): Promise<Partner | null> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase.from('partners').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
@@ -242,7 +242,7 @@ export async function getPartner(id: number): Promise<Partner | null> {
 }
 
 export async function getSiteContent(key: string, lang?: 'bg' | 'en'): Promise<string> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     
     let keyToFetch = key;
     if (lang) {
@@ -286,7 +286,7 @@ export async function getSiteContent(key: string, lang?: 'bg' | 'en'): Promise<s
 }
 
 export async function getTrack(id: number): Promise<Track | null> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase.from('tracks').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
@@ -298,7 +298,7 @@ export async function getTrack(id: number): Promise<Track | null> {
 }
 
 export async function getTracks(): Promise<Track[]> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     try {
         const { data, error } = await supabase.from('tracks').select('*').order('name', { ascending: true });
         if (error) {
@@ -313,7 +313,7 @@ export async function getTracks(): Promise<Track[]> {
 }
 
 export async function getOwner(id: number): Promise<Owner | null> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     const { data, error } = await supabase.from('owners').select('*').eq('id', id).single();
     if (error || !data) {
         if (error && error.code !== 'PGRST116') {
@@ -325,7 +325,7 @@ export async function getOwner(id: number): Promise<Owner | null> {
 }
 
 export async function getTrainers(): Promise<Trainer[]> {
-    const supabase = createServerClient();
+    const supabase = await createServerClient();
     try {
         const { data, error } = await supabase.from('trainers').select('*').order('name', { ascending: true });
         if (error) {
